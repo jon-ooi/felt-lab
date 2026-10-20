@@ -1,0 +1,1246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Hold’em decision drills from the basics to river game theory, graded on your decisions, not the cards.">
+<meta name="theme-color" content="#EEF1EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1417" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Felt Lab">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Felt Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: one centred column; a navy felt table sits on the sage ground, the question and the feedback panels stack beneath it */
+:root{
+  --bg:#EEF1EF; --surface:#FFFFFF; --surface-2:#E2E8E4; --ink:#16212B; --muted:#5B6873; --line:#CCD5D0;
+  --accent:#1F3A5F; --accent-ink:#FFFFFF; --call:#86B5A6; --call-ink:#0F2A23; --cell:#E4EAE6; --hl:#D98E04; --hl-ink:#1A1200;
+  --felt:#27486F; --felt-2:#1A3354; --rail:#0F1F33; --felt-ink:#EAF0F6; --felt-dim:rgba(234,240,246,.62); --felt-glass:rgba(255,255,255,.10);
+  --card-bg:#FBFBF8; --c0:#1B1B1B; --c1:#C62828; --c2:#1C5FB8; --c3:#2E7D32;
+  --good:#23704A; --good-bg:#DCEEE3; --ok:#875709; --ok-bg:#F4E7CC; --miss:#A3302F; --miss-bg:#F6DEDC;
+  --f-display:'Barlow Condensed','Arial Narrow',sans-serif;
+  --f-body:'Source Sans 3','Segoe UI',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0F1417; --surface:#172027; --surface-2:#1E2930; --ink:#E4EAE7; --muted:#97A5AC; --line:#2B3842;
+  --accent:#93B6E2; --accent-ink:#0D1A29; --call:#3F7568; --call-ink:#E8F4F0; --cell:#222D34; --hl:#F2B33D;
+  --felt:#1F3D63; --felt-2:#132842; --rail:#081221; --felt-ink:#EAF0F6; --felt-dim:rgba(234,240,246,.6); --felt-glass:rgba(255,255,255,.08);
+  --card-bg:#ECECE5; --c0:#1B1B1B; --c1:#C62828; --c2:#1C5FB8; --c3:#2E7D32;
+  --good:#71CF99; --good-bg:#173226; --ok:#E6B45A; --ok-bg:#33280F; --miss:#F08A84; --miss-bg:#3A1A1A;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0F1417; --surface:#172027; --surface-2:#1E2930; --ink:#E4EAE7; --muted:#97A5AC; --line:#2B3842;
+  --accent:#93B6E2; --accent-ink:#0D1A29; --call:#3F7568; --call-ink:#E8F4F0; --cell:#222D34; --hl:#F2B33D;
+  --felt:#1F3D63; --felt-2:#132842; --rail:#081221; --felt-ink:#EAF0F6; --felt-dim:rgba(234,240,246,.6); --felt-glass:rgba(255,255,255,.08);
+  --card-bg:#ECECE5; --c0:#1B1B1B; --c1:#C62828; --c2:#1C5FB8; --c3:#2E7D32;
+  --good:#71CF99; --good-bg:#173226; --ok:#E6B45A; --ok-bg:#33280F; --miss:#F08A84; --miss-bg:#3A1A1A;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:880px;margin:0 auto;padding-block:18px 56px;padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;margin:0;text-wrap:balance;letter-spacing:.01em}
+p{margin:0}
+.eyebrow{font-family:var(--f-display);font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--hl);outline-offset:2px}
+
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand h1{font-size:38px;line-height:1;text-transform:uppercase;color:var(--accent);letter-spacing:.02em}
+.brand .fmt{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+nav.tabs{display:flex;gap:2px;background:var(--surface-2);padding:4px;border-radius:10px;flex-wrap:wrap}
+nav.tabs button{font-family:var(--f-display);font-size:16px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border:0;background:transparent;color:var(--muted);border-radius:7px;cursor:pointer}
+nav.tabs button[aria-current="page"]{background:var(--surface);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+.intro{display:grid;grid-template-columns:1fr auto;gap:14px 24px;align-items:end}
+.intro p{max-width:62ch;color:var(--muted)}
+.intro p b{color:var(--ink)}
+@media (max-width:620px){.intro{grid-template-columns:1fr}}
+
+.level{display:grid;grid-template-columns:150px 1fr;gap:12px 20px;padding-block:16px;border-top:1px solid var(--line)}
+.lvhead{display:flex;flex-direction:column;gap:2px}
+.lvhead h3{font-size:24px;line-height:1.05;color:var(--ink)}
+.lvhead p{font-size:14px;color:var(--muted)}
+.lvhead .tagline{font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+.drills{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.drill{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;min-width:0}
+.drill:hover{border-color:var(--accent)}
+.dname{font-family:var(--f-display);font-weight:700;font-size:19px;letter-spacing:.02em;color:var(--accent)}
+.dblurb{font-size:14px;color:var(--muted);line-height:1.35}
+.dstat{font-size:12px;color:var(--muted);margin-top:auto;padding-top:6px;display:flex;align-items:center;gap:8px}
+.meter{flex:1;height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden;max-width:90px}
+.meter i{display:block;height:100%;background:var(--accent)}
+@media (max-width:620px){.level{grid-template-columns:1fr}}
+
+.playhead{display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap}
+.playhead h2{font-size:28px;line-height:1}
+.playhead .grow{flex:1;min-width:0}
+.linkbtn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:var(--f-display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:14px;color:var(--muted)}
+.sess{font-size:13px;color:var(--muted)}
+
+.felt{background:radial-gradient(ellipse at 50% 42%, var(--felt) 0%, var(--felt-2) 78%);border:10px solid var(--rail);border-radius:150px;padding:16px 24px 18px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:12px;color:var(--felt-ink);min-height:300px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), 0 6px 18px rgba(0,0,0,.18)}
+@media (max-width:560px){.felt{border-radius:60px;border-width:7px;padding:14px 12px 16px;min-height:280px}}
+.seat{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.pos{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase;background:var(--rail);color:var(--felt-ink);padding:3px 10px;border-radius:999px}
+.act{font-family:var(--f-mono);font-size:13px;background:var(--felt-glass);padding:4px 10px;border-radius:999px;color:var(--felt-ink)}
+.mid{display:flex;flex-direction:column;align-items:center;gap:8px}
+.pot{font-family:var(--f-mono);font-size:13px;color:var(--felt-dim)}
+.pot b{color:var(--felt-ink);font-weight:600;font-size:15px}
+.board{display:flex;gap:6px;flex-wrap:nowrap}
+.street{font-family:var(--f-display);letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:var(--felt-dim)}
+.hole{display:flex;gap:6px}
+
+.pc{--w:44px;width:var(--w);height:calc(var(--w)*1.38);background:var(--card-bg);border-radius:calc(var(--w)*.13);box-shadow:0 1px 0 rgba(0,0,0,.25),0 3px 8px rgba(0,0,0,.25);display:inline-flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:700;line-height:.95;flex:none}
+.pc .r{font-size:calc(var(--w)*.56)}
+.pc .s{font-size:calc(var(--w)*.44)}
+.pc.lg{--w:56px}
+.pc.sm{--w:26px;box-shadow:0 0 0 1px var(--line)}
+.pc.slot{background:var(--felt-glass);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.st0{color:var(--c0)} .st1{color:var(--c1)} .st2{color:var(--c2)} .st3{color:var(--c3)}
+@media (max-width:420px){.pc{--w:40px}.pc.lg{--w:50px}}
+.inl{font-family:var(--f-mono);font-weight:600;white-space:nowrap;background:var(--card-bg);border-radius:4px;padding:0 3px;box-shadow:0 0 0 1px var(--line)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.ctx{max-width:68ch}
+.ctl{display:flex;flex-direction:column;gap:10px}
+.ctl label,.ctl .lbl{font-weight:600}
+.pctrow{display:flex;align-items:center;gap:10px}
+.pctrow input[type=range]{flex:1;accent-color:var(--accent);min-width:0;height:28px}
+.readout{font-size:28px;min-width:4.2ch;text-align:right;color:var(--accent)}
+.numin{width:7ch;font-family:var(--f-mono);font-size:24px;padding:4px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);text-align:center}
+.btn{font-family:var(--f-display);font-size:18px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:9px 18px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.sq{width:40px;height:40px;padding:0;font-size:22px;flex:none}
+.ctl .btn.primary{align-self:flex-start}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.choices .btn{flex:1 1 120px}
+kbd{font-family:var(--f-mono);font-size:11px;border:1px solid currentColor;border-radius:4px;padding:0 4px;opacity:.55;margin-right:4px;vertical-align:2px}
+.locked{display:flex;justify-content:space-between;gap:12px;padding:8px 12px;background:var(--surface-2);border-radius:8px;font-size:14px}
+.locked b{font-size:15px}
+
+.fb{gap:12px}
+.fbhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.verdict{font-family:var(--f-display);font-weight:700;font-size:20px;letter-spacing:.1em;text-transform:uppercase;padding:2px 12px;border-radius:6px}
+.verdict.good{background:var(--good-bg);color:var(--good)}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)}
+.verdict.miss{background:var(--miss-bg);color:var(--miss)}
+.fbhead .score{color:var(--muted);font-size:14px}
+.fbhead .evl{color:var(--miss);font-size:14px}
+.note{max-width:68ch}
+.tblwrap{overflow-x:auto}
+table.cmp{border-collapse:collapse;font-size:15px;min-width:280px}
+table.cmp th{font-family:var(--f-display);letter-spacing:.1em;text-transform:uppercase;font-size:12px;color:var(--muted);text-align:left;padding:2px 18px 4px 0;font-weight:600}
+table.cmp td{padding:5px 18px 5px 0;border-top:1px solid var(--line)}
+table.cmp td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+table.cmp td.right{color:var(--good);font-weight:600}
+.math{font-family:var(--f-mono);font-size:13px;line-height:1.6;background:var(--surface-2);border-radius:8px;padding:10px 12px;overflow-x:auto;white-space:pre-wrap;margin:0}
+.lesson{background:var(--surface-2);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.lesson p{max-width:72ch}
+.fbactions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.dealres{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cards{display:inline-flex;gap:3px;flex-wrap:wrap;vertical-align:middle}
+.fadein{animation:fi .25s ease-out}
+@keyframes fi{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.fadein{animation:none}}
+
+.gridbox{display:flex;flex-direction:column;gap:6px;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:1px;max-width:420px;width:100%;font-family:var(--f-mono);font-size:9px}
+.grid div{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:2px;color:var(--ink);overflow:hidden;letter-spacing:-.02em}
+.grid div.on{color:var(--accent-ink)}
+.grid div.hi{outline:2px solid var(--hl);outline-offset:-1px;position:relative;z-index:1;font-weight:700}
+@media (max-width:420px){.grid{font-size:7.5px}}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
+.sw{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:-1px;margin-right:4px}
+.comp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.comp div{background:var(--surface-2);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:2px}
+.comp b{font-family:var(--f-mono);font-size:20px}
+.comp span{font-size:12px;color:var(--muted)}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.tile b{font-family:var(--f-mono);font-size:26px;font-weight:600;color:var(--accent)}
+.tile span{font-size:13px;color:var(--muted)}
+.spark{width:100%;height:auto;display:block}
+.dtable{width:100%;border-collapse:collapse;font-size:14px}
+.dtable th{font-family:var(--f-display);letter-spacing:.1em;text-transform:uppercase;font-size:12px;color:var(--muted);text-align:left;padding:4px 10px 6px 0;font-weight:600}
+.dtable td{padding:6px 10px 6px 0;border-top:1px solid var(--line);vertical-align:middle}
+.dtable td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.leak{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.leak div{min-width:0;flex:1 1 240px}
+.leak b{font-weight:600}
+.leak p{font-size:14px;color:var(--muted)}
+.muted{color:var(--muted)}
+.rule{padding:12px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.rule h3{font-size:20px;color:var(--accent)}
+.rule.lockedrule h3{color:var(--muted)}
+.rule p{max-width:72ch}
+.foot{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.play{display:flex;flex-direction:column;gap:14px}
+@media (max-width:560px){.playhead .grow{order:3;flex-basis:100%}.playhead .sess{margin-left:auto}}
+.term{font:inherit;color:inherit;text-transform:inherit;letter-spacing:inherit;background:none;border:0;padding:0;cursor:help;text-decoration:underline dotted;text-decoration-color:var(--muted);text-decoration-thickness:1.5px;text-underline-offset:3px}
+.term:hover{color:var(--accent);text-decoration-color:var(--accent)}
+.gpop{position:fixed;z-index:50;width:min(340px, calc(100vw - 24px));background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.45}
+.gpop.sheet{left:max(12px, env(safe-area-inset-left,0px));right:max(12px, env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));top:auto;width:auto}
+.gph{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.gph b{font-family:var(--f-display);font-size:19px;letter-spacing:.02em;color:var(--accent)}
+.gpx{border:0;background:none;font-size:24px;line-height:1;cursor:pointer;color:var(--muted);padding:0 4px}
+.plain{font-size:17px;max-width:68ch}
+.introcard dl{display:grid;grid-template-columns:minmax(120px,max-content) 1fr;gap:6px 16px;margin:0}
+.introcard dt{font-weight:700}
+.introcard dd{margin:0;color:var(--muted)}
+.introcard .btn{align-self:flex-start}
+@media (max-width:560px){.introcard dl{grid-template-columns:1fr;gap:2px}.introcard dd{margin-bottom:8px}}
+.felt.ring{position:relative;display:block;min-height:290px}
+.rseat{position:absolute;transform:translate(-50%,-50%);font-family:var(--f-display);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:15px;background:var(--rail);color:var(--felt-ink);padding:6px 12px;border-radius:999px;min-width:58px;text-align:center;white-space:nowrap}
+.rseat.hi{background:var(--hl);color:var(--hl-ink)}
+.dealer{position:absolute;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:var(--card-bg);color:var(--c0);font-family:var(--f-display);font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.ringnote{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--f-display);letter-spacing:.12em;text-transform:uppercase;font-size:13px;color:var(--felt-dim);text-align:center}
+.gloss{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:8px 18px;margin:0}
+.gloss dt{font-weight:700;color:var(--accent)}
+.gloss dd{margin:0;max-width:66ch}
+.gloss .gcat{grid-column:1/-1;padding-top:12px;border-top:1px solid var(--line);margin-top:4px}
+@media (max-width:560px){.gloss{grid-template-columns:1fr;gap:2px}.gloss dd{margin-bottom:10px}}
+.search{font:inherit;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%;max-width:360px}
+.toggle{display:flex;align-items:center;gap:8px}
+.toggle input{accent-color:var(--accent);width:18px;height:18px}
+.guidep{display:flex;flex-direction:column;gap:10px}
+.guidep p{max-width:70ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1>Felt Lab</h1><span class="fmt">6-max cash · 100 bb · blinds 0.5/1</span></div>
+    <nav class="tabs" aria-label="Sections">
+      <button data-tab="train" aria-current="page">Train</button>
+      <button data-tab="mix">Mixed</button>
+      <button data-tab="progress">Progress</button>
+      <button data-tab="guide">Guide</button>
+    </nav>
+  </header>
+  <main id="app"></main>
+  <footer class="foot"><span id="sync">Progress is saved in this browser.</span><span>Every amount is in big blinds (bb). Grades judge the decision, never the cards that came.</span></footer>
+</div>
+
+<script>
+/*CORE-START*/
+const R='23456789TJQKA', SU='shdc';
+const RN=['Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King','Ace'];
+const SN=['spades','hearts','diamonds','clubs'];
+const SYM=['♠','♥','♦','♣'];
+const rk=c=>c>>2, su=c=>c&3;
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function deck(){const d=[];for(let i=0;i<52;i++)d.push(i);return d}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);const t=a[i];a[i]=a[j];a[j]=t}return a}
+const n1=x=>String(Math.round(x*10)/10);
+const bb=x=>n1(x)+' bb';
+const pct1=x=>(x*100).toFixed(1)+'%';
+const pct0=x=>Math.round(x*100)+'%';
+const sgn=x=>(x>=0?'+':'−')+n1(Math.abs(x));
+const CAT=['High card','Pair','Two pair','Three of a kind','Straight','Flush','Full house','Four of a kind','Straight flush'];
+
+/* ---------- hand evaluator: higher score = better hand; category in bits 20+ ---------- */
+const _rc=new Int8Array(13),_sc=new Int8Array(4),_sm=new Int32Array(4);
+function strHigh(m){const x=(m<<1)|((m>>12)&1);for(let h=13;h>=4;h--){if(((x>>(h-4))&31)===31)return h-1}return -1}
+function topBits(m,n){let out=0,c=0;for(let r=12;r>=0&&c<n;r--)if(m&(1<<r)){out=(out<<4)|r;c++}return out}
+function evalCards(cs,n){
+  _rc.fill(0);_sc.fill(0);_sm.fill(0);let rm=0;
+  for(let i=0;i<n;i++){const c=cs[i],r=c>>2,s=c&3;_rc[r]++;_sc[s]++;_sm[s]|=1<<r;rm|=1<<r}
+  let fs=-1;for(let s=0;s<4;s++)if(_sc[s]>=5)fs=s;
+  if(fs>=0){const h=strHigh(_sm[fs]);if(h>=0)return (8<<20)|h}
+  let q=-1,t1=-1,t2=-1,p1=-1,p2=-1;
+  for(let r=12;r>=0;r--){const k=_rc[r];if(k===4)q=r;else if(k===3){if(t1<0)t1=r;else if(t2<0)t2=r}else if(k===2){if(p1<0)p1=r;else if(p2<0)p2=r}}
+  if(q>=0){let k=0;for(let r=12;r>=0;r--)if(r!==q&&_rc[r]){k=r;break}return (7<<20)|(q<<4)|k}
+  if(t1>=0&&(t2>=0||p1>=0))return (6<<20)|(t1<<4)|Math.max(t2,p1);
+  if(fs>=0)return (5<<20)|topBits(_sm[fs],5);
+  const sh=strHigh(rm);if(sh>=0)return (4<<20)|sh;
+  if(t1>=0)return (3<<20)|(t1<<8)|topBits(rm&~(1<<t1),2);
+  if(p1>=0&&p2>=0)return (2<<20)|(p1<<8)|(p2<<4)|topBits(rm&~(1<<p1)&~(1<<p2),1);
+  if(p1>=0)return (1<<20)|(p1<<12)|topBits(rm&~(1<<p1),3);
+  return topBits(rm,5);
+}
+const ev=a=>evalCards(a,a.length);
+const cat=v=>v>>20;
+
+/* ---------- ranges ---------- */
+function keyOf(r1,r2,suited){const hi=Math.max(r1,r2),lo=Math.min(r1,r2);if(hi===lo)return R[hi]+R[lo];return R[hi]+R[lo]+(suited?'s':'o')}
+const handKey=(a,b)=>keyOf(rk(a),rk(b),su(a)===su(b));
+function gridKey(i,j){return i===j?R[i]+R[j]:i>j?R[i]+R[j]+'s':R[j]+R[i]+'o'}
+function combosOf(key){
+  const a=R.indexOf(key[0]),b=R.indexOf(key[1]),o=[];
+  if(a===b){for(let s=0;s<4;s++)for(let t=s+1;t<4;t++)o.push([a*4+s,a*4+t])}
+  else if(key[2]==='s'){for(let s=0;s<4;s++)o.push([a*4+s,b*4+s])}
+  else{for(let s=0;s<4;s++)for(let t=0;t<4;t++)if(s!==t)o.push([a*4+s,b*4+t])}
+  return o;
+}
+function expandTok(t){
+  const ri=ch=>R.indexOf(ch);
+  if(t.includes('-')){
+    const [a,b]=t.split('-');
+    if(a[0]===a[1]){let x=ri(a[0]),y=ri(b[0]);if(x<y)[x,y]=[y,x];const o=[];for(let r=y;r<=x;r++)o.push(R[r]+R[r]);return o}
+    const suf=a[2];
+    if(a[0]===b[0]){let x=ri(a[1]),y=ri(b[1]);if(x<y)[x,y]=[y,x];const o=[];for(let r=y;r<=x;r++)o.push(a[0]+R[r]+suf);return o}
+    const gap=ri(a[0])-ri(a[1]);let x=ri(a[0]),y=ri(b[0]);if(x<y)[x,y]=[y,x];const o=[];for(let r=y;r<=x;r++)o.push(R[r]+R[r-gap]+suf);return o;
+  }
+  if(t.endsWith('+')){
+    const b=t.slice(0,-1);
+    if(b[0]===b[1]){const o=[];for(let r=ri(b[0]);r<=12;r++)o.push(R[r]+R[r]);return o}
+    const hi=ri(b[0]),o=[];for(let r=ri(b[1]);r<hi;r++)o.push(b[0]+R[r]+b[2]);return o;
+  }
+  return [t];
+}
+function parseRange(str){
+  const m=new Map();
+  for(let tok of str.split(',')){tok=tok.trim();if(!tok)continue;let w=1;const ci=tok.indexOf(':');if(ci>=0){w=parseFloat(tok.slice(ci+1));tok=tok.slice(0,ci)}for(const k of expandTok(tok))m.set(k,w)}
+  return m;
+}
+function rangePct(map){let s=0;for(const [k,w] of map)s+=w*combosOf(k).length;return s/1326}
+function comboList(map,dead){const o=[];for(const [k,w] of map){if(w<=0)continue;for(const [a,b] of combosOf(k)){if(dead&&(dead[a]||dead[b]))continue;o.push([a,b,w])}}return o}
+function deadOf(cards){const d=new Uint8Array(52);for(const c of cards)d[c]=1;return d}
+function makeSampler(list){const cum=new Float64Array(list.length);let t=0;for(let i=0;i<list.length;i++){t+=list[i][2];cum[i]=t}return {list,cum,total:t}}
+function sampleC(sp,used){
+  if(!sp.total)return null;
+  for(let k=0;k<300;k++){const x=Math.random()*sp.total;let lo=0,hi=sp.cum.length-1;while(lo<hi){const m=(lo+hi)>>1;if(sp.cum[m]<x)lo=m+1;else hi=m}const c=sp.list[lo];if(!used[c[0]]&&!used[c[1]])return c}
+  return null;
+}
+/* Monte Carlo equity of range A vs range B (a single hand is a one-combo range) on a partial board */
+function rvr(listA,listB,board,iters){
+  const dead=deadOf(board);
+  const A=makeSampler(listA.filter(x=>!dead[x[0]]&&!dead[x[1]])),B=makeSampler(listB.filter(x=>!dead[x[0]]&&!dead[x[1]]));
+  const used=new Uint8Array(52),ha=new Int32Array(7),hb=new Int32Array(7);
+  let w=0,t=0,n=0;
+  for(let it=0;it<iters;it++){
+    used.set(dead);
+    const a=sampleC(A,used);if(!a)continue;used[a[0]]=1;used[a[1]]=1;
+    const b=sampleC(B,used);if(!b)continue;used[b[0]]=1;used[b[1]]=1;
+    ha[0]=a[0];ha[1]=a[1];hb[0]=b[0];hb[1]=b[1];
+    for(let k=0;k<5;k++){let c;if(k<board.length)c=board[k];else{do{c=rnd(52)}while(used[c]);used[c]=1}ha[2+k]=c;hb[2+k]=c}
+    const x=evalCards(ha,7),y=evalCards(hb,7);if(x>y)w++;else if(x===y)t++;n++;
+  }
+  return n?(w+t/2)/n:0.5;
+}
+/* exact equity of a hand vs weighted groups of combos on a 4-card board (enumerates every river) */
+function exactTurnGroups(hero,groups,board){
+  const dead=deadOf([...hero,...board]);const out={};let W=0,E=0;
+  const h=new Int32Array(7),v=new Int32Array(7);
+  h[0]=hero[0];h[1]=hero[1];for(let k=0;k<4;k++){h[2+k]=board[k];v[2+k]=board[k]}
+  for(const g in groups){
+    let gw=0,ge=0;
+    for(const [a,b,w] of groups[g]){
+      if(dead[a]||dead[b])continue;let s=0,n=0;v[0]=a;v[1]=b;
+      for(let r=0;r<52;r++){if(dead[r]||r===a||r===b)continue;h[6]=r;v[6]=r;const x=evalCards(h,7),y=evalCards(v,7);s+=x>y?1:x===y?0.5:0;n++}
+      gw+=w;ge+=w*s/n;
+    }
+    out[g]={w:gw,eq:gw?ge/gw:0};W+=gw;E+=ge;
+  }
+  out.total={w:W,eq:W?E/W:0};return out;
+}
+/* outs = unseen cards that lift the hand to a straight or better, with the hole cards playing */
+function outsList(hole,board){
+  const base=[...hole,...board];if(cat(ev(base))>=4)return null;
+  const dead=deadOf(base),res=[],arr=[...base,0],barr=[...board,0];
+  for(let c=0;c<52;c++){if(dead[c])continue;arr[arr.length-1]=c;const v=ev(arr);if(cat(v)<4)continue;barr[barr.length-1]=c;if(v>ev(barr))res.push(c)}
+  return res;
+}
+function rankMask(cs){let m=0;for(const c of cs)m|=1<<rk(c);return m}
+function drawName(hole,board,outs){
+  const all=[...hole,...board];let fd=false;
+  for(let s=0;s<4;s++){if(all.filter(c=>su(c)===s).length===4&&hole.some(c=>su(c)===s))fd=true}
+  const m=rankMask(all),sr=new Set();
+  if(strHigh(m)<0)for(const c of outs){if(strHigh(m|(1<<rk(c)))>=0)sr.add(rk(c))}
+  const p=[];if(fd)p.push('flush draw');if(sr.size>=2)p.push('open-ended straight draw');else if(sr.size===1)p.push('gutshot straight draw');
+  return p.join(' + ')||'draw';
+}
+function strengthInfo(hole,board){
+  const v=ev([...hole,...board]),c=cat(v),bc=cat(ev(board));
+  const br=board.map(rk),top=Math.max(...br),h1=rk(hole[0]),h2=rk(hole[1]),pp=h1===h2;
+  let strong=false;
+  if(c>=4)strong=true;
+  else if(c===3||c===6||c===7)strong=c>bc;
+  else if(c===2)strong=!pp&&br.includes(h1)&&br.includes(h2);
+  const tp=strong||(pp&&h1>top)||h1===top||h2===top;
+  return {cat:c,strong,tp};
+}
+function madeLabel(hole,board){
+  const c=cat(ev([...hole,...board])),br=board.map(rk),srt=[...new Set(br)].sort((a,b)=>b-a),h1=rk(hole[0]),h2=rk(hole[1]);
+  if(c>=2){if(c===3&&h1===h2&&br.includes(h1))return 'a set';const si=strengthInfo(hole,board);if(c===2&&!si.strong)return h1===h2&&h1>srt[0]?'an overpair (board paired)':'a pair plus the board pair';return 'a '+CAT[c].toLowerCase()}
+  if(c===1){
+    if(h1===h2){return h1>srt[0]?'an overpair':h1<srt[srt.length-1]?'an underpair':'a middle pocket pair'}
+    const pr=br.includes(h1)?h1:br.includes(h2)?h2:-1;
+    if(pr<0)return 'no pair (the pair is on the board)';
+    const idx=srt.indexOf(pr);return idx===0?'top pair':idx===1?'second pair':'a low pair';
+  }
+  return 'no pair';
+}
+function streetName(n){return n===0?'Preflop':n===3?'Flop':n===4?'Turn':'River'}
+function textureText(board){
+  const rs=board.map(rk).sort((a,b)=>b-a),ns=new Set(board.map(su)).size,paired=new Set(rs).size<3,span=rs[0]-rs[2],p=[];
+  p.push(RN[rs[0]]+'-high');if(paired)p.push('paired');
+  p.push(ns===1?'monotone (all one suit)':ns===2?'two-tone (flush draws possible)':'rainbow (three suits)');
+  if(!paired&&span<=4)p.push('connected (many straight draws)');else if(!paired&&span>=8&&rs[1]-rs[2]>=3)p.push('disconnected');
+  return p.join(', ');
+}
+function genDraw(nb){
+  for(let t=0;t<30000;t++){
+    const d=shuffle(deck()),hole=[d[0],d[1]],board=d.slice(2,2+nb);
+    if(cat(ev([...hole,...board]))!==0)continue;
+    const ol=outsList(hole,board);if(!ol)continue;const o=ol.length;
+    if(o<4||o>15)continue;if(o<8&&Math.random()<0.5)continue;
+    return {hole,board,outs:ol,name:drawName(hole,board,ol)};
+  }
+  return null;
+}
+const byRiver=o=>1-(47-o)*(46-o)/(47*46);
+
+/* ---------- approximate solver-style charts: 6-max, 100 bb, 2.5 bb opens, no ante ---------- */
+const RFI_SRC={
+  UTG:'22+, A2s+, K9s+, Q9s+, J9s+, T9s, 98s:0.7, 87s:0.4, 76s:0.3, ATo+, KJo+, QJo:0.4',
+  HJ:'22+, A2s+, K8s+, K7s:0.5, Q9s+, J9s+, T8s+, 98s, 97s:0.5, 87s, 76s, 65s:0.5, ATo+, A9o:0.5, KJo+, KTo:0.5, QJo',
+  CO:'22+, A2s+, K5s+, K4s:0.5, Q8s+, Q7s:0.5, J8s+, T8s+, 97s+, 86s+, 76s, 75s:0.5, 65s, 54s, A8o+, A7o:0.5, A5o:0.5, KTo+, K9o:0.5, QTo+, JTo, T9o:0.5',
+  BTN:'22+, A2s+, K2s+, Q2s+, J5s+, J4s:0.5, T6s+, 95s+, 85s+, 75s+, 74s:0.5, 64s+, 53s+, 43s:0.5, A2o+, K8o+, K7o:0.5, Q9o+, Q8o:0.5, J8o+, T8o+, 98o, 87o:0.3',
+  SB:'22+, A2s+, K2s+, Q5s+, J7s+, T7s+, 96s+, 86s+, 75s+, 65s, 64s:0.5, 54s, A2o+, K8o+, K7o:0.5, Q9o+, J9o+, T9o, T8o:0.5, 98o, 87o:0.3'
+};
+const RFI={};for(const p in RFI_SRC)RFI[p]=parseRange(RFI_SRC[p]);
+const POSNAME={UTG:'first seat (UTG, under the gun)',HJ:'hijack (HJ)',CO:'cutoff (CO)',BTN:'button (BTN)',SB:'small blind (SB)',BB:'big blind (BB)'};
+const FACING_SRC={
+  'BB vs BTN':{hero:'BB',opener:'BTN',r:'QQ+, JJ:0.6, TT:0.4, AQs+, AJs:0.5, ATs:0.3, A5s:0.7, A4s:0.7, A3s:0.4, KQs:0.5, KJs:0.4, K9s:0.3, K5s:0.3, Q9s:0.3, Q6s:0.2, J9s:0.3, T8s:0.3, 97s:0.3, 86s:0.3, 75s:0.3, 65s:0.3, 54s:0.3, AKo, AQo:0.5, AJo:0.3, KQo:0.3',
+    c:'22-TT, JJ, A2s-AJs, K2s-KQs, Q2s-QJs, J4s-JTs, T5s-T9s, 95s-98s, 84s-87s, 74s-76s, 63s-65s, 52s-54s, 42s-43s, 32s:0.5, A2o-AQo, K5o-KQo, Q8o-QJo, J8o-JTo, T8o-T9o, 97o-98o, 87o, 76o:0.6, 65o:0.4'},
+  'BB vs CO':{hero:'BB',opener:'CO',r:'QQ+, JJ:0.5, AKs, AQs, AJs:0.4, A5s:0.6, A4s:0.5, KQs:0.4, K9s:0.2, T9s:0.2, 76s:0.2, AKo, AQo:0.4',
+    c:'22-JJ, A2s-AJs, K2s-KQs, Q5s-QJs, J6s-JTs, T6s-T9s, 95s-98s, 85s-87s, 74s-76s, 63s-65s, 53s-54s, 43s:0.5, A2o-AQo, K9o-KQo, Q9o-QJo, J9o-JTo, T9o, 98o:0.5, 87o:0.3'},
+  'BB vs UTG':{hero:'BB',opener:'UTG',r:'QQ+, AKs, AKo:0.7, A5s:0.5, KQs:0.2',
+    c:'22-JJ, A2s-AQs, K9s-KQs, K6s-K8s:0.6, Q9s-QJs, Q8s:0.5, J9s-JTs, J8s:0.5, T8s-T9s, T7s:0.5, 97s-98s, 96s:0.5, 87s, 86s:0.7, 76s, 75s:0.5, 65s, 64s:0.4, 54s:0.6, AJo-AKo, ATo, A9o:0.3, KQo, KJo, KTo:0.4, QJo:0.6, QTo:0.3, JTo:0.4'},
+  'SB vs BTN':{hero:'SB',opener:'BTN',r:'66+, 55:0.5, A8s+, A7s:0.5, A5s, A4s, A3s:0.5, KTs+, K9s:0.5, QTs+, Q9s:0.3, JTs, J9s:0.4, T9s:0.5, 98s:0.3, ATo+, A9o:0.3, KJo+, QJo:0.3',c:''},
+  'BTN vs CO':{hero:'BTN',opener:'CO',r:'TT+, AQs+, AJs:0.6, A5s, A4s:0.6, KQs:0.6, KJs:0.4, KTs:0.3, 76s:0.3, 65s:0.3, AKo, AQo:0.6',
+    c:'22-99, AJs, ATs, A9s:0.6, KJs, KQs, KTs, K9s:0.4, QTs-QJs, J9s-JTs, T9s, 98s, 87s, 76s, 65s, AJo:0.7, AQo, KQo:0.6'}
+};
+const _fc={};
+function facing(spot){
+  if(_fc[spot])return _fc[spot];
+  const s=FACING_SRC[spot],r=parseRange(s.r),c0=parseRange(s.c),c=new Map();
+  for(const [k,w] of c0){const cw=Math.min(w,1-(r.get(k)||0));if(cw>0)c.set(k,cw)}
+  return _fc[spot]={...s,r,c};
+}
+const SHOVE={10:parseRange('22+, A2s+, A2o+, K2s+, K6o+, Q5s+, Q9o+, J7s+, J9o+, T7s+, T9o, 97s+, 86s+, 75s+, 65s, 54s'),
+  15:parseRange('22+, A2s+, A4o+, K6s+, K9o+, Q9s+, QJo, J9s+, T9s, 98s'),
+  20:parseRange('22+, A2s+, A7o+, A5o, K9s+, KJo+, QTs+, JTs')};
+const SHOVE_HERO=parseRange('22+, A2s+, A2o+, K5s+, K8o+, Q8s+, QTo+, J9s+, JTo, T9s, 98s, 87s');
+const _bk=new Map();
+function boundaryKeys(id,wfn){
+  if(_bk.has(id))return _bk.get(id);const ks=[];
+  for(let i=0;i<13;i++)for(let j=0;j<13;j++){
+    const k=gridKey(i,j),w=wfn(k),inn=w>=0.5;let b=w>0&&w<1;
+    for(const [di,dj] of [[1,0],[-1,0],[0,1],[0,-1]]){const a=i+di,c=j+dj;if(a<0||a>12||c<0||c>12)continue;if((wfn(gridKey(a,c))>=0.5)!==inn)b=true}
+    if(b)ks.push(k);
+  }
+  _bk.set(id,ks);return ks;
+}
+function randomKeyUniform(){const d=shuffle(deck());return handKey(d[0],d[1])}
+function comboOfKey(k){return pick(combosOf(k))}
+
+/* ---------- scoring helpers ---------- */
+function pctScore(err,g,o){const e=Math.abs(err);return e<=g?1:e<=o?0.6:0}
+function estLeak(err,o,id){return Math.abs(err)>o?[(err>0?'equity-over|':'equity-under|')+id]:[]}
+function decide(evCall,chosenCall,closeBand){
+  const best=evCall>0,close=Math.abs(evCall)<=closeBand;
+  if(chosenCall===best)return {s:1,loss:0,close};
+  return {s:close?0.6:0,loss:Math.abs(evCall),close};
+}
+function cardHTML(c,cls){const r=R[rk(c)];return `<span class="pc ${cls||''} st${su(c)}" role="img" aria-label="${RN[rk(c)]} of ${SN[su(c)]}"><span class="r">${r==='T'?'10':r}</span><span class="s">${SYM[su(c)]}</span></span>`}
+function cardsHTML(cs,cls){return `<span class="cards">${cs.map(c=>cardHTML(c,cls||'sm')).join('')}</span>`}
+function inl(cs){return cs.map(c=>{const r=R[rk(c)];return `<span class="inl st${su(c)}">${r==='T'?'10':r}${SYM[su(c)]}</span>`}).join(' ')}
+const randomBoard=(excl,n)=>{const d=shuffle(deck().filter(c=>!excl.includes(c)));return d.slice(0,n)};
+
+function gridHTML(fn,hi,legend){
+  let h='<div class="grid" role="img" aria-label="Range chart, 13 by 13 starting hands">';
+  for(let i=12;i>=0;i--)for(let j=12;j>=0;j--){
+    const k=gridKey(i,j),{r=0,c=0}=fn(k),a=r*100,b=(r+c)*100;
+    const bg=`linear-gradient(to right, var(--accent) 0 ${a}%, var(--call) ${a}% ${b}%, var(--cell) ${b}% 100%)`;
+    h+=`<div class="${r>=0.5?'on':''} ${k===hi?'hi':''}" style="background:${bg}">${k.length===3?k.slice(0,2)+k[2]:k}</div>`;
+  }
+  return `<div class="gridbox">${h}</div>${legend?`<div class="legend">${legend}</div>`:''}</div>`;
+}
+const SW=v=>`<span class="sw" style="background:var(--${v})"></span>`;
+
+/* ---------- drills ---------- */
+const LEVELS=[
+  {n:0,name:'Basics',sub:'Hand rankings, seats, and what a call risks'},
+  {n:1,name:'Odds',sub:'Pot odds, outs and the price of a draw'},
+  {n:2,name:'Hand vs range',sub:'Equity against everything he could hold'},
+  {n:3,name:'Preflop',sub:'Opening and defending ranges by seat',tag:'approximate solver-style charts'},
+  {n:4,name:'Pressure maths',sub:'Defence, bluffing and implied odds'},
+  {n:5,name:'Flop strategy',sub:'Range advantage and c-bet defence',tag:'heuristic from solver patterns'},
+  {n:6,name:'River game',sub:'Balanced bluffing and bluff-catching',tag:'exact game theory'}
+];
+const DRILLS={};
+function D(id,o){DRILLS[id]=Object.assign({id},o)}
+const RANKP=['twos','threes','fours','fives','sixes','sevens','eights','nines','tens','jacks','queens','kings','aces'];
+function handName(v){
+  const c=cat(v),n=i=>(v>>(4*i))&15,lo=i=>RN[i].toLowerCase();
+  switch(c){
+    case 0:return lo(n(4))+' high';
+    case 1:return 'a pair of '+RANKP[n(3)];
+    case 2:return 'two pair, '+RANKP[n(2)]+' and '+RANKP[n(1)];
+    case 3:return 'three '+RANKP[n(2)];
+    case 4:return 'a straight, '+lo(v&15)+' high';
+    case 5:return 'a flush, '+lo(n(4))+' high';
+    case 6:return 'a full house, '+RANKP[n(1)]+' full of '+RANKP[n(0)];
+    case 7:return 'four '+RANKP[n(1)];
+    default:return (v&15)===12?'a royal flush':'a straight flush, '+lo(v&15)+' high';
+  }
+}
+const txtCards=cs=>cs.map(c=>(R[rk(c)]==='T'?'10':R[rk(c)])+SYM[su(c)]).join(' ');
+
+D('hands',{level:0,name:'Which hand wins?',blurb:'Read a showdown: find each player’s best five cards.',gen(){
+  const d=shuffle(deck()),hero=[d[0],d[1]],vill=[d[2],d[3]],board=d.slice(4,9),x=ev([...hero,...board]),y=ev([...vill,...board]),res=x>y?'you':x<y?'him':'split',W={you:'You',him:'Him',split:'Split'};
+  return {table:{vPos:'Villain',vAct:'shows '+txtCards(vill),pot:20,hero,board},
+    context:`Showdown on the river. The board is ${inl(board)}. You have ${inl(hero)}; he has ${inl(vill)}. Each player makes the best five-card hand out of their own two cards plus the five on the board.`,
+    steps:[{kind:'choice',key:'c',label:'Who wins the pot?',options:[['you','I win'],['him','He wins'],['split','Split pot']]}],
+    evaluate(a){const s=a.c===res?1:0;
+      return {score:s,plain:`You have ${handName(x)}; he has ${handName(y)}. ${res==='split'?'The best five cards are equal, so the pot is split.':res==='you'?'Yours ranks higher.':'His ranks higher.'}`,
+        rows:[['Winner',W[a.c],W[res]]],
+        math:`Hand ranking, best to worst:\nstraight flush > four of a kind > full house > flush > straight\n> three of a kind > two pair > pair > high card\nSame type? Compare the highest cards, then the next (the kickers).`,leaks:s?[]:['hand-ranks']}}};
+}});
+
+D('risk',{level:0,name:'Risk and reward',blurb:'What a call puts at risk, and what it can win.',gen(){
+  const P=pick([6,8,10,12,15,20,30]),B=Math.max(1,Math.round(P*pick([.33,.5,.75,1]))),req=B/(P+2*B),d=shuffle(deck());
+  return {table:{vPos:'Villain',vAct:'bets '+bb(B),pot:P,hero:[d[0],d[1]],board:d.slice(2,5)},
+    context:`There is <b>${bb(P)}</b> in the pot. Villain bets <b>${bb(B)}</b>. If you call, you put in ${bb(B)} as well.`,
+    steps:[{kind:'num',key:'w',label:'If you call and win, how much do you gain? (Your own call comes back to you, so do not count it.)',min:0,max:300,step:1,init:0},
+           {kind:'num',key:'l',label:'If you call and lose, how much do you lose?',min:0,max:300,step:1,init:0}],
+    evaluate(a){const sw=a.w===P+B?1:0,sl=a.l===B?1:0,s=(sw+sl)/2;
+      return {score:s,plain:`You risk ${bb(B)} to win ${bb(P+B)}: the pot plus his bet. If you won ${n1(B)} out of every ${n1(P+2*B)} chips in the final pot, you would break even, so you need to win ${pct0(req)} of the time. That share is the <b>price</b> of the call, and Level 1 drills it.`,
+        rows:[['Gain if you win',bb(a.w),bb(P+B)],['Loss if you lose',bb(a.l),bb(B)]],
+        math:`Gain = pot + his bet = ${n1(P)} + ${n1(B)} = ${n1(P+B)}\nLoss = your call = ${n1(B)}\nShare you must win = loss ÷ (loss + gain) = ${n1(B)} ÷ ${n1(P+2*B)} = ${pct1(req)}`,leaks:s<1?['risk-math']:[]}}};
+}});
+
+const SEATS=['BTN','SB','BB','UTG','HJ','CO'],SEAT_ANG={BTN:90,SB:150,BB:210,UTG:270,HJ:330,CO:30};
+const SEAT_G={BTN:'button',SB:'small blind',BB:'big blind',UTG:'under the gun',HJ:'hijack',CO:'cutoff'};
+const SEAT_Q=[
+  {q:'Which seat acts first before the flop?',a:'UTG',why:'Before the flop the two blinds have already put chips in, so the action starts with the player to the left of the big blind: under the gun.'},
+  {q:'Which seat acts last before the flop?',a:'BB',why:'The big blind’s 1 bb counts as the first bet, so the big blind decides last before the flop.'},
+  {q:'Which seat acts first after the flop?',a:'SB',why:'After the flop the action starts with the first player left of the button: the small blind, if still in the hand.'},
+  {q:'Which seat acts last after the flop?',a:'BTN',why:'After the flop the button always acts last. Seeing what everyone else does first is such an advantage that the button plays the most hands.'}
+];
+D('seats',{level:0,name:'Name the seat',blurb:'Six seats around the table, and who acts when.',gen(){
+  const named=Math.random()<0.5,Q=named?null:pick(SEAT_Q),s=named?pick(SEATS):Q.a;
+  return {table:{ring:{hi:named?s:null,reveal:false}},
+    context:named?'The dealer button (the white D disc) marks the button seat. Moving clockwise, the next two seats post the blinds. What is the highlighted seat called?':`The dealer button (the white D disc) marks the button seat. ${Q.q}`,
+    steps:[{kind:'choice',key:'c',label:named?'This seat is the…':Q.q,options:SEATS.map(p=>[p,p])}],
+    evaluate(a){const ok=a.c===s;
+      return {score:ok?1:0,plain:named?G_BY[SEAT_G[s]].d:Q.why,rows:[['Seat',a.c,s]],
+        math:`Order before the flop: UTG → HJ → CO → BTN → SB → BB\nOrder after the flop:  SB → BB → UTG → HJ → CO → BTN`,leaks:ok?[]:['seat-names']}}};
+}});
+
+D('potodds',{level:1,name:'Price of a call',blurb:'Turn a bet size into the equity you need to call.',gen(){
+  const P=pick([4,6,8,10,12,15,20,24,30,40,60]),f=pick([.25,.33,.5,.66,.75,1,1.25,1.5,2]),B=Math.max(1,Math.round(P*f*2)/2),req=B/(P+2*B);
+  const d=shuffle(deck()),hero=[d[0],d[1]],board=d.slice(2,2+pick([3,4,5]));
+  return {table:{vPos:'Villain',vAct:'bets '+bb(B),pot:P,hero,board},
+    context:`The pot is <b>${bb(P)}</b> and villain bets <b>${bb(B)}</b> (${Math.round(B/P*100)}% of the pot). Ignore your cards: what is the price of calling?`,
+    steps:[{kind:'pct',key:'a',label:'Share of the time you must win for a call to break even',init:30}],
+    evaluate(a){const err=a.a-req*100,s=pctScore(err,2,5);
+      return {score:s,estErr:err,plain:`You put in ${bb(B)} to win ${bb(P+B)}. To break even you must win ${pct0(req)} of the time, about 1 time in ${n1(1/req)}.`,rows:[['Break-even equity',a.a+'%',pct1(req)]],
+        math:`You call ${bb(B)} to win ${bb(P+B)} (the pot plus his bet).\nBreak-even = your call ÷ final pot = ${n1(B)} ÷ (${n1(P)} + ${n1(B)} + ${n1(B)}) = ${pct1(req)}`,
+        leaks:s<1?['potodds-math']:[]}}};
+}});
+
+D('outs',{level:1,name:'Count your outs',blurb:'Spot the cards that complete your draw, then turn outs into odds.',gen(){
+  const g=genDraw(3),o=g.outs.length,p=byRiver(o);
+  return {table:{vPos:'Villain',vAct:'checks',pot:6,hero:g.hole,board:g.board},
+    context:`You hold ${inl(g.hole)} on a ${inl(g.board)} flop. Count only cards that give you a straight or a flush.`,
+    steps:[{kind:'num',key:'o',label:'How many outs do you have?',min:0,max:21,step:1,init:6},
+           {kind:'pct',key:'p',label:'Chance to hit by the river if you see both cards',init:25}],
+    evaluate(a){
+      const so=a.o===o?1:Math.abs(a.o-o)===1?0.6:0,sp=pctScore(a.p-p*100,3,6),s=(so+sp)/2,r4=o>8?4*o-(o-8):4*o,lk=[];
+      if(so<1)lk.push('outs-count');if(sp<0.6)lk.push('outs-pct');
+      return {score:s,estErr:a.p-p*100,plain:`${o} cards left in the deck finish your ${g.name}. Seeing two more cards, you hit about ${pct0(p)} of the time, roughly 1 time in ${n1(1/p)}.`,rows:[['Outs',String(a.o),String(o)],['Hit by the river',a.p+'%',pct1(p)]],
+        note:`You have a <b>${g.name}</b>. Your outs: ${cardsHTML(g.outs)}`,
+        math:`Exact: 1 − (${47-o}/47 × ${46-o}/46) = ${pct1(p)}   (47 cards unseen on the flop; runner-runner draws ignored)\nRule of 4: ${o} × 4 = ${4*o}%${o>8?`, minus (${o} − 8) for big draws = ${r4}%`:''}\nNext card only: ${o} ÷ 47 = ${pct1(o/47)}   (rule of 2: ${2*o}%)`,leaks:lk}}};
+}});
+
+D('drawcall',{level:1,name:'Chase or fold',blurb:'Your draw against a bet: is the price right?',gen(){
+  const turn=Math.random()<0.5,g=genDraw(turn?4:3),o=g.outs.length,P=pick([6,8,10,12,16,20,24,30]);
+  let B,e,ctx;
+  if(turn){B=Math.round(P*pick([.33,.5,.66,.75,1])*2)/2;e=o/46;ctx=`On the turn villain bets <b>${bb(B)}</b> into <b>${bb(P)}</b>. Assume no more betting on the river and that you win only if you hit your draw.`}
+  else{B=Math.round(P*pick([.5,.75,1,1.25,1.5])*2)/2;e=byRiver(o);ctx=`On the flop villain moves all-in for <b>${bb(B)}</b> into <b>${bb(P)}</b>, so you see both turn and river. Assume you win only if you hit your draw.`}
+  const evc=e*(P+B)-(1-e)*B,req=B/(P+2*B);
+  return {table:{vPos:'Villain',vAct:(turn?'bets ':'all-in ')+bb(B),pot:P,hero:g.hole,board:g.board},
+    context:`You hold ${inl(g.hole)}: a ${g.name}. ${ctx}`,
+    steps:[{kind:'choice',key:'c',label:'Your move',options:[['call','Call'],['fold','Fold']]}],
+    evaluate(a){const call=a.c==='call',d=decide(evc,call,0.03*(P+B)),lk=[];
+      if(d.s<1)lk.push(call?'calls-without-odds':'folds-with-odds');
+      return {score:d.s,evLoss:d.loss,plain:`You hit ${pct0(e)} of the time, and the call needs ${pct0(req)}. So ${evc>0?'calling':'folding'} is right: on average a call ${evc>0?'earns':'loses'} ${bb(Math.abs(evc))} each time.`,rows:[['Move',call?'Call':'Fold',evc>0?'Call':'Fold'],['Your equity','—',pct1(e)],['Price (break-even)','—',pct1(req)]],
+        note:d.close?'This one is close to break-even, so either choice costs little.':'',
+        math:`Outs: ${o} → equity ${pct1(e)}  (${turn?`${o} ÷ 46 unseen cards`:`1 − ${47-o}/47 × ${46-o}/46`})\nPrice: ${n1(B)} ÷ (${n1(P)} + ${n1(B)} + ${n1(B)}) = ${pct1(req)}\nEV of calling vs folding = ${pct1(e)} × ${n1(P+B)} − ${pct1(1-e)} × ${n1(B)} = ${sgn(evc)} bb`,leaks:lk}},
+    dealOut(){const run=randomBoard([...g.hole,...g.board],turn?1:2),hit=run.some(c=>g.outs.includes(c));return `Runout ${cardsHTML(run)} → ${hit?'you hit':'you missed'}.`}};
+}});
+
+function genMatchup(){
+  for(let t=0;t<200;t++){
+    const T=rnd(6);let A,B,label;const sd=()=>Math.random()<0.4;
+    const mk=(r1,r2,s)=>{const s1=rnd(4);if(r1===r2){let s2=(s1+1+rnd(3))%4;return [r1*4+s1,r2*4+s2]}return [r1*4+s1,r2*4+(s?s1:(s1+1+rnd(3))%4)]};
+    if(T===0){const p=rnd(10),a=p+1+rnd(12-p),b=p+1+rnd(12-p);if(a===b)continue;A=mk(p,p);B=mk(a,b,sd());label='Pair vs two overcards'}
+    else if(T===1){const a=1+rnd(12),b=rnd(a);A=mk(a,a);B=mk(b,b);label='Overpair vs underpair'}
+    else if(T===2){const h=8+rnd(5),k1=1+rnd(h-1),k2=rnd(k1);A=mk(h,k1,sd());B=mk(h,k2,sd());label='Dominated hand (same high card, worse kicker)'}
+    else if(T===3){const a=3+rnd(10),b=2+rnd(a-2),c=1+rnd(b-1),d=rnd(c);A=mk(a,b,sd());B=mk(c,d,sd());label='Two overcards vs two undercards'}
+    else if(T===4){const p=2+rnd(9),o=p+1+rnd(12-p),u=rnd(p);A=mk(p,p);B=mk(o,u,sd());label='Pair vs one overcard and one undercard'}
+    else{const p=8+rnd(5),c=2+rnd(p-3);A=mk(p,p);B=mk(c,c-1,true);label='Big pair vs suited connector'}
+    const all=[...A,...B];if(new Set(all).size<4)continue;
+    if(Math.random()<0.5)return {hero:B,vill:A,label};return {hero:A,vill:B,label};
+  }
+}
+D('matchups',{level:2,name:'Classic matchups',blurb:'Hand vs hand, all-in preflop: guess your equity.',gen(){
+  const m=genMatchup(),eq=rvr([[m.hero[0],m.hero[1],1]],[[m.vill[0],m.vill[1],1]],[],12000);
+  return {table:{vPos:'Villain',vAct:'shows '+m.vill.map(c=>(R[rk(c)]==='T'?'10':R[rk(c)])+SYM[su(c)]).join(' '),pot:200,hero:m.hero,board:[]},
+    context:`All-in preflop: your ${inl(m.hero)} against his ${inl(m.vill)}. Five cards to come. Ties count as half.`,
+    steps:[{kind:'pct',key:'e',label:'Your equity',init:50}],
+    evaluate(a){const err=a.e-eq*100,s=pctScore(err,4,8);
+      return {score:s,estErr:err,plain:`Run this all-in 10 times and you win about ${n1(eq*10)} of them.`,rows:[['Your equity',a.e+'%',pct1(eq)]],note:`Matchup type: <b>${m.label}</b>.`,
+        math:`Simulated over 12,000 boards (±0.5%): ${pct1(eq)} for you, ${pct1(1-eq)} for him.`,leaks:estLeak(err,8,'matchups')}}};
+}});
+
+D('shove',{level:2,name:'Call the shove',blurb:'Big blind vs a button all-in: equity against his whole range.',gen(){
+  const S=pick([10,15,20]),map=SHOVE[S],ks=[...SHOVE_HERO.keys()],hero=comboOfKey(pick(ks)),list=comboList(map,deadOf(hero));
+  const eq=rvr([[hero[0],hero[1],1]],list,[],8000),req=(S-1)/(2*S+0.5),evc=eq*(2*S+0.5)-(S-1);
+  return {table:{vPos:'BTN',vAct:'all-in '+bb(S),hPos:'BB',pot:S+1.5,hero,board:[]},
+    context:`Folded to the button, who moves all-in for <b>${bb(S)}</b>; the small blind folds. You are in the big blind with 1 bb already in, holding ${inl(hero)}. His shoving range is shaded below: ${pct0(rangePct(map))} of all starting hands.`
+      +gridHTML(k=>({r:map.get(k)||0}),handKey(hero[0],hero[1]),`${SW('accent')}His shoves <span class="muted">· outlined: your hand</span>`),
+    steps:[{kind:'pct',key:'e',label:'Your equity against his range',init:45},{kind:'choice',key:'c',label:'Your move',options:[['call','Call'],['fold','Fold']]}],
+    evaluate(a){const err=a.e-eq*100,se=pctScore(err,4,8),call=a.c==='call',d=decide(evc,call,0.015*(2*S+0.5)),lk=estLeak(err,8,'shove');
+      if(d.s<1)lk.push(call?'call-too-loose|shove':'fold-too-tight|shove');
+      return {score:0.4*se+0.6*d.s,estErr:err,evLoss:d.loss,plain:`Against every hand he might shove with, you win ${pct0(eq)} of the time. Calling needs ${pct0(req)}, so ${evc>0?'calling':'folding'} is better, by ${bb(Math.abs(evc))} on average.`,rows:[['Your equity',a.e+'%',pct1(eq)],['Move',call?'Call':'Fold',evc>0?'Call':'Fold']],
+        note:d.close?'Close to break-even: either choice costs little.':'',
+        math:`Price: call ${n1(S-1)} more to win a final pot of ${n1(2*S+0.5)}: ${n1(S-1)} ÷ ${n1(2*S+0.5)} = ${pct1(req)}\nYour equity vs his range: ${pct1(eq)} (simulated, ±1%)\nEV of calling vs folding = ${pct1(eq)} × ${n1(2*S+0.5)} − ${n1(S-1)} = ${sgn(evc)} bb`,leaks:lk}},
+    dealOut(){const used=deadOf(hero),v=sampleC(makeSampler(list),used);const run=randomBoard([...hero,...v],5);const x=ev([...hero,...run]),y=ev([...v,...run]);return `He had ${cardsHTML(v)}, board ${cardsHTML(run)} → ${x>y?'you win':x<y?'he wins':'split pot'}.`}};
+}});
+
+const VTYPES=[
+  {name:'balanced',desc:'jams every top pair or better, every strong draw, and about a quarter of his hands with nothing',dw:1,aw:0.25},
+  {name:'draw-happy',desc:'jams every top pair or better and every strong draw, but never pure air',dw:1,aw:0},
+  {name:'tight',desc:'jams every top pair or better, about half his strong draws, and never air',dw:0.5,aw:0}
+];
+D('turnjam',{level:2,name:'Turn jam',blurb:'One pair facing a turn all-in: split his range into value, draws and bluffs.',gen(){
+  for(let t=0;t<60;t++){
+    const d=shuffle(deck()),board=d.slice(0,4),dead=deadOf(board);
+    const hl=shuffle(comboList(facing('BB vs BTN').c,dead));let hero=null;
+    for(const [a,b] of hl){const h=[a,b],si=strengthInfo(h,board);if(si.strong)continue;const pairHole=si.cat===1&&(rk(a)===rk(b)||board.some(c=>rk(c)===rk(a)||rk(c)===rk(b)));if(pairHole){hero=h;break}}
+    if(!hero)continue;
+    const vt=pick(VTYPES),dd=deadOf([...board,...hero]),val=[],drw=[],air=[];
+    for(const [a,b,w] of comboList(RFI.BTN,dd)){const si=strengthInfo([a,b],board);if(si.tp){val.push([a,b,w]);continue}const ol=outsList([a,b],board);if(ol&&ol.length>=8)drw.push([a,b,w*vt.dw]);else if(vt.aw>0)air.push([a,b,w*vt.aw])}
+    const sum=l=>l.reduce((s,x)=>s+x[2],0),V=sum(val),Dw=sum(drw),A=sum(air);
+    if(V<4||V/(V+Dw+A)>0.85)continue;
+    const res=exactTurnGroups(hero,{value:val,draws:drw,bluffs:air},board),eq=res.total.eq;
+    const P=pick([12,16,20,24,30]),B=Math.round(P*pick([.6,.75,1,1.25])),req=B/(P+2*B),evc=eq*(P+B)-(1-eq)*B;
+    const lbl=madeLabel(hero,board);
+    return {table:{vPos:'BTN',vAct:'all-in '+bb(B),hPos:'BB',pot:P,hero,board},
+      context:`The button opened, you called in the big blind, and on the turn the pot is <b>${bb(P)}</b>. You hold ${inl(hero)}: ${lbl}. He moves all-in for <b>${bb(B)}</b> (no river betting to follow). This player is <b>${vt.name}</b>: he ${vt.desc}. From his button opening range, that leaves:`
+        +`<div class="comp"><div><b>${Math.round(V)}</b><span>value combos (top pair or better)</span></div><div><b>${Math.round(Dw)}</b><span>strong draws (8+ outs)</span></div><div><b>${Math.round(A)}</b><span>bluffs (nothing)</span></div></div>`,
+      steps:[{kind:'pct',key:'e',label:'Your equity against his jamming range',init:40},{kind:'choice',key:'c',label:'Your move',options:[['call','Call'],['fold','Fold']]}],
+      evaluate(a){const err=a.e-eq*100,se=pctScore(err,5,10),call=a.c==='call',dc=decide(evc,call,0.03*(P+B)),lk=estLeak(err,10,'turnjam');
+        if(dc.s<1)lk.push(call?'call-too-loose|turnjam':'fold-too-tight|turnjam');
+        const row=(g,n)=>res[g].w>0?`vs his ${n} (${Math.round(res[g].w)} combos): ${pct1(res[g].eq)}\n`:'';
+        return {score:0.4*se+0.6*dc.s,estErr:err,evLoss:dc.loss,plain:`Against everything he jams with, you win ${pct0(eq)} of the time, and the call needs ${pct0(req)}. ${res.value.eq<0.25?'You rarely beat his strong hands, so the number of draws and bluffs decides it.':''}`,rows:[['Your equity',a.e+'%',pct1(eq)],['Move',call?'Call':'Fold',evc>0?'Call':'Fold']],
+          note:dc.close?'Close to break-even: either choice costs little.':'',
+          math:`Exact, enumerating every river card:\n${row('value','value')}${row('draws','draws')}${row('bluffs','bluffs')}Overall: ${pct1(eq)}\nPrice: ${n1(B)} ÷ (${n1(P)} + ${n1(B)} + ${n1(B)}) = ${pct1(req)}\nEV of calling vs folding = ${sgn(evc)} bb`,leaks:lk}},
+      dealOut(){const all=[...val,...drw,...air],used=deadOf([...hero,...board]),v=sampleC(makeSampler(all),used),r=randomBoard([...hero,...board,...v],1),x=ev([...hero,...board,...r]),y=ev([...v,...board,...r]);
+        return `He had ${cardsHTML(v)}, river ${cardsHTML(r)} → ${x>y?'you win':x<y?'he wins':'split pot'}.`}};
+  }
+}});
+
+function pickKey(id,wfn){return Math.random()<0.5?randomKeyUniform():pick(boundaryKeys(id,wfn))}
+D('rfi',{level:3,name:'Open or fold',blurb:'Folded to you: is this hand an open-raise from your seat?',gen(){
+  const pos=pick(['UTG','HJ','CO','BTN','SB']),map=RFI[pos],wfn=k=>map.get(k)||0,key=pickKey('rfi'+pos,wfn),hero=comboOfKey(key),r=wfn(key);
+  return {table:{hPos:pos,pot:1.5,hero,board:[],vPos:'',vAct:''},
+    context:`Folded to you in the ${POSNAME[pos]} with ${inl(hero)}. Open-raise (to ${pos==='SB'?'3':'2.5'} bb) or fold?`,
+    steps:[{kind:'choice',key:'c',label:'Your move',options:[['raise','Raise'],['fold','Fold']]}],
+    evaluate(a){const raise=a.c==='raise',f=raise?r:1-r,s=f>=0.4?1:f>=0.15?0.6:0,lk=[];
+      if(s<1)lk.push((raise?'pre-loose|':'pre-tight|')+pos);
+      return {score:s,plain:`From the ${POSNAME[pos]}, ${r>=0.75?`${key} is strong enough to raise`:r<=0.25?`${key} is too weak to play`:`${key} is a borderline hand that good players sometimes raise`}. ${pos==='UTG'||pos==='HJ'?'Many players still act after you, so you need stronger hands.':'Few players are left behind you, so you can play more hands.'}`,rows:[['Move',raise?'Raise':'Fold',r>=0.75?'Raise':r<=0.25?'Fold':`Mix: raise ${pct0(r)}`]],
+        note:r>0&&r<1?`The chart mixes ${key}: it raises ${pct0(r)} of the time, so either move is fine.`:'',
+        extra:gridHTML(k=>({r:wfn(k)}),key,`${SW('accent')}Open-raise <span class="muted">· partly shaded = mixed · outlined: ${key}</span>`),
+        math:`${pos} opens about ${pct0(rangePct(map))} of starting hands.\nChart frequency for ${key}: raise ${pct0(r)}, fold ${pct0(1-r)}.`,leaks:lk}}};
+}});
+
+D('facing',{level:3,name:'Facing a raise',blurb:'Someone opened: 3-bet, call or fold?',gen(){
+  const spot=pick(Object.keys(FACING_SRC)),F=facing(spot),wfn=k=>(F.r.get(k)||0)+(F.c.get(k)||0),key=pickKey('f'+spot,wfn),hero=comboOfKey(key);
+  const fr=F.r.get(key)||0,fc=F.c.get(key)||0,ff=Math.max(0,1-fr-fc),freq={'3bet':fr,call:fc,fold:ff};
+  const best=Object.keys(freq).reduce((a,b)=>freq[b]>freq[a]?b:a),NM={'3bet':'3-bet',call:'Call',fold:'Fold'};
+  return {table:{vPos:F.opener,vAct:'raises to 2.5 bb',hPos:F.hero,pot:4,hero,board:[]},
+    context:`The ${POSNAME[F.opener]} opens to 2.5 bb and it is folded to you in the ${POSNAME[F.hero]} with ${inl(hero)}.`,
+    steps:[{kind:'choice',key:'c',label:'Your move',options:[['3bet','3-bet'],['call','Call'],['fold','Fold']]}],
+    evaluate(a){const fa=freq[a.c],s=fa>=0.4?1:fa>=0.15?0.6:0,lk=[];if(s<1)lk.push('def-'+a.c+'|'+spot);
+      return {score:s,plain:`Against a raise from the ${POSNAME[F.opener]}, ${key} ${best==='3bet'?'is strong enough to re-raise':best==='call'?'is worth calling to see a flop':'is not worth playing'}${freq[best]<0.9?' most of the time':''}.`,rows:[['Move',NM[a.c],NM[best]+(freq[best]<0.9?` (${pct0(freq[best])})`:'')]],
+        note:freq[best]<0.9?`The chart mixes ${key}: 3-bet ${pct0(fr)}, call ${pct0(fc)}, fold ${pct0(ff)}.`:'',
+        extra:gridHTML(k=>({r:F.r.get(k)||0,c:F.c.get(k)||0}),key,`${SW('accent')}3-bet ${SW('call')}Call <span class="muted">· unshaded: fold · outlined: ${key}</span>`),
+        math:`${spot}: continue with ${pct0(rangePct(F.r)+rangePct(F.c))} of hands (3-bet ${pct0(rangePct(F.r))}, call ${pct0(rangePct(F.c))}).\n${key}: 3-bet ${pct0(fr)} · call ${pct0(fc)} · fold ${pct0(ff)}`,leaks:lk}}};
+}});
+
+function sizes(){const P=pick([6,10,12,16,20,30,40]),f=pick([.25,.33,.5,.66,.75,1,1.5,2]);return {P,B:Math.max(1,Math.round(P*f*2)/2)}}
+D('mdf',{level:4,name:"Don't overfold",blurb:'How much of your range must keep going against a bet?',gen(){
+  const {P,B}=sizes(),m=P/(P+B),d=shuffle(deck());
+  return {table:{vPos:'Villain',vAct:'bets '+bb(B),pot:P,hero:[d[0],d[1]],board:d.slice(2,7)},
+    context:`River. Villain bets <b>${bb(B)}</b> into <b>${bb(P)}</b>. So that a bluff with any two cards can't show a profit, what share of your range must continue (call or raise)?`,
+    steps:[{kind:'pct',key:'a',label:'Minimum share of your range that continues',init:60}],
+    evaluate(a){const err=a.a-m*100,s=pctScore(err,3,6);
+      return {score:s,estErr:err,plain:`If you fold more than ${pct0(1-m)} of your hands here, he can bet with anything and make money. So keep playing at least ${pct0(m)} of them.`,rows:[['Minimum defence',a.a+'%',pct1(m)]],
+        math:`A pure bluff risks ${n1(B)} to win ${n1(P)}; it breaks even if you fold ${n1(B)} ÷ (${n1(P)} + ${n1(B)}) = ${pct1(B/(P+B))} of the time.\nSo continue with at least ${n1(P)} ÷ (${n1(P)} + ${n1(B)}) = ${pct1(m)} of your range (minimum defence frequency).`,leaks:s<1?['mdf-math']:[]}}};
+}});
+
+D('bluffbe',{level:4,name:'Bluff break-even',blurb:'How often does your bluff need to work?',gen(){
+  const {P,B}=sizes(),x=B/(P+B),d=shuffle(deck());
+  return {table:{vPos:'Villain',vAct:'to act',pot:P,hero:[d[0],d[1]],board:d.slice(2,7),hAct:'bet '+bb(B)},
+    context:`River. You missed and bluff <b>${bb(B)}</b> into <b>${bb(P)}</b>. Your hand never wins at showdown. How often must he fold for the bluff to break even?`,
+    steps:[{kind:'pct',key:'a',label:'Fold rate needed',init:40}],
+    evaluate(a){const err=a.a-x*100,s=pctScore(err,3,6);
+      return {score:s,estErr:err,plain:`You risk ${bb(B)} to win ${bb(P)}. The bluff makes money if he folds more than ${pct0(x)} of the time.`,rows:[['Folds needed',a.a+'%',pct1(x)]],
+        math:`You risk ${n1(B)} to win ${n1(P)}.\nBreak-even fold rate = risk ÷ (risk + reward) = ${n1(B)} ÷ (${n1(B)} + ${n1(P)}) = ${pct1(x)}`,leaks:s<1?['bluff-math']:[]}}};
+}});
+
+D('implied',{level:4,name:'Implied odds',blurb:'Price too high? Work out what you must win later when you hit.',gen(){
+  const g=genDraw(4),o=g.outs.length,e=o/46,P=pick([10,12,16,20,24,30]),B=Math.round(P*pick([.5,.66,.75,1])),X=Math.max(0,B/e-P-2*B),stack=pick([40,60,80,120,150]);
+  return {table:{vPos:'Villain',vAct:'bets '+bb(B),pot:P,hero:g.hole,board:g.board},
+    context:`Turn. You hold ${inl(g.hole)}: a ${g.name} (${o} outs). Villain bets <b>${bb(B)}</b> into <b>${bb(P)}</b>, with ${bb(stack)} left behind after a call. How much extra must you win on the river <i>when you hit</i> for calling to break even?`,
+    steps:[{kind:'num',key:'x',label:'Extra winnings needed when you hit (bb)',min:0,max:400,step:1,init:10}],
+    evaluate(a){const xx=a.x;let s;if(X<0.5)s=xx<=2?1:xx<=6?0.6:0;else{const rel=Math.abs(xx-X)/X;s=rel<=0.15?1:rel<=0.35?0.6:0}
+      return {score:s,plain:X<0.5?'The price is already good enough for your draw on its own: no extra winnings needed.':`The price is too high for your draw on its own. You would need to win about ${bb(X)} more on the river, on the times you hit, to make the call worth it.`,rows:[['Extra needed',bb(xx),bb(X)]],
+        note:X<0.5?'Your direct odds already cover the call: no extra needed.':X>stack?`That's more than his remaining ${bb(stack)}, so even a full stack won't pay you: fold.`:X>P?'Getting that much on the river is ambitious; it needs an opponent who pays off big bets.':'That is a realistic amount to win on the river, so calling is fine.',
+        math:`Equity with one card to come: ${o} ÷ 46 = ${pct1(e)}\nBreak-even: ${pct1(e)} × (pot ${n1(P)} + bet ${n1(B)} + extra X) = ${pct1(1-e)} × ${n1(B)}\nX = bet ÷ equity − pot − 2 × bet = ${n1(B)} ÷ ${(e).toFixed(3)} − ${n1(P)} − ${n1(2*B)} = ${n1(B/e-P-2*B)} bb`,leaks:s<1?['implied-math']:[]}}};
+}});
+
+const CBET_OPTS=[['small','Bet small (about ⅓ pot) with most of my range'],['mixed','Mix: bet about half my range, medium-to-large size'],['check','Check most hands; bet big only with strong hands and draws']];
+/* plan from board texture, following the patterns solvers show for button vs big blind, single-raised pot, 100 bb */
+function cbetClass(board){
+  const rs=[...new Set(board.map(rk))].sort((a,b)=>b-a),ns=new Set(board.map(su)).size,top=rs[0];
+  if(rs.length<3)return ['small','Paired flop: the caller rarely has trips, so bet small with almost everything.'];
+  const span=top-rs[2];
+  if(ns===1)return ['mixed','Monotone flop: many hands are vulnerable and the caller holds plenty of flushes, so bet less often, mostly small.'];
+  if(rs[2]>=8)return ['mixed','Three broadway cards: both ranges connect, so bet about half the time with mixed sizes.'];
+  if(top>=11)return ['small','Ace- or king-high: the raiser has far more top pairs and big pairs. Bet small with most of the range.'];
+  if(span<=4&&top<=9)return ['check','Connected cards, jack-high or lower, hit the caller’s suited connectors and small pairs: check most hands, bet big with strong hands and draws.'];
+  if(span<=4)return ['mixed','Queen-high and connected: both ranges have straights and two pairs, so mix.'];
+  if(top>=8)return ['small','Dry, disconnected flop with a ten or higher on top: the raiser has more overpairs and top pairs. Bet small, often.'];
+  return ['mixed','Low and dry: the raiser keeps the overpairs, but the caller has more small pairs and two pairs, so bet about half the time.'];
+}
+function rangeShares(list,board){const dd=deadOf(board);let w=0,s=0,t=0;for(const [a,b,x] of list){if(dd[a]||dd[b])continue;const si=strengthInfo([a,b],board);w+=x;if(si.strong)s+=x;if(si.tp)t+=x}return {strong:s/w,tp:t/w}}
+function btnBbFlop(board){
+  const A=comboList(RFI.BTN),B=comboList(facing('BB vs BTN').c),eq=rvr(A,B,board,7000),sa=rangeShares(A,board),sb=rangeShares(B,board);
+  const [cls,why]=cbetClass(board);return {A,B,eq,sa,sb,cls,why};
+}
+D('cbet',{level:5,name:'Read the flop',blurb:'Whose flop is it? Pick a continuation-bet plan for your range.',gen(){
+  const ORD=['small','mixed','check'],want=pick(ORD);let board;
+  for(let t=0;t<300;t++){board=shuffle(deck()).slice(0,3);if(cbetClass(board)[0]===want)break}
+  const r=btnBbFlop(board);
+  return {table:{vPos:'BB',vAct:'checks',hPos:'BTN',pot:5.5,board,hero:null},
+    context:`You opened the button, the big blind called. Flop ${inl(board)}: ${textureText(board)}. He checks to you. Think about your whole opening range against his calling range, not one hand.`,
+    steps:[{kind:'pct',key:'e',label:"Your range's equity against his range",init:52},{kind:'choice',key:'c',label:'Your plan for this flop',options:CBET_OPTS}],
+    evaluate(a){const err=a.e-r.eq*100,se=pctScore(err,3,6),dist=Math.abs(ORD.indexOf(a.c)-ORD.indexOf(r.cls)),sc=dist===0?1:dist===1?0.5:0,lk=estLeak(err,6,'cbet');
+      if(sc<1)lk.push('cbet-read');const nm=v=>CBET_OPTS.find(x=>x[0]===v)[1];
+      return {score:0.4*se+0.6*sc,estErr:err,plain:`Across every hand you could hold, you win ${pct0(r.eq)} against his. ${r.why}`,rows:[['Range equity',a.e+'%',pct1(r.eq)],['Plan',nm(a.c),nm(r.cls)]],
+        note:`The plan follows the patterns solvers show on this kind of flop; exact solver output varies with bet sizes and rake. The numbers below are computed live from the two ranges.`,
+        math:`Equity, your button range vs his calling range: ${pct1(r.eq)}  (simulated, ±0.6%)\nShare of range with top pair or better:  you ${pct0(r.sa.tp)} · him ${pct0(r.sb.tp)}\nShare with two pair or better (the "nuts"): you ${pct1(r.sa.strong)} · him ${pct1(r.sb.strong)}`,leaks:lk}}};
+}});
+
+D('defend',{level:5,name:'Defend the BB',blurb:'Facing a small c-bet out of position: fold, call or raise?',gen(){
+  let board;for(let t=0;t<300;t++){board=shuffle(deck()).slice(0,3);if(cbetClass(board)[0]==='small')break}
+  const r={A:comboList(RFI.BTN)};
+  const dead=deadOf(board),hl=comboList(facing('BB vs BTN').c,dead),hero=sampleC(makeSampler(hl),dead).slice(0,2);
+  const eq=rvr([[hero[0],hero[1],1]],r.A,board,6000),P=5.5,B=1.8,req=B/(P+2*B),real=eq*0.8,si=strengthInfo(hero,board),ol=outsList(hero,board),sd=ol&&ol.length>=8;
+  let good,ok=[];
+  if(si.strong){good=['raise'];ok=['call']}
+  else if(real>=req+0.05){good=['call'];if(sd)ok=['raise']}
+  else if(real>=req-0.05){good=['call','fold'];if(sd)ok=['raise']}
+  else{good=['fold'];if(sd)ok=['call']}
+  const NM={fold:'Fold',call:'Call',raise:'Raise'},lbl=madeLabel(hero,board)+(sd?' with a '+drawName(hero,board,ol):'');
+  return {table:{vPos:'BTN',vAct:'bets '+bb(B),hPos:'BB',pot:P,hero,board},
+    context:`The button opened, you called in the big blind. Flop ${inl(board)}; you check and he bets <b>${bb(B)}</b> into <b>${bb(P)}</b> (a third of the pot), as he does with nearly his whole range on flops like this. You hold ${inl(hero)}: ${lbl}.`,
+    steps:[{kind:'pct',key:'e',label:'Your raw equity against his whole range',init:40},{kind:'choice',key:'c',label:'Your move',options:[['fold','Fold'],['call','Call'],['raise','Raise']]}],
+    evaluate(a){const err=a.e-eq*100,se=pctScore(err,4,8),sc=good.includes(a.c)?1:ok.includes(a.c)?0.6:0,lk=estLeak(err,8,'defend');
+      if(sc<0.6)lk.push(a.c==='fold'?'defend-overfold':'defend-overcall');
+      return {score:0.4*se+0.6*sc,estErr:err,plain:`You win ${pct0(eq)} against his whole range, but acting first means you will collect only about ${pct0(real)} of the pot on average. A call needs ${pct0(req)}.`,rows:[['Raw equity',a.e+'%',pct1(eq)],['Move',NM[a.c],good.map(x=>NM[x]).join(' or ')]],
+        note:good.length>1?'Close spot: calling and folding are both reasonable.':'',
+        math:`Price: ${n1(B)} ÷ (${n1(P)} + ${n1(B)} + ${n1(B)}) = ${pct1(req)}\nRaw equity vs his range: ${pct1(eq)}  (simulated)\nOut of position you realise about 80% of it: ${pct1(eq)} × 0.8 = ${pct1(real)}\n${si.strong?'Two pair or better: raise for value.':real>=req+0.05?'Comfortably above the price: continue.':real>=req-0.05?'Within 5 points of the price: a close spot.':'Below the price: fold.'}${sd?'\nStrong draw (8+ outs): a raise is a fine semi-bluff.':''}\n(Simplified model: a fixed 80% realisation, not a solver.)`,leaks:lk}}};
+}});
+
+D('polar',{level:6,name:'Balance your river',blurb:'Value hands plus busted draws: how many bluffs?',gen(){
+  const P=pick([10,16,20,30,40]),f=pick([.5,.75,1,1.5,2]),B=Math.round(P*f),V=pick([6,8,9,10,12,15,18]),A=V+pick([4,8,12]),Xs=V*B/(P+B),fs=B/(P+2*B),d=shuffle(deck());
+  return {table:{vPos:'Villain',vAct:'checks',pot:P,hero:[d[0],d[1]],board:d.slice(2,7),hAct:'betting '+bb(B)},
+    context:`River, pot <b>${bb(P)}</b>. You plan to bet <b>${bb(B)}</b> (${pct0(B/P)} of the pot). Your range here is <b>${V}</b> combos of the nuts and <b>${A}</b> combos of busted draws that can't win at showdown. He holds only bluff-catchers: hands that beat your bluffs and lose to your value.`,
+    steps:[{kind:'num',key:'x',label:'How many busted combos should bet as bluffs?',min:0,max:A,step:1,init:Math.round(V/2)}],
+    evaluate(a){const X=a.x,loss=X>Xs?B*(X-Xs):P*(Xs-X),per=loss/(V+A)*100,diff=Math.abs(X-Xs),s=diff<=Math.max(1,0.15*Xs)?1:diff<=Math.max(2,0.35*Xs)?0.6:0,lk=[];
+      if(s<1)lk.push(X>Xs?'overbluff':'underbluff');
+      return {score:s,plain:`Bluff with about ${n1(Xs)} hands for every ${V} strong ones. Then calling and folding earn him the same, so he cannot punish you either way.`,rows:[['Bluff combos',String(X),n1(Xs)],['Bluffs as share of bets',pct1(X/(V+X)),pct1(fs)]],
+        math:`He calls ${n1(B)} to win ${n1(P+B)}, so he is indifferent when bluffs are ${n1(B)} ÷ (${n1(P)} + 2 × ${n1(B)}) = ${pct1(fs)} of your bets.\nBluffs = value × bet ÷ (pot + bet) = ${V} × ${n1(B)} ÷ ${n1(P+B)} = ${n1(Xs)} combos\n${diff<0.5?'Spot on: he can’t exploit you.':`With ${X}, a perfect opponent would ${X>Xs?'call every time':'fold every time'} and win back ${n1(loss)} bb across your ${V+A} combos: ${n1(per)} bb per 100 times you reach this river.`}`,leaks:lk}}};
+}});
+
+D('catch',{level:6,name:'Bluff-catch',blurb:'Count his bluffs, then call or fold.',gen(){
+  const P=pick([12,16,20,30,40]),B=Math.round(P*pick([.5,.75,1,1.25])),Vc=pick([6,8,10,12,15]),miss=pick([6,9,12,18,24]),k=pick([[1,6,'about 1 in 6'],[1,4,'about 1 in 4'],[1,3,'about 1 in 3'],[1,2,'about half'],[2,3,'about 2 in 3']]);
+  const bl=miss*k[0]/k[1],sh=bl/(Vc+bl),need=B/(P+2*B),evc=sh*(P+B)-(1-sh)*B,d=shuffle(deck());
+  return {table:{vPos:'Villain',vAct:'bets '+bb(B),pot:P,hero:[d[0],d[1]],board:d.slice(2,7)},
+    context:`River. He bets <b>${bb(B)}</b> into <b>${bb(P)}</b>. You hold a bluff-catcher: you beat his bluffs and nothing else. He arrives here with about <b>${Vc}</b> value combos and <b>${miss}</b> combos of missed draws, and players like him bluff <b>${k[2]}</b> of their missed draws.`,
+    steps:[{kind:'pct',key:'b',label:'Share of his bets that are bluffs',init:30},{kind:'choice',key:'c',label:'Your move',options:[['call','Call'],['fold','Fold']]}],
+    evaluate(a){const err=a.b-sh*100,se=pctScore(err,3,7),call=a.c==='call',dc=decide(evc,call,0.03*(P+B)),lk=estLeak(err,7,'catch');
+      if(dc.s<1)lk.push(call?'hero-call':'hero-fold');
+      return {score:0.4*se+0.6*dc.s,estErr:err,evLoss:dc.loss,plain:`About ${pct0(sh)} of his bets are bluffs, and calling needs ${pct0(need)}, so ${evc>0?'call':'fold'}.`,rows:[['Bluff share',a.b+'%',pct1(sh)],['Move',call?'Call':'Fold',evc>0?'Call':'Fold']],
+        note:dc.close?'Close to break-even: either choice costs little.':'',
+        math:`Bluffs: ${miss} × ${k[0]}/${k[1]} = ${n1(bl)} combos; value ${Vc}\nBluff share = ${n1(bl)} ÷ (${Vc} + ${n1(bl)}) = ${pct1(sh)}\nNeeded to call: ${n1(B)} ÷ (${n1(P)} + 2 × ${n1(B)}) = ${pct1(need)}\nEV of calling = ${pct1(sh)} × ${n1(P+B)} − ${pct1(1-sh)} × ${n1(B)} = ${sgn(evc)} bb`,leaks:lk}}};
+}});
+
+const LESSONS={
+  hands:{t:'Hand rankings',s:'Best to worst: straight flush, four of a kind, full house, flush, straight, three of a kind, two pair, pair, high card. Same type? The higher cards win.',
+    b:'Each player uses the best five of seven cards: their own two plus the five on the board, using both, one or neither of their own. Best to worst: straight flush, four of a kind, full house, flush, straight, three of a kind, two pair, one pair, high card. When both players have the same type, compare the highest cards, then the next ones (the kickers). If the best five cards are identical, the pot is split.'},
+  risk:{t:'Risk against reward',s:'A call risks your call to win the pot plus his bet. Risk ÷ (risk + reward) is the share of the time you must win.',
+    b:'Every call is a trade. You risk the amount you call; you can win everything already in the pot plus his bet. If you risk 5 to win 15, you break even by winning 5 times out of every 20 chips at stake: 25%. That share is the "price" of the call, and it is the number most poker decisions are measured against.'},
+  seats:{t:'Seats and position',s:'Before the flop: UTG, HJ, CO, BTN, SB, BB. After the flop: SB first, BTN last. Acting last is an advantage, so play more hands near the button.',
+    b:'The button (the dealer disc) moves one seat clockwise each hand, and the seat names follow it. Before the flop the order is UTG, HJ, CO, BTN, SB, BB; after the flop the small blind acts first and the button last. Acting last means you see everyone else’s choice before making yours, so good players play more hands the closer they sit to the button.'},
+  potodds:{t:'The price of a call',s:'Break-even equity = bet ÷ (pot + 2 × bet). ⅓ pot → 20%, ½ → 25%, ⅔ → 29%, pot → 33%, 2× → 40%.',
+    b:'Break-even equity = bet ÷ (pot + 2 × bet). The "2 × bet" is his bet plus your call: the final pot you are playing for. Learn the common sizes by heart: ¼ pot → 17%, ⅓ → 20%, ½ → 25%, ⅔ → 29%, ¾ → 30%, pot → 33%, 1.5× → 38%, 2× → 40%. Bigger bets raise the price, but slowly: doubling from pot to 2× pot only moves it from 33% to 40%.'},
+  outs:{t:'Rule of 2 and 4',s:'Flop, seeing both cards: outs × 4 (subtract outs − 8 above 8 outs). One card to come: outs × 2.',
+    b:'Outs are unseen cards that complete your hand. On the flop, if you will see both cards (an all-in), outs × 4 ≈ % to hit by the river; above 8 outs subtract (outs − 8). With one card to come, outs × 2 (exactly outs ÷ 46 on the turn). Common counts: flush draw 9, open-ended straight draw 8, gutshot 4, flush draw + open-ender 15, flush draw + gutshot 12.'},
+  drawcall:{t:'Draws against bets',s:'A turn flush draw has ≈ 20%: enough vs a ⅓-pot bet, not vs ½ pot. All-in on the flop it has ≈ 35% and can call a pot-sized shove.',
+    b:'Compare your outs-based equity with the price. With one card to come a flush draw has about 20% (9 ÷ 46): enough against a ⅓-pot bet (needs 20%), not against ½ pot (needs 25%) unless you will win more when you hit (see Implied odds). All-in on the flop, the same draw has about 35% and can call a pot-sized shove (needs 33%).'},
+  matchups:{t:'Preflop benchmarks',s:'Pair vs two overs ≈ 55%; overpair vs underpair ≈ 80%; dominated hand ≈ 25–30%; two overs vs two unders ≈ 60–65%.',
+    b:'All-in preflop, hand against hand: pair vs two overcards ≈ 55/45; overpair vs underpair ≈ 80/20; a dominated hand (AQ vs AK: same high card, worse kicker) has only 25–30%; two overcards vs two undercards ≈ 60–65%; pair vs one overcard and one undercard ≈ 70%; a suited connector vs a big pair ≈ 20–23%. Being suited adds about 2–3 points.'},
+  shove:{t:'Calling a shove',s:'In the BB the price is (stack − 1) ÷ (2 × stack + 0.5): ≈ 44% vs 10 bb, 46% vs 15 bb, 47% vs 20 bb. Compare with equity vs his whole range.',
+    b:'Against an all-in, the only question is whether your equity against his whole range beats the price. In the big blind your 1 bb is already in, so the price is (stack − 1) ÷ (2 × stack + 0.5): about 44% against 10 bb, 46% against 15 bb, 47% against 20 bb. The wider he shoves, the more hands can call. Weak aces suffer against ranges full of better aces; small pairs do better than they look.'},
+  turnjam:{t:'Split his range',s:'Value, draws, bluffs: one pair beats bluffs, is ≈ 75–80% vs draws and near zero vs value. The mix decides.',
+    b:'Split his range into value, draws and bluffs, and ask how you do against each part. One pair usually beats the bluffs, has about 75–80% against a draw with one card to come, and has almost nothing against value. So the decision turns on how many draws and bluffs are really in there: against a tight player with few draws and no bluffs, fold your one pair.'},
+  rfi:{t:'Opening ranges widen towards the button',s:'Fewer players behind = wider opens. In these charts: UTG 19%, HJ 22%, CO 30%, BTN 48%, SB 43% of hands.',
+    b:'Open-raise ranges widen as you get closer to the button, because fewer players are left to wake up with a big hand and you will more often play the pot in position. Suited hands and pairs play well; weak offsuit aces and kings are the first hands to drop out from early seats. These charts are approximations of published solver output for 6-max, 100 bb, 2.5 bb opens.'},
+  facing:{t:'Defending against opens',s:'The BB defends very wide (call 1.5 to win 5.5 needs ≈ 27%). The SB mostly 3-bets or folds vs a button open.',
+    b:'The big blind defends very wide because 1 bb is already in and nobody acts after it: calling 1.5 bb to win a 5.5 bb pot needs only about 27%. Against a button open it continues with about 55% of hands; against UTG, about a quarter. The small blind mostly 3-bets or folds against the button, because calling out of position with the big blind still to act is costly. A 3-bet (re-raise) range mixes value hands with suited hands such as A5s, which block aces and play well when called.'},
+  mdf:{t:'Minimum defence frequency',s:'Continue with at least pot ÷ (pot + bet) of your range: ½ pot → 67%, pot → 50%, 2× pot → 33%.',
+    b:'Minimum defence frequency (MDF) = pot ÷ (pot + bet): the share of your range you must continue with so that a bluff with any two cards cannot show a profit. Against ½ pot that is 67%, against pot 50%, against 2× pot 33%. It is a guide for unknown opponents: against players who rarely bluff, fold more.'},
+  bluffbe:{t:'What a bluff needs',s:'Folds needed = bet ÷ (pot + bet): ⅓ pot → 25%, ½ → 33%, pot → 50%, 2× → 67%.',
+    b:'A bluff of B into a pot of P needs folds B ÷ (P + B) of the time: ⅓ pot → 25%, ½ pot → 33%, ⅔ → 40%, pot → 50%, 2× → 67%. Small bluffs need fewer folds, but players also fold less often to them.'},
+  implied:{t:'Implied odds',s:'Extra needed when you hit = bet ÷ equity − pot − 2 × bet. A turn flush draw vs a pot-sized bet needs ≈ 2× the pot extra.',
+    b:'When the price is too high, ask how much more you would need to win later when you hit: extra = bet ÷ equity − pot − 2 × bet. A turn flush draw (about 20%) facing a pot-sized bet needs about twice the pot extra on the river, which is rarely paid. Gutshots almost never qualify against big bets. Draws to the best possible hand, against opponents who pay off, do best.'},
+  cbet:{t:'Range advantage sets frequency, nut advantage sets size',s:'Ace- and king-high dry flops favour the raiser: bet small, often. Low connected flops favour the caller: check more.',
+    b:'Range advantage (whose whole range has more equity on this flop) sets how often you bet; nut advantage (who holds more of the very strongest hands) sets how big. The preflop raiser has more big cards, so ace- and king-high dry flops favour them: bet small with most of the range. Low, connected flops hit the big blind’s calling range: check more, and bet bigger when you do bet. This drill’s answers are a heuristic built from solver patterns, computed live from the two ranges.'},
+  defend:{t:'Defending against small c-bets',s:'A ⅓-pot bet needs 20%. Out of position, count about 80% of your raw equity, then compare.',
+    b:'Against a ⅓-pot c-bet you need only 20% raw equity, but out of position you will not realise all of it, because you can be bet off your hand later. A working rule: count about 80% of your equity. Defend most pairs, draws and overcards with backup draws; fold the bottom of your range; raise your strongest hands (two pair or better) and some strong draws.'},
+  polar:{t:'Balanced bluffing',s:'Bluffs per value hand = bet ÷ (pot + bet): ½ pot → 1 for 3, pot → 1 for 2, 2× pot → 2 for 3.',
+    b:'With a polarised range (very strong or nothing), bluff so that bluffs make up bet ÷ (pot + 2 × bet) of your bets: exactly the caller’s break-even price. Per value combo that is bet ÷ (pot + bet) bluffs: ½ pot → 1 for 3, pot → 1 for 2, 2× pot → 2 for 3. Bigger bets earn more bluffs. Over-bluff and a good player calls everything; under-bluff and they fold everything but their best hands.'},
+  catch:{t:'Counting bluffs',s:'Call a bluff-catcher when bluffs are at least bet ÷ (pot + 2 × bet) of his bets. No missed draws = few bluffs.',
+    b:'Count his betting range. Value combos are easy to list; bluffs come mostly from missed draws. Call a bluff-catcher when bluffs make up at least bet ÷ (pot + 2 × bet) of his bets. If no draws missed on the river, his bluffs mostly vanish: fold more. Many low-stakes players bluff rivers far less than the balanced amount.'}
+};
+const LEAKS={
+  'hand-ranks':['Reading hand rankings','You picked the wrong winner at showdown.','hands'],
+  'risk-math':['Counting risk and reward','Gain = pot + his bet; loss = your call.','risk'],
+  'seat-names':['Seat names and order','Mixing up which seat is which, or who acts when.','seats'],
+  'potodds-math':['Pricing calls','Your break-even equity answers are off. Remember: bet ÷ (pot + 2 × bet).','potodds'],
+  'outs-count':['Counting outs','You are miscounting outs. Check flush cards and both ends of straight draws.','outs'],
+  'outs-pct':['Turning outs into odds','Your outs-to-percent conversion is off. Rule of 4 on the flop, rule of 2 on the turn.','outs'],
+  'calls-without-odds':['Chasing without the price','You call draws that do not have the equity for the bet.','drawcall'],
+  'folds-with-odds':['Folding draws with the price','You fold draws that had enough equity to call.','drawcall'],
+  'call-too-loose':['Calling all-ins too light','You call when your equity is below the price.',null],
+  'fold-too-tight':['Folding to all-ins too often','You fold hands with enough equity to call.',null],
+  'equity-over':['Overestimating equity','Your equity estimates run high.',null],
+  'equity-under':['Underestimating equity','Your equity estimates run low.',null],
+  'pre-loose':['Opening too loose from {x}','You open hands that fold from this seat.','rfi'],
+  'pre-tight':['Opening too tight from {x}','You fold hands that open from this seat.','rfi'],
+  'def-fold':['Over-folding in {x}','You fold hands the chart continues with.','facing'],
+  'def-call':['Flatting too much in {x}','You call hands the chart 3-bets or folds.','facing'],
+  'def-3bet':['3-betting the wrong hands in {x}','You 3-bet hands the chart calls or folds.','facing'],
+  'mdf-math':['Minimum defence maths','Continue with pot ÷ (pot + bet).','mdf'],
+  'bluff-math':['Bluff break-even maths','Folds needed = bet ÷ (pot + bet).','bluffbe'],
+  'implied-math':['Implied odds maths','Extra needed = bet ÷ equity − pot − 2 × bet.','implied'],
+  'cbet-read':['Misreading whose flop it is','Your c-bet plans miss the range and nut advantage.','cbet'],
+  'defend-overfold':['Folding too much to small c-bets','You fold hands that have the equity to defend.','defend'],
+  'defend-overcall':['Defending hands that are too weak','You continue with hands below the price.','defend'],
+  'overbluff':['Over-bluffing rivers','Too many bluffs: a good player just calls.','polar'],
+  'underbluff':['Under-bluffing rivers','Too few bluffs: a good player folds everything but the nuts.','polar'],
+  'hero-call':['Calling down against too few bluffs','You call when his bluffs are too rare.','catch'],
+  'hero-fold':['Folding to bluff-heavy ranges','You fold when he is bluffing enough to call.','catch']
+};
+function leakInfo(tag){const [k,x]=tag.split('|'),L=LEAKS[k];if(!L)return null;return {title:L[0].replace('{x}',x||''),desc:L[1],drill:L[2]||(DRILLS[x]?x:null)||'matchups'}}
+
+/* ---------- plain-English word list: a = case-insensitive matches, A = case-sensitive ---------- */
+const GC=['Table and seats','Cards and boards','Hands and draws','Actions','Maths','Strategy'];
+const GLOSS=[
+  {id:'pot',t:'Pot',c:0,a:['pot','pots'],d:'All the chips bet so far in this hand. Whoever wins the hand takes the whole pot.'},
+  {id:'bb',t:'bb (big blinds)',c:0,A:['bb'],d:'The unit for every amount here. "12 bb" means twelve times the big blind. "100 bb deep" means each player starts with a stack of 100 big blinds.'},
+  {id:'blinds',t:'Blinds',c:0,a:['blinds'],d:'Two forced bets posted before the cards are dealt, so there is always something to play for: 0.5 bb from the small blind and 1 bb from the big blind.'},
+  {id:'button',t:'Button (BTN)',c:0,a:['button'],A:['BTN'],d:'The dealer seat, marked with a "D" disc. It acts last after the flop, which makes it the best seat, so it plays the most hands.'},
+  {id:'small blind',t:'Small blind (SB)',c:0,a:['small blind'],A:['SB'],d:'The seat to the left of the button. It posts 0.5 bb before the cards and acts first after the flop, which is a disadvantage.'},
+  {id:'big blind',t:'Big blind (BB)',c:0,a:['big blind'],A:['BB'],d:'Two seats left of the button. It posts 1 bb before the cards, so it gets a cheap price to call a raise, but it acts early after the flop.'},
+  {id:'under the gun',t:'Under the gun (UTG)',c:0,a:['under the gun','first seat'],A:['UTG'],d:'The first player to act before the flop, with five players still to come. Hands need to be strong to play from here.'},
+  {id:'hijack',t:'Hijack (HJ)',c:0,a:['hijack'],A:['HJ'],d:'Two seats to the right of the button: the second seat to act before the flop at a six-player table.'},
+  {id:'cutoff',t:'Cutoff (CO)',c:0,a:['cutoff'],A:['CO'],d:'The seat just to the right of the button. The second-best seat: only the button and the blinds act after it.'},
+  {id:'6-max',t:'6-max',c:0,a:['6-max'],d:'A table with six seats, the most common online format.'},
+  {id:'cash game',t:'Cash game',c:0,a:['cash'],d:'A game where chips are real money and you can leave at any time. Unlike a tournament, the blinds never go up, so stacks stay deep.'},
+  {id:'in position',t:'In position',c:0,a:['in position'],d:'Acting after your opponent on each round of betting, so you see what he does before you decide. A real advantage.'},
+  {id:'out of position',t:'Out of position',c:0,a:['out of position'],d:'Acting before your opponent on each round of betting, so you decide without seeing what he does. The same cards win less.'},
+  {id:'villain',t:'Villain',c:0,a:['villain'],d:'Poker slang for your opponent in a hand. You are the "hero".'},
+  {id:'preflop',t:'Preflop',c:1,a:['preflop','before the flop'],d:'The first betting round, after each player gets two private cards and before any shared cards appear.'},
+  {id:'flop',t:'Flop',c:1,a:['flop','flops'],d:'The first three shared cards, dealt face up together, followed by a round of betting.'},
+  {id:'turn',t:'Turn',c:1,a:['turn'],d:'The fourth shared card, followed by a round of betting.'},
+  {id:'river',t:'River',c:1,a:['river','rivers'],d:'The fifth and last shared card. After its round of betting, the remaining players show their hands.'},
+  {id:'street',t:'Street',c:1,a:['street','streets'],d:'One round of betting: preflop, flop, turn or river.'},
+  {id:'board',t:'Board',c:1,a:['board','boards'],d:'The shared face-up cards in the middle. Every player combines them with their own two cards.'},
+  {id:'runout',t:'Runout',c:1,a:['runout','runouts'],d:'The cards still to come, once they have been dealt.'},
+  {id:'showdown',t:'Showdown',c:1,a:['showdown'],d:'The end of a hand: the remaining players show their cards, and the best five-card hand wins.'},
+  {id:'suited',t:'Suited (s)',c:1,a:['suited'],d:'Both your cards share a suit, like A♠ K♠. Written with an s: AKs. Slightly better than offsuit because it can make flushes.'},
+  {id:'offsuit',t:'Offsuit (o)',c:1,a:['offsuit'],d:'Your two cards are different suits, like A♠ K♥. Written with an o: AKo.'},
+  {id:'pocket pair',t:'Pocket pair',c:1,a:['pocket pair','pocket pairs'],d:'Two cards of the same rank in your hand, like 7♣ 7♦.'},
+  {id:'broadway',t:'Broadway cards',c:1,a:['broadway'],d:'The five highest ranks: ten, jack, queen, king and ace.'},
+  {id:'suited connector',t:'Suited connector',c:1,a:['suited connector','suited connectors'],d:'Two cards next to each other in rank and of the same suit, like 7♥ 6♥. They make straights and flushes.'},
+  {id:'chart',t:'Range chart',c:1,a:['chart','charts'],d:'A 13 × 13 grid of all starting hands. Pairs run down the diagonal, suited hands sit above it and offsuit hands below. Shaded squares are the hands to play.'},
+  {id:'dry',t:'Dry board',c:1,a:['dry'],d:'A board whose cards do not work together, so few draws are possible, like K♠ 7♦ 2♣.'},
+  {id:'connected',t:'Connected board',c:1,a:['connected'],d:'Board cards close together in rank, like 8-7-5, which makes straights and straight draws likely.'},
+  {id:'rainbow',t:'Rainbow',c:1,a:['rainbow'],d:'Three board cards of three different suits, so no flush draw is possible yet.'},
+  {id:'two-tone',t:'Two-tone',c:1,a:['two-tone'],d:'Two of the board cards share a suit, so flush draws are possible.'},
+  {id:'monotone',t:'Monotone',c:1,a:['monotone'],d:'All three flop cards share a suit, so flushes and flush draws are everywhere.'},
+  {id:'paired',t:'Paired board',c:1,a:['paired'],d:'Two board cards share a rank, like 7-7-2. Fewer hands connect with it.'},
+  {id:'top pair',t:'Top pair',c:2,a:['top pair'],d:'You pair the highest card on the board with one of your own cards.'},
+  {id:'second pair',t:'Second pair',c:2,a:['second pair'],d:'You pair the second-highest card on the board.'},
+  {id:'overpair',t:'Overpair',c:2,a:['overpair','overpairs'],d:'A pocket pair higher than every card on the board, like Q-Q on a 9-6-2 board.'},
+  {id:'underpair',t:'Underpair',c:2,a:['underpair'],d:'A pocket pair lower than every card on the board.'},
+  {id:'set',t:'Set',c:2,a:['set','sets'],d:'Three of a kind made from a pocket pair plus one matching board card. Very strong, and well hidden.'},
+  {id:'kicker',t:'Kicker',c:2,a:['kicker','kickers'],d:'Your side card that breaks ties. On an ace-high board, A-K beats A-Q because the king kicker is higher.'},
+  {id:'nuts',t:'The nuts',c:2,a:['nuts'],d:'The best possible hand on this board.'},
+  {id:'dominated',t:'Dominated',c:2,a:['dominated','dominating'],d:'Your hand shares a card with his, but his other card is higher, like A-Q against A-K. You win only about a quarter of the time.'},
+  {id:'coin flip',t:'Coin flip',c:2,a:['coin flip','coinflip'],d:'An all-in where each side has roughly 50%, like a small pair against two higher cards.'},
+  {id:'combo',t:'Combo',c:2,a:['combo','combos','combinations'],d:'One exact two-card hand. A-K comes in 16 combos (4 aces × 4 kings), a pair like 7-7 in 6, and a suited hand like A♠K♠ in 4. Counting combos is how you weigh what he could have.'},
+  {id:'draw',t:'Draw',c:2,a:['draw','draws','drawing'],d:'An unfinished hand that needs more cards, like four cards towards a flush.'},
+  {id:'flush draw',t:'Flush draw',c:2,a:['flush draw','flush draws'],d:'Four cards of one suit, so one more of that suit makes a flush. 9 outs.'},
+  {id:'open-ended straight draw',t:'Open-ended straight draw',c:2,a:['open-ended straight draw','open-ender','open-ended'],d:'Four cards in a row that can be finished at either end, like 9-8-7-6 (a 10 or a 5 completes it). 8 outs.'},
+  {id:'gutshot',t:'Gutshot',c:2,a:['gutshot straight draw','gutshot','gutshots'],d:'A straight draw missing one card in the middle, like 9-8-6-5 needing a 7. 4 outs.'},
+  {id:'missed draw',t:'Missed draw',c:2,a:['missed draw','missed draws','missed-draw','busted draws','busted draw'],d:'A draw that never came in by the river. It is worth nothing at showdown, so it is the natural hand to bluff with.'},
+  {id:'runner-runner',t:'Runner-runner',c:2,a:['runner-runner'],d:'Needing both the turn and the river to make your hand. Rare, so it is usually ignored.'},
+  {id:'fold',t:'Fold',c:3,a:['fold','folds','folding','folded'],d:'Give up the hand. Chips you already put in stay in the pot.'},
+  {id:'call',t:'Call',c:3,a:['call','calls','calling','called'],d:'Put in the same amount as his bet to stay in the hand.'},
+  {id:'raise',t:'Raise',c:3,a:['raise','raises','raising'],d:'Bet more than the current bet. Everyone else must call the new amount, raise again, or fold.'},
+  {id:'check',t:'Check',c:3,a:['check','checks'],d:'Pass without betting. Only possible when nobody has bet yet in this round.'},
+  {id:'all-in',t:'All-in (shove, jam)',c:3,a:['all-in','shove','shoves','shoving','jam','jams','jamming'],d:'Betting every chip you have. The other player can only call or fold, and the remaining cards are dealt with no more betting.'},
+  {id:'open-raise',t:'Open-raise',c:3,a:['open-raise','open-raises','opens','opened','opening range','opening ranges'],d:'The first raise before the flop, after everyone before you has folded. "Opening" a hand means playing it this way.'},
+  {id:'3-bet',t:'3-bet',c:3,a:['3-bet','3-bets','3-betting','re-raise'],d:'A re-raise before the flop. The big blind counts as the first bet and the open-raise as the second, so the re-raise is the third.'},
+  {id:'c-bet',t:'Continuation bet (c-bet)',c:3,a:['c-bet','c-bets','continuation bet','continuation-bet'],d:'A bet on the flop by the player who raised before the flop, continuing to represent a strong hand.'},
+  {id:'bluff',t:'Bluff',c:3,a:['bluff','bluffs','bluffing','semi-bluff'],d:'Betting a weak hand to make a better hand fold. A semi-bluff is a bluff with a draw that can still improve.'},
+  {id:'value',t:'Value bet',c:3,a:['value'],d:'Betting a strong hand because worse hands will call. The opposite of a bluff.'},
+  {id:'equity',t:'Equity',c:4,a:['equity','raw equity'],d:'Your share of the pot if all the cards were dealt out now: the chance you finish with the best hand, with ties counting half. 40% equity means you win 4 times in 10.'},
+  {id:'pot odds',t:'Pot odds (the price)',c:4,a:['pot odds','price','break-even','break even'],d:'How often a call must win to pay for itself. Pay 10 to win 30 and you must win 10 out of the 40 in the final pot: 25%. If your equity is higher than the price, the call makes money.'},
+  {id:'EV',t:'EV (expected value)',c:4,a:['expected value'],A:['EV'],d:'What a decision earns on average if you made it thousands of times. "+2 bb" means it gains 2 bb per time on average, even though any single hand can still lose.'},
+  {id:'outs',t:'Outs',c:4,a:['outs'],d:'The unseen cards that would give you the winning hand. A flush draw has 9 outs: the 9 remaining cards of your suit.'},
+  {id:'rule of 2 and 4',t:'Rule of 2 and 4',c:4,a:['rule of 2 and 4','rule of 4','rule of 2'],d:'A quick way to turn outs into a percentage. Two cards to come: outs × 4. One card to come: outs × 2. So 9 outs ≈ 36% on the flop and 18% on the turn.'},
+  {id:'implied odds',t:'Implied odds',c:4,a:['implied odds'],d:'Chips you expect to win on later rounds when you hit. They can make a call worth it even when the price right now is too high.'},
+  {id:'MDF',t:'Minimum defence frequency (MDF)',c:4,a:['minimum defence frequency','minimum defence'],A:['MDF'],d:'The smallest share of your hands you must keep playing against a bet, so that his bluffs do not profit automatically. Fold more than this and he can bet with any two cards.'},
+  {id:'realise',t:'Realising equity',c:4,a:['realise','realisation','realised'],d:'Actually collecting your share of the pot. When you act first you are often pushed off your hand before the river, so you collect less than your raw equity.'},
+  {id:'range',t:'Range',c:5,a:['range','ranges'],d:'All the hands a player could have, given how they have played so far. Thinking "he has one of these 200 combos" beats guessing one exact hand.'},
+  {id:'polarised',t:'Polarised',c:5,a:['polarised','polarized'],d:'A range made of very strong hands and weak ones, with nothing in between.'},
+  {id:'capped',t:'Capped range',c:5,a:['capped'],d:'A range that rarely holds the very best hands. If the big blind only called, he rarely has A-A, which would have re-raised.'},
+  {id:'bluff-catcher',t:'Bluff-catcher',c:5,a:['bluff-catcher','bluff-catchers','bluff-catching'],d:'A hand that beats only bluffs and loses to every real hand. Calling with it is a bet that he is bluffing.'},
+  {id:'range advantage',t:'Range advantage',c:5,a:['range advantage'],d:'Your whole range has more equity than his on this board. It tells you how often to bet.'},
+  {id:'nut advantage',t:'Nut advantage',c:5,a:['nut advantage','nut deficit'],d:'You hold more of the very strongest hands than he does. It tells you how big you can bet.'},
+  {id:'GTO',t:'GTO (game theory optimal)',c:5,a:['game theory optimal','game theory'],A:['GTO'],d:'A strategy that cannot be beaten over the long run, whatever the opponent does. It mixes value bets and bluffs in proportions that leave him no profitable answer. Nobody plays it perfectly; it is the target you move towards.'},
+  {id:'solver',t:'Solver',c:5,a:['solver','solvers'],d:'A computer program that works out GTO strategies for simplified poker spots. The charts and patterns here imitate what solvers show.'},
+  {id:'exploit',t:'Exploiting',c:5,a:['exploit','exploiting','exploitative'],d:'Changing your play to punish an opponent’s specific mistake, like folding more against someone who never bluffs. It earns more than GTO against weak players, but leaves you open to being punished in return.'},
+  {id:'mix',t:'Mixing',c:5,a:['mix','mixes','mixing'],d:'Playing the same hand two ways at set frequencies, like raise 60% and fold 40%, so opponents cannot read you. In this trainer either action counts as correct.'}
+];
+const G_BY={};const _gci=[],_gcs=[];
+for(const g of GLOSS){G_BY[g.id]=g;for(const w of g.a||[])_gci.push([w.toLowerCase(),g.id]);for(const w of g.A||[])_gcs.push([w,g.id])}
+const _esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const _mkRe=(l,f)=>new RegExp('(?<![\\w-])('+l.map(x=>x[0]).sort((a,b)=>b.length-a.length).map(_esc).join('|')+')(?![\\w-])',f);
+const RE_CI=_mkRe(_gci,'gi'),RE_CS=_mkRe(_gcs,'g'),MAP_CI=Object.fromEntries(_gci),MAP_CS=Object.fromEntries(_gcs);
+
+const INTRO={
+  hands:{how:'Every player makes their best five-card hand from their two private cards plus the five shared cards on the board, using both, one or neither of their own. Pick who wins.',words:['board','showdown','kicker']},
+  risk:{how:'Every call is a trade: you risk what you call to win what is in the pot plus his bet. This drill gets you counting both sides of that trade, which is the root of all the odds maths that follows.',words:['pot','bb','call']},
+  seats:{how:'Six players sit around the table. The dealer button moves one seat each hand, and each seat’s name says where it sits relative to the button. Where you sit decides who acts before and after you.',words:['button','small blind','big blind','under the gun','in position']},
+  potodds:{how:'When he bets, calling has a price: you pay a little to try to win a bigger pot. The question is what share of the time you must win for paying to be worth it. Example: pay 10 to win 30, and you must win 10 out of the 40 in the final pot, so 25%.',words:['pot odds','equity','pot']},
+  outs:{how:'When your hand is not finished yet (a draw), the cards that would finish it are your outs. Count them, then turn the count into a chance with a quick rule.',words:['outs','draw','flush draw','open-ended straight draw','gutshot','rule of 2 and 4']},
+  drawcall:{how:'This puts the last two drills together: your chance of hitting, from your outs, against the price of the call. Call when your chance is higher than the price.',words:['equity','pot odds','EV']},
+  matchups:{how:'Before the flop, the same kinds of all-in come up again and again. Knowing their rough odds by heart makes every other estimate easier.',words:['equity','dominated','overpair','suited connector','coin flip']},
+  shove:{how:'He bets all his chips. You cannot know his exact hand, but you can know the kinds of hands he does this with: his range. Ask how often your hand beats that whole range, then compare with the price.',words:['all-in','range','combo','big blind']},
+  turnjam:{how:'Split his range into groups: strong hands (value), unfinished hands (draws) and pure bluffs. Your hand does very differently against each group, and the mix tells you whether to call.',words:['value','draw','bluff','top pair','combo']},
+  rfi:{how:'When everyone before you folds, you can make the first raise (an open) or fold. Good players open more hands the closer they sit to the button. The chart shows which hands to play from each seat.',words:['open-raise','chart','suited','offsuit','mix']},
+  facing:{how:'Someone raised first. You can re-raise (3-bet), call, or fold. A chart for each seat against each opener shows which hands do what.',words:['3-bet','open-raise','big blind','chart','out of position']},
+  mdf:{how:'If you fold too often, he can bet any two cards and win. This drill finds the smallest share of your hands you must keep playing against a bet.',words:['MDF','bluff','range']},
+  bluffbe:{how:'Now you are the one bluffing. How often does he need to fold for your bluff to make money?',words:['bluff','EV']},
+  implied:{how:'Sometimes the price is too high right now, but you will win more chips later when you hit. How much more would you need?',words:['implied odds','outs','draw']},
+  cbet:{how:'You raised before the flop and he called. On some flops your range is much stronger than his; on others his has caught up. That decides whether you keep betting (a c-bet) often and small, or check more.',words:['c-bet','range advantage','nut advantage','range','dry','connected']},
+  defend:{how:'Now you are the one who called, from the big blind, and he bets small on the flop. Small bets are cheap to call, but acting first makes your hand worth a bit less than its raw equity.',words:['out of position','realise','equity','c-bet']},
+  polar:{how:'On the river your hands are either very strong or worthless. Bet the strong ones, and bluff with some of the worthless ones, in exactly the ratio that leaves him no good answer.',words:['polarised','bluff-catcher','GTO','value']},
+  catch:{how:'You hold a hand that only beats bluffs. Count how many of his bets are bluffs (mostly draws that missed) and compare with the price.',words:['bluff-catcher','missed draw','combo','exploit']}
+};
+/*CORE-END*/
+
+/* ---------- state and persistence ---------- */
+const LSKEY='feltlab.v1';
+function freshState(){return {v:1,drills:{},leaks:{},log:[],seen:{}}}
+function loadLocal(){try{const s=localStorage.getItem(LSKEY);const o=s?JSON.parse(s):null;return o&&o.v===1?o:null}catch(e){return null}}
+function saveLocal(){try{localStorage.setItem(LSKEY,JSON.stringify(state))}catch(e){}}
+let state=loadLocal()||freshState();
+let remote=null,saveTimer=null,saving=false,dirty=false;
+const totalN=s=>Object.values((s&&s.drills)||{}).reduce((a,d)=>a+(d.n||0),0);
+function setSync(t){const el=document.getElementById('sync');if(el)el.textContent=t}
+function queueSave(){saveLocal();if(!remote)return;dirty=true;clearTimeout(saveTimer);saveTimer=setTimeout(flush,1200)}
+async function flush(){
+  if(!remote||saving||!dirty)return;saving=true;dirty=false;
+  try{await remote.set(JSON.parse(JSON.stringify(state)))}
+  catch(e){const c=e&&e.code;if(c==='unavailable'||c==='resource_exhausted')dirty=true;else{remote=null;setSync('Progress is saved in this browser only.')}}
+  saving=false;if(dirty&&remote)saveTimer=setTimeout(flush,4000);
+}
+async function initRemote(){
+  const cl=window.claude;if(!cl||typeof cl.use!=='function')return;
+  try{
+    const [db,user]=await Promise.all([cl.use('db'),cl.use('user')]);if(!db||!user)return;
+    const uid=await user.id();if(!uid)return;
+    const ref=db.doc('data/users/'+uid+'/progress'),snap=await ref.get();
+    const r=snap.exists?snap.data():null;
+    if(r&&r.v===1&&totalN(r)>totalN(state)){state=JSON.parse(JSON.stringify(r));saveLocal();if(!cur)render()}
+    remote=ref;setSync('Progress is saved to your account and follows you across devices.');
+    if(totalN(state)>totalN(r)){dirty=true;flush()}
+  }catch(e){}
+}
+function recordResult(id,fb){
+  const d=state.drills[id]||(state.drills[id]={n:0,sum:0,recent:[],ev:0,evN:0,estN:0,estAbs:0,estSig:0});
+  d.n++;d.sum+=fb.score;d.recent.push(Math.round(fb.score*100)/100);if(d.recent.length>20)d.recent.shift();
+  if(fb.evLoss!=null){d.ev+=fb.evLoss;d.evN++}
+  if(fb.estErr!=null){d.estN++;d.estAbs+=Math.abs(fb.estErr);d.estSig+=fb.estErr}
+  for(const t in state.leaks){const L=state.leaks[t];if(L.d===id)L.s=Math.round(L.s*0.85*1000)/1000}
+  for(const t of fb.leaks||[]){const L=state.leaks[t]||(state.leaks[t]={s:0,n:0,d:id});L.s+=1;L.n++;L.d=id}
+  for(const t in state.leaks)if(state.leaks[t].s<0.05)delete state.leaks[t];
+  state.log.push({t:Date.now(),d:id,s:Math.round(fb.score*100)});if(state.log.length>400)state.log.splice(0,state.log.length-400);
+  state.seen[id]=1;queueSave();
+}
+const avgRecent=d=>d&&d.recent.length?d.recent.reduce((a,b)=>a+b,0)/d.recent.length:null;
+
+/* ---------- UI ---------- */
+const app=document.getElementById('app');
+let tab='train',cur=null,session=null;
+const $=s=>app.querySelector(s);
+function setTabUI(){document.querySelectorAll('nav.tabs button').forEach(b=>{if(b.dataset.tab===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')})}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.tab;if(t==='mix'){startSession(null)}else{tab=t;cur=null;session=null;render()}}));
+
+/* ---------- plain-English word help ---------- */
+let glossOn=true;try{glossOn=localStorage.getItem('feltlab.terms')!=='off'}catch(e){}
+const SKIP='.pc,kbd,button,.term,.inl,svg,.grid,input,textarea,select,.math,.gpop,dt,dd';
+function annotate(root){
+  if(!glossOn||!root)return;const used=new Set(),nodes=[];
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(n){const p=n.parentElement;if(!p||p.closest(SKIP))return NodeFilter.FILTER_REJECT;return n.nodeValue.trim()?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT}});
+  while(w.nextNode())nodes.push(w.currentNode);
+  for(const node of nodes){
+    const text=node.nodeValue,frag=document.createDocumentFragment();let pos=0,changed=false;
+    for(;;){
+      RE_CI.lastIndex=pos;RE_CS.lastIndex=pos;const m1=RE_CI.exec(text),m2=RE_CS.exec(text),c=[];
+      if(m1)c.push([m1,MAP_CI[m1[1].toLowerCase()]]);if(m2)c.push([m2,MAP_CS[m2[1]]]);if(!c.length)break;
+      c.sort((a,b)=>a[0].index-b[0].index||b[0][1].length-a[0][1].length);const [m,id]=c[0],end=m.index+m[1].length;
+      if(used.has(id)){frag.appendChild(document.createTextNode(text.slice(pos,end)));pos=end;continue}
+      used.add(id);changed=true;frag.appendChild(document.createTextNode(text.slice(pos,m.index)));
+      const b=document.createElement('button');b.type='button';b.className='term';b.dataset.g=id;b.textContent=m[1];b.setAttribute('aria-label',m[1]+': explain');frag.appendChild(b);pos=end;
+    }
+    if(changed){frag.appendChild(document.createTextNode(text.slice(pos)));node.parentNode.replaceChild(frag,node)}
+  }
+}
+const pop=document.createElement('div');pop.className='gpop';pop.hidden=true;pop.setAttribute('role','dialog');document.body.appendChild(pop);
+let popFrom=null;
+function hidePop(){if(pop.hidden)return;pop.hidden=true;if(popFrom&&document.contains(popFrom))popFrom.focus({preventScroll:true});popFrom=null}
+function showPop(el){
+  const g=G_BY[el.dataset.g];if(!g)return;popFrom=el;
+  pop.innerHTML=`<div class="gph"><b></b><button type="button" class="gpx" aria-label="Close">×</button></div><p></p>`;
+  pop.querySelector('b').textContent=g.t;pop.querySelector('p').textContent=g.d;pop.setAttribute('aria-label',g.t);
+  pop.querySelector('.gpx').addEventListener('click',hidePop);pop.hidden=false;
+  if(window.innerWidth<560){pop.className='gpop sheet';pop.style.left=pop.style.top=''}
+  else{pop.className='gpop';const r=el.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight;
+    pop.style.left=clamp(r.left,12,window.innerWidth-pw-12)+'px';pop.style.top=(r.bottom+ph+12<window.innerHeight?r.bottom+6:Math.max(12,r.top-ph-6))+'px'}
+  pop.querySelector('.gpx').focus({preventScroll:true});
+}
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('.term');if(t){e.preventDefault();showPop(t);return}if(!pop.hidden&&!pop.contains(e.target))hidePop()});
+window.addEventListener('scroll',()=>{if(!pop.hidden&&!pop.classList.contains('sheet'))hidePop()},{passive:true});
+const levelLabel=n=>n?'Level '+n:'Start here';
+
+function render(){setTabUI();hidePop();if(cur){renderPlay();return}if(tab==='train')renderTrain();else if(tab==='progress')renderProgress();else if(tab==='guide')renderGuide();window.scrollTo(0,0)}
+
+function renderTrain(){
+  let h=`<div class="intro"><p>Each hand asks for one estimate or one decision. Then it explains the answer in plain words, shows the maths, and gives a rule of thumb. <b>You are graded on the decision, never on the cards that came.</b> New to the jargon? Tap any underlined word, or begin with <b>Start here</b>. Mixed deals hands from the drills where you score lowest.</p><button class="btn primary" id="mixgo">Start mixed session</button></div>`;
+  for(const L of LEVELS){
+    const ds=Object.values(DRILLS).filter(d=>d.level===L.n);
+    h+=`<section class="level"><div class="lvhead"><span class="eyebrow">${levelLabel(L.n)}</span><h3>${L.name}</h3><p>${L.sub}</p>${L.tag?`<span class="tagline">${L.tag}</span>`:''}</div><div class="drills">`;
+    for(const d of ds){const s=state.drills[d.id],a=avgRecent(s);
+      h+=`<button class="drill" data-id="${d.id}"><span class="dname">${d.name}</span><span class="dblurb">${d.blurb}</span><span class="dstat mono">${s?`${s.n} hands · ${Math.round(a*100)}% recent <span class="meter"><i style="width:${Math.round(a*100)}%"></i></span>`:'Not played yet'}</span></button>`}
+    h+='</div></section>';
+  }
+  app.innerHTML=h;annotate($('.intro p'));
+  app.querySelectorAll('.drill').forEach(b=>b.addEventListener('click',()=>startSession(b.dataset.id)));
+  $('#mixgo').addEventListener('click',()=>startSession(null));
+}
+
+function pickMix(){
+  const ids=Object.keys(DRILLS),w=ids.map(id=>{const d=state.drills[id];if(!d||d.n<3)return 2;return 0.5+3*(1-avgRecent(d))});
+  for(let k=0;k<5;k++){let x=Math.random()*w.reduce((a,b)=>a+b,0);for(let i=0;i<ids.length;i++){x-=w[i];if(x<=0){if(!cur||ids[i]!==cur.id||k===4)return ids[i];break}}}
+  return pick(ids);
+}
+function startSession(id){session={id,mix:!id,n:0,sum:0};tab=id?'train':'mix';nextHand()}
+function nextHand(){
+  const id=session.mix?pickMix():session.id;let sc=null;
+  for(let k=0;k<3&&!sc;k++){try{sc=DRILLS[id].gen()}catch(e){console.error(e)}}
+  if(!sc){cur=null;render();return}
+  cur={id,sc,answers:{},step:0,done:false,fb:null,showIntro:!state.seen[id]};hidePop();renderPlay();window.scrollTo(0,0);
+}
+function ringHTML(t){
+  let h='<div class="felt ring" role="img" aria-label="Six-seat table seen from above">';
+  for(const p of SEATS){const a=SEAT_ANG[p]*Math.PI/180,x=50+40*Math.cos(a),y=50+38*Math.sin(a),hi=p===t.ring.hi;
+    h+=`<span class="rseat ${hi?'hi':''}" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%">${t.ring.reveal?p:hi?'?':'seat'}</span>`}
+  return h+'<span class="dealer" style="left:62%;top:70%">D</span><span class="ringnote">Action moves clockwise ↻</span></div>';
+}
+function tableHTML(t){
+  if(t.ring)return ringHTML(t);
+  const slots=[];for(let i=0;i<5;i++)slots.push(t.board&&i<t.board.length?cardHTML(t.board[i]):'<span class="pc slot"></span>');
+  const vseat=t.vPos?`<div class="seat"><span class="pos">${t.vPos}</span>${t.vAct?`<span class="act">${t.vAct}</span>`:''}</div>`:'<div class="seat"><span class="act">Folded to you</span></div>';
+  return `<div class="felt">${vseat}<div class="mid"><div class="pot">Pot <b>${bb(t.pot)}</b></div><div class="board">${slots.join('')}</div><div class="street">${streetName(t.board?t.board.length:0)}</div></div>`
+    +`<div class="seat">${t.hero?`<div class="hole">${t.hero.map(c=>cardHTML(c,'lg')).join('')}</div>`:'<span class="act">your whole range</span>'}<span class="pos">${t.hPos||'You'}</span>${t.hAct?`<span class="act">${t.hAct}</span>`:''}</div></div>`;
+}
+function renderPlay(){
+  setTabUI();const d=DRILLS[cur.id],L=LEVELS.find(x=>x.n===d.level),avg=session.n?Math.round(session.sum/session.n*100):null;
+  app.innerHTML=`<div class="play">
+    <div class="playhead"><button class="linkbtn" id="back">← Drills</button><div class="grow"><div class="eyebrow">${session.mix?'Mixed session · ':''}${levelLabel(L.n)} · ${L.name}</div><h2>${d.name}</h2></div><button class="linkbtn" id="howbtn">How it works</button><div class="sess mono">Hand ${session.n+(cur.done?0:1)}${avg!=null?` · session ${avg}%`:''}</div></div>
+    <div id="introbox"></div>
+    <div id="tbl">${tableHTML(cur.sc.table)}</div>
+    <div class="panel"><div class="ctx">${cur.sc.context}</div><div id="steps" class="ctl" style="gap:10px"></div></div>
+    <div id="fb"></div></div>`;
+  $('#back').addEventListener('click',()=>{cur=null;session=null;tab=tab==='mix'?'train':tab;render()});
+  $('#howbtn').addEventListener('click',()=>{cur.showIntro=!cur.showIntro;renderIntro()});
+  renderIntro();annotate($('.ctx'));renderSteps();if(cur.done)renderFeedback(false);
+}
+function renderIntro(){
+  const box=$('#introbox'),I=INTRO[cur.id],hb=$('#howbtn');if(hb)hb.setAttribute('aria-expanded',String(!!cur.showIntro));
+  if(!cur.showIntro||!I){box.innerHTML='';return}
+  box.innerHTML=`<div class="panel introcard fadein"><div class="eyebrow">How this drill works</div><p>${I.how}</p>${I.words.length?`<div class="eyebrow">Words you will meet</div><dl>${I.words.filter(w=>G_BY[w]).map(w=>`<dt>${G_BY[w].t}</dt><dd>${G_BY[w].d}</dd>`).join('')}</dl>`:''}<button class="btn primary" id="gotit">Got it</button></div>`;
+  annotate(box.querySelector('p'));
+  $('#gotit').addEventListener('click',()=>{cur.showIntro=false;renderIntro()});
+}
+function fmtAns(st,v){return st.kind==='pct'?v+'%':st.kind==='choice'?st.options.find(o=>o[0]===v)[1]:String(v)}
+function renderSteps(){
+  const sc=cur.sc;let h='';
+  sc.steps.forEach((st,i)=>{
+    if(i<cur.step)h+=`<div class="locked"><span>${st.label}</span><b class="mono">${fmtAns(st,cur.answers[st.key])}</b></div>`;
+    else if(i===cur.step&&!cur.done){
+      if(st.kind==='pct')h+=`<div class="ctl"><label for="ctl-pct">${st.label}</label><div class="pctrow"><button class="btn sq" data-adj="-1" aria-label="Lower">−</button><input type="range" id="ctl-pct" min="0" max="100" step="1" value="${st.init}"><button class="btn sq" data-adj="1" aria-label="Higher">+</button><output id="ctl-out" class="readout mono">${st.init}%</output></div><button class="btn primary" id="lock">Lock in <kbd>↵</kbd></button></div>`;
+      else if(st.kind==='num')h+=`<div class="ctl"><label for="ctl-num">${st.label}</label><div class="pctrow"><button class="btn sq" data-adj="-1" aria-label="Fewer">−</button><input class="numin" type="number" id="ctl-num" inputmode="numeric" min="${st.min}" max="${st.max}" step="${st.step}" value="${st.init}"><button class="btn sq" data-adj="1" aria-label="More">+</button></div><button class="btn primary" id="lock">Lock in <kbd>↵</kbd></button></div>`;
+      else h+=`<div class="ctl"><div class="lbl">${st.label}</div><div class="choices">${st.options.map((o,j)=>`<button class="btn choice" data-v="${o[0]}"><kbd>${j+1}</kbd>${o[1]}</button>`).join('')}</div></div>`;
+    }
+  });
+  const el=$('#steps');el.innerHTML=h;annotate(el);
+  const rg=el.querySelector('#ctl-pct'),out=el.querySelector('#ctl-out'),num=el.querySelector('#ctl-num');
+  if(rg)rg.addEventListener('input',()=>{out.textContent=rg.value+'%'});
+  el.querySelectorAll('[data-adj]').forEach(b=>b.addEventListener('click',()=>{const t=rg||num,st=cur.sc.steps[cur.step];t.value=clamp(Number(t.value)+Number(b.dataset.adj),rg?0:st.min,rg?100:st.max);if(out)out.textContent=t.value+'%'}));
+  const lk=el.querySelector('#lock');if(lk)lk.addEventListener('click',lockStep);
+  el.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>answer(b.dataset.v)));
+  const f=rg||num;if(f&&cur.step>0)f.focus({preventScroll:true});
+}
+function lockStep(){
+  const st=cur.sc.steps[cur.step];
+  if(st.kind==='pct')answer(Number($('#ctl-pct').value));
+  else{let v=Number($('#ctl-num').value);if(!isFinite(v))v=st.init;answer(clamp(Math.round(v/st.step)*st.step,st.min,st.max))}
+}
+function answer(v){
+  const st=cur.sc.steps[cur.step];cur.answers[st.key]=v;cur.step++;
+  if(cur.step<cur.sc.steps.length){renderSteps();return}
+  const fb=cur.sc.evaluate(cur.answers);fb.score=clamp(fb.score,0,1);cur.fb=fb;cur.done=true;
+  recordResult(cur.id,fb);session.n++;session.sum+=fb.score;
+  if(cur.sc.table.ring){cur.sc.table.ring.reveal=true;$('#tbl').innerHTML=tableHTML(cur.sc.table)}
+  const s=app.querySelector('.sess');if(s)s.textContent=`Hand ${session.n} · session ${Math.round(session.sum/session.n*100)}%`;
+  renderSteps();renderFeedback(true);
+}
+const verdictOf=s=>s>=0.85?'good':s>=0.45?'ok':'miss';
+const VLABEL={good:'Sharp',ok:'Close',miss:'Leak'};
+function renderFeedback(scroll){
+  const fb=cur.fb,v=verdictOf(fb.score),L=LESSONS[cur.id];
+  const rows=fb.rows.map(r=>`<tr><td>${r[0]}</td><td class="n">${r[1]}</td><td class="n right">${r[2]}</td></tr>`).join('');
+  $('#fb').innerHTML=`<div class="panel fb fadein"><div class="fbhead"><span class="verdict ${v}">${VLABEL[v]}</span><span class="mono score">${Math.round(fb.score*100)} / 100</span>${fb.evLoss>0.005?`<span class="mono evl">${sgn(-fb.evLoss)} bb vs the best move</span>`:''}</div>
+    ${fb.plain?`<p class="plain">${fb.plain}</p>`:''}
+    ${fb.note?`<p class="note">${fb.note}</p>`:''}
+    <div class="tblwrap"><table class="cmp"><thead><tr><th></th><th>You</th><th>Correct</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <pre class="math">${fb.math}</pre>${fb.extra||''}
+    <div class="lesson"><div class="eyebrow">Rule of thumb · ${L.t}</div><p>${L.s}</p></div>
+    <div class="fbactions">${cur.sc.dealOut?'<button class="btn" id="deal">Deal it out</button>':''}<button class="btn primary" id="next">Next hand <kbd>↵</kbd></button></div><div class="dealres" id="dealres"></div></div>`;
+  annotate($('#fb .fb'));
+  $('#next').addEventListener('click',nextHand);
+  const dl=$('#deal');if(dl)dl.addEventListener('click',()=>{try{$('#dealres').innerHTML=cur.sc.dealOut()+' <span>How the cards fell does not change your grade.</span>'}catch(e){}dl.disabled=true});
+  if(scroll){const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;$('#fb').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})}
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&!pop.hidden){hidePop();return}
+  if(!cur||e.altKey||e.ctrlKey||e.metaKey)return;const tg=e.target;
+  if(e.key==='Enter'){if(tg&&tg.tagName==='BUTTON')return;if(cur.done){e.preventDefault();nextHand()}else if($('#lock')){e.preventDefault();lockStep()}return}
+  if(!cur.done&&/^[1-6]$/.test(e.key)&&!(tg&&tg.tagName==='INPUT'&&tg.type==='number')){const st=cur.sc.steps[cur.step];if(st&&st.kind==='choice'){const o=st.options[Number(e.key)-1];if(o)answer(o[0])}}
+});
+
+function sparkSVG(){
+  const lg=state.log;if(lg.length<2)return '<p class="muted">Play a few hands to see your trend.</p>';
+  const W=640,H=150,pl=34,pr=8,pt=10,pb=24,pts=[];
+  for(let i=0;i<lg.length;i++){const a=Math.max(0,i-19),sl=lg.slice(a,i+1);pts.push(sl.reduce((s,x)=>s+x.s,0)/sl.length)}
+  const x=i=>pl+(W-pl-pr)*(lg.length===1?0:i/(lg.length-1)),y=v=>pt+(H-pt-pb)*(1-v/100);
+  let g='';for(const v of [0,50,100])g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="JetBrains Mono, monospace">${v}</text>`;
+  const line=pts.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area=`${pl},${y(0)} ${line} ${x(pts.length-1).toFixed(1)},${y(0)}`;
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="Rolling average score">${g}<polygon points="${area}" fill="var(--accent)" fill-opacity=".10"/><polyline points="${line}" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="${x(pts.length-1)}" cy="${y(pts[pts.length-1])}" r="4" fill="var(--accent)"/><text x="${(pl+W-pr)/2}" y="${H-4}" text-anchor="middle" font-size="11" fill="var(--muted)">Hands played, oldest to newest (last ${lg.length})</text></svg>`;
+}
+function renderProgress(){
+  const ds=Object.values(state.drills),N=totalN(state),last=state.log.slice(-50),la=last.length?Math.round(last.reduce((a,b)=>a+b.s,0)/last.length):null;
+  const evN=ds.reduce((a,d)=>a+d.evN,0),evS=ds.reduce((a,d)=>a+d.ev,0),eN=ds.reduce((a,d)=>a+d.estN,0),eS=ds.reduce((a,d)=>a+d.estSig,0),eA=ds.reduce((a,d)=>a+d.estAbs,0);
+  let h=`<div class="tiles">
+    <div class="tile"><b>${N}</b><span>Hands played</span></div>
+    <div class="tile"><b>${la!=null?la+'%':'—'}</b><span>Average score, last ${last.length||50} hands</span></div>
+    <div class="tile"><b>${evN?n1(evS/evN)+' bb':'—'}</b><span>EV given up per decision (call/fold spots, vs the best move)</span></div>
+    <div class="tile"><b>${eN?(eS/eN>=0?'+':'−')+n1(Math.abs(eS/eN)):'—'}</b><span>Estimate bias, percentage points (+ = you guess high); average miss ${eN?n1(eA/eN):'—'} pts</span></div></div>
+    <section class="panel"><div class="eyebrow">Score trend · rolling 20-hand average, 0–100</div>${sparkSVG()}</section>`;
+  const lk=Object.entries(state.leaks).filter(([,L])=>L.s>=0.5).sort((a,b)=>b[1].s-a[1].s).slice(0,6);
+  h+=`<section class="panel"><div class="eyebrow">Current leaks · weighted to recent hands</div>`;
+  if(!lk.length)h+='<p class="muted">No recurring leaks yet. They appear here when a mistake repeats, and fade as you get the spot right.</p>';
+  for(const [t] of lk){const I=leakInfo(t);if(!I)continue;h+=`<div class="leak"><div><b>${I.title}</b><p>${I.desc}</p></div><button class="btn" data-drill="${I.drill}">Practise</button></div>`}
+  h+=`</section><section class="panel"><div class="eyebrow">By drill</div><div class="tblwrap"><table class="dtable"><thead><tr><th>Drill</th><th>Hands</th><th>Recent</th><th>All-time</th></tr></thead><tbody>`;
+  for(const d of Object.values(DRILLS)){const s=state.drills[d.id];h+=`<tr><td>${d.name}</td><td class="n">${s?s.n:0}</td><td class="n">${s?Math.round(avgRecent(s)*100)+'%':'—'}</td><td class="n">${s?Math.round(s.sum/s.n*100)+'%':'—'}</td></tr>`}
+  h+=`</tbody></table></div></section><div class="confirm" id="reset"><button class="linkbtn" id="rs1">Reset progress</button></div>`;
+  app.innerHTML=h;
+  app.querySelectorAll('[data-drill]').forEach(b=>b.addEventListener('click',()=>startSession(b.dataset.drill)));
+  $('#rs1').addEventListener('click',()=>{$('#reset').innerHTML='<span>Erase every score and leak?</span><button class="btn" id="rsy">Erase</button><button class="linkbtn" id="rsn">Keep</button>';
+    $('#rsy').addEventListener('click',()=>{state=freshState();queueSave();render()});$('#rsn').addEventListener('click',render)});
+}
+function renderGuide(){
+  let h=`<section class="panel guidep"><div class="eyebrow">How Felt Lab works</div>
+    <p><b>The idea.</b> Every poker decision is a bet on probabilities. A good decision makes money on average, even on the nights it loses; a bad one loses on average, even when it gets lucky. So Felt Lab grades your decision, not the result.</p>
+    <p><b>The scoring.</b> Where a choice has a money value, the grade uses EV (expected value): what the choice earns on average if you repeated it thousands of times. Estimates are graded on how close you get.</p>
+    <p><b>The goal.</b> GTO play is a strategy that cannot be beaten in the long run. Nobody plays it perfectly, but each level builds a piece of it: the odds (Levels 1, 2 and 4), which hands to play (Level 3), and how to bet so you cannot be read (Levels 5 and 6).</p>
+    <p><b>The words.</b> Tap any underlined word for a plain-English explanation; every word is also listed below. If you are new, begin with Start here on the Train tab.</p>
+    <label class="toggle" for="termtog"><input type="checkbox" id="termtog" ${glossOn?'checked':''}> Underline poker words so I can tap them</label></section>
+    <section class="panel"><div class="eyebrow">Words</div><input class="search" id="gsearch" type="search" placeholder="Search, e.g. equity" aria-label="Search words"><dl class="gloss" id="glist">`;
+  GC.forEach((c,i)=>{h+=`<div class="gcat eyebrow" data-c="${i}">${c}</div>`;for(const g of GLOSS.filter(x=>x.c===i))h+=`<dt data-c="${i}" data-q="${[g.t,...(g.a||[]),...(g.A||[])].join(' ').toLowerCase()}">${g.t}</dt><dd data-c="${i}">${g.d}</dd>`});
+  h+=`</dl><p class="muted" id="gnone" hidden>No word matches that search.</p></section>
+    <div class="guidep"><h2 style="font-size:26px">Rules of thumb</h2><p class="muted">Each rule unlocks once you have played its drill.</p></div>`;
+  for(const L of LEVELS){
+    h+=`<section class="level"><div class="lvhead"><span class="eyebrow">${levelLabel(L.n)}</span><h3>${L.name}</h3></div><div>`;
+    for(const d of Object.values(DRILLS).filter(x=>x.level===L.n)){const S=LESSONS[d.id],open=state.seen[d.id];
+      let extra='';if(open&&d.id==='rfi')extra=`<p class="muted mono" style="font-size:13px">From the charts in this app: ${Object.keys(RFI).map(p=>`${p} ${pct0(rangePct(RFI[p]))}`).join(' · ')}</p>`;
+      h+=`<div class="rule ${open?'':'lockedrule'}"><h3>${S.t}</h3>${open?`<p>${S.b}</p>${extra}`:`<p class="muted">Play <b>${d.name}</b> to unlock.</p>`}</div>`}
+    h+='</div></section>';
+  }
+  app.innerHTML=h;
+  app.querySelectorAll('.guidep p, .rule').forEach(annotate);
+  $('#termtog').addEventListener('change',e=>{glossOn=e.target.checked;try{localStorage.setItem('feltlab.terms',glossOn?'on':'off')}catch(er){}render()});
+  $('#gsearch').addEventListener('input',e=>{
+    const q=e.target.value.trim().toLowerCase(),vis={};let any=false;
+    app.querySelectorAll('#glist dt').forEach(dt=>{const show=!q||dt.dataset.q.includes(q)||dt.nextElementSibling.textContent.toLowerCase().includes(q);dt.hidden=!show;dt.nextElementSibling.hidden=!show;if(show){vis[dt.dataset.c]=1;any=true}});
+    app.querySelectorAll('#glist .gcat').forEach(c=>{c.hidden=!vis[c.dataset.c]});$('#gnone').hidden=any;
+  });
+}
+render();initRemote();annotate(document.querySelector('.brand .fmt'));
+</script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));</script>
+</body>
+</html>

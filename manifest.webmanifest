@@ -1,0 +1,35 @@
+{
+  "id": "./",
+  "name": "Felt Lab",
+  "short_name": "Felt Lab",
+  "description": "Hold’em decision drills from the basics to river game theory, graded on your decisions, not the cards.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EEF1EF",
+  "theme_color": "#1F3A5F",
+  "categories": [
+    "education",
+    "games"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
