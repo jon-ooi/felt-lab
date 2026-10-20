@@ -6,7 +6,7 @@ self.addEventListener('fetch',e=>{
   const r=e.request,u=new URL(r.url);if(r.method!=='GET')return;
   if(u.origin===location.origin){
     // the page itself: network first, so updates arrive; the cached copy when offline
-    if(r.mode==='navigate'){e.respondWith(fetch(r).then(res=>{const cp=res.clone();caches.open(V).then(c=>c.put('./index.html',cp));return res}).catch(()=>caches.match('./index.html')));return}
+    if(r.mode==='navigate'){e.respondWith(fetch(r.url,{cache:'no-cache',credentials:'same-origin'}).then(res=>{const cp=res.clone();caches.open(V).then(c=>c.put('./index.html',cp));return res}).catch(()=>caches.match('./index.html')));return}
     e.respondWith(caches.match(r).then(hit=>hit||fetch(r)));return;
   }
   if(u.hostname==='fonts.googleapis.com'||u.hostname==='fonts.gstatic.com')
