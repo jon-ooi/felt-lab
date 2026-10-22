@@ -155,6 +155,11 @@ body.playing .tabbar{display:none}
 .pctrow{display:flex;align-items:center;gap:10px}
 .pctrow input[type=range]{flex:1;accent-color:var(--accent);min-width:0;height:28px}
 .readout{font-size:28px;min-width:4.2ch;text-align:right;color:var(--accent)}
+.pctbox{display:inline-flex;align-items:baseline;gap:2px;font-size:26px;color:var(--accent);flex:none}
+.pctin{width:3.4ch;font-size:26px;text-align:right;color:var(--accent);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 6px;-moz-appearance:textfield;appearance:textfield}
+.pctin::-webkit-inner-spin-button,.pctin::-webkit-outer-spin-button,.numin::-webkit-inner-spin-button,.numin::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.pctin:focus,.numin:focus{border-color:var(--accent);outline:2px solid var(--accent);outline-offset:0}
+.hint{font-size:13px;color:var(--muted)}
 .numin{width:7ch;font-family:var(--f-mono);font-size:24px;padding:4px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);text-align:center}
 .btn{font-family:var(--f-display);font-size:18px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:9px 18px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
 .btn:hover{border-color:var(--accent)}
@@ -1192,15 +1197,22 @@ function renderSteps(){
   sc.steps.forEach((st,i)=>{
     if(i<cur.step)h+=`<div class="locked"><span>${st.label}</span><b class="mono">${fmtAns(st,cur.answers[st.key])}</b></div>`;
     else if(i===cur.step&&!cur.done){
-      if(st.kind==='pct')h+=`<div class="ctl"><label for="ctl-pct">${st.label}</label><div class="pctrow"><button class="btn sq" data-adj="-1" aria-label="Lower">−</button><input type="range" id="ctl-pct" min="0" max="100" step="1" value="${st.init}"><button class="btn sq" data-adj="1" aria-label="Higher">+</button><output id="ctl-out" class="readout mono">${st.init}%</output></div></div>`;
+      if(st.kind==='pct')h+=`<div class="ctl"><label for="ctl-pcttxt">${st.label}</label><div class="pctrow"><button class="btn sq" data-adj="-1" aria-label="Lower">−</button><input type="range" id="ctl-pct" min="0" max="100" step="1" value="${st.init}" aria-label="Slide to set the percentage"><button class="btn sq" data-adj="1" aria-label="Higher">+</button><span class="pctbox"><input class="pctin mono" type="number" id="ctl-pcttxt" inputmode="numeric" min="0" max="100" step="1" value="${st.init}"><span class="mono">%</span></span></div><span class="hint">Type a number or use the slider</span></div>`;
       else if(st.kind==='num')h+=`<div class="ctl"><label for="ctl-num">${st.label}</label><div class="pctrow"><button class="btn sq" data-adj="-1" aria-label="Fewer">−</button><input class="numin" type="number" id="ctl-num" inputmode="numeric" min="${st.min}" max="${st.max}" step="${st.step}" value="${st.init}"><button class="btn sq" data-adj="1" aria-label="More">+</button></div></div>`;
       else h+=`<div class="ctl"><div class="lbl">${st.label} <span class="muted" style="font-weight:400">· choose below</span></div></div>`;
     }
   });
   const el=$('#steps');el.innerHTML=h;annotate(el);
-  const rg=el.querySelector('#ctl-pct'),out=el.querySelector('#ctl-out'),num=el.querySelector('#ctl-num');
-  if(rg)rg.addEventListener('input',()=>{out.textContent=rg.value+'%'});
-  el.querySelectorAll('[data-adj]').forEach(b=>b.addEventListener('click',()=>{const t=rg||num,st=cur.sc.steps[cur.step];t.value=clamp(Number(t.value)+Number(b.dataset.adj),rg?0:st.min,rg?100:st.max);if(out)out.textContent=t.value+'%'}));
+  const rg=el.querySelector('#ctl-pct'),txt=el.querySelector('#ctl-pcttxt'),num=el.querySelector('#ctl-num');
+  if(rg){
+    rg.addEventListener('input',()=>{txt.value=rg.value});
+    txt.addEventListener('input',()=>{const v=Number(txt.value);if(txt.value!==''&&isFinite(v))rg.value=clamp(Math.round(v),0,100)});
+    txt.addEventListener('focus',()=>txt.select());
+  }
+  if(num)num.addEventListener('focus',()=>num.select());
+  el.querySelectorAll('[data-adj]').forEach(b=>b.addEventListener('click',()=>{const st=cur.sc.steps[cur.step];
+    if(rg){const v=clamp((Number(txt.value)||0)+Number(b.dataset.adj),0,100);rg.value=v;txt.value=v}
+    else num.value=clamp(Number(num.value)+Number(b.dataset.adj),st.min,st.max)}));
 }
 function renderBar(){
   if(!cur){actionbar.hidden=true;actionbar.innerHTML='';document.body.classList.remove('playing');setBarH();return}
@@ -1220,7 +1232,7 @@ function renderBar(){
 }
 function lockStep(){
   const st=cur.sc.steps[cur.step];
-  if(st.kind==='pct')answer(Number($('#ctl-pct').value));
+  if(st.kind==='pct'){const t=$('#ctl-pcttxt');let v=Number(t.value);if(t.value.trim()===''||!isFinite(v))v=Number($('#ctl-pct').value);answer(clamp(Math.round(v),0,100))}
   else{let v=Number($('#ctl-num').value);if(!isFinite(v))v=st.init;answer(clamp(Math.round(v/st.step)*st.step,st.min,st.max))}
 }
 function answer(v){
