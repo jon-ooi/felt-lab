@@ -577,7 +577,7 @@ const SEAT_Q=[
 D('seats',{level:0,name:'Name the seat',blurb:'Six seats around the table, and who acts when.',gen(){
   const named=Math.random()<0.5,Q=named?null:pick(SEAT_Q),s=named?pick(SEATS):Q.a;
   return {table:{ring:{hi:named?s:null,reveal:false}},
-    context:named?'The dealer button (the white D disc) marks the button seat. Moving clockwise, the next two seats post the blinds. What is the highlighted seat called?':`The dealer button (the white D disc) marks the button seat. ${Q.q}`,
+    context:named?'The dealer button (the white D disc) marks the button seat. Moving clockwise, the next two seats post the blinds. What is the name of the highlighted seat?':`The dealer button (the white D disc) marks the button seat. ${Q.q}`,
     steps:[{kind:'choice',key:'c',label:named?'This seat is the…':Q.q,options:SEATS.map(p=>[p,p])}],
     evaluate(a){const ok=a.c===s;
       return {score:ok?1:0,plain:named?G_BY[SEAT_G[s]].d:Q.why,rows:[['Seat',a.c,s]],
@@ -845,7 +845,7 @@ const LESSONS={
   seats:{t:'Seats and position',s:'Before the flop: UTG, HJ, CO, BTN, SB, BB. After the flop: SB first, BTN last. Acting last is an advantage, so play more hands near the button.',
     b:'The button (the dealer disc) moves one seat clockwise each hand, and the seat names follow it. Before the flop the order is UTG, HJ, CO, BTN, SB, BB; after the flop the small blind acts first and the button last. Acting last means you see everyone else’s choice before making yours, so good players play more hands the closer they sit to the button.'},
   potodds:{t:'The price of a call',s:'Break-even equity = bet ÷ (pot + 2 × bet). ⅓ pot → 20%, ½ → 25%, ⅔ → 29%, pot → 33%, 2× → 40%.',
-    b:'Break-even equity = bet ÷ (pot + 2 × bet). The "2 × bet" is his bet plus your call: the final pot you are playing for. Learn the common sizes by heart: ¼ pot → 17%, ⅓ → 20%, ½ → 25%, ⅔ → 29%, ¾ → 30%, pot → 33%, 1.5× → 38%, 2× → 40%. Bigger bets raise the price, but slowly: doubling from pot to 2× pot only moves it from 33% to 40%.'},
+    b:'Break-even equity = bet ÷ (pot + 2 × bet). The "2 × bet" is his bet plus your call: the final pot you are playing for. Learn the common sizes by heart: ¼ pot → 17%, ⅓ → 20%, ½ → 25%, ⅔ → 29%, ¾ → 30%, pot → 33%, 1.5× → 38%, 2× → 40%. Bigger bets push the price up, but slowly: doubling from pot to 2× pot only moves it from 33% to 40%.'},
   outs:{t:'Rule of 2 and 4',s:'Flop, seeing both cards: outs × 4 (subtract outs − 8 above 8 outs). One card to come: outs × 2.',
     b:'Outs are unseen cards that complete your hand. On the flop, if you will see both cards (an all-in), outs × 4 ≈ % to hit by the river; above 8 outs subtract (outs − 8). With one card to come, outs × 2 (exactly outs ÷ 46 on the turn). Common counts: flush draw 9, open-ended straight draw 8, gutshot 4, flush draw + open-ender 15, flush draw + gutshot 12.'},
   drawcall:{t:'Draws against bets',s:'A turn flush draw has ≈ 20%: enough vs a ⅓-pot bet, not vs ½ pot. All-in on the flop it has ≈ 35% and can call a pot-sized shove.',
@@ -947,7 +947,7 @@ const GLOSS=[
   {id:'second pair',t:'Second pair',c:2,a:['second pair'],d:'You pair the second-highest card on the board.'},
   {id:'overpair',t:'Overpair',c:2,a:['overpair','overpairs'],d:'A pocket pair higher than every card on the board, like Q-Q on a 9-6-2 board.'},
   {id:'underpair',t:'Underpair',c:2,a:['underpair'],d:'A pocket pair lower than every card on the board.'},
-  {id:'set',t:'Set',c:2,a:['set','sets'],d:'Three of a kind made from a pocket pair plus one matching board card. Very strong, and well hidden.'},
+  {id:'set',t:'Set',c:2,a:['set'],d:'Three of a kind made from a pocket pair plus one matching board card. Very strong, and well hidden.'},
   {id:'kicker',t:'Kicker',c:2,a:['kicker','kickers'],d:'Your side card that breaks ties. On an ace-high board, A-K beats A-Q because the king kicker is higher.'},
   {id:'nuts',t:'The nuts',c:2,a:['nuts'],d:'The best possible hand on this board.'},
   {id:'dominated',t:'Dominated',c:2,a:['dominated','dominating'],d:'Your hand shares a card with his, but his other card is higher, like A-Q against A-K. You win only about a quarter of the time.'},
@@ -968,9 +968,10 @@ const GLOSS=[
   {id:'3-bet',t:'3-bet',c:3,a:['3-bet','3-bets','3-betting','re-raise'],d:'A re-raise before the flop. The big blind counts as the first bet and the open-raise as the second, so the re-raise is the third.'},
   {id:'c-bet',t:'Continuation bet (c-bet)',c:3,a:['c-bet','c-bets','continuation bet','continuation-bet'],d:'A bet on the flop by the player who raised before the flop, continuing to represent a strong hand.'},
   {id:'bluff',t:'Bluff',c:3,a:['bluff','bluffs','bluffing','semi-bluff'],d:'Betting a weak hand to make a better hand fold. A semi-bluff is a bluff with a draw that can still improve.'},
-  {id:'value',t:'Value bet',c:3,a:['value'],d:'Betting a strong hand because worse hands will call. The opposite of a bluff.'},
+  {id:'value',t:'Value',c:3,a:['value'],d:'Betting a strong hand because worse hands will call: a "value bet". "Value combos" or "value hands" are the strong hands in a betting range. The opposite of a bluff.'},
   {id:'equity',t:'Equity',c:4,a:['equity','raw equity'],d:'Your share of the pot if all the cards were dealt out now: the chance you finish with the best hand, with ties counting half. 40% equity means you win 4 times in 10.'},
-  {id:'pot odds',t:'Pot odds (the price)',c:4,a:['pot odds','price','break-even','break even'],d:'How often a call must win to pay for itself. Pay 10 to win 30 and you must win 10 out of the 40 in the final pot: 25%. If your equity is higher than the price, the call makes money.'},
+  {id:'pot odds',t:'Pot odds (the price)',c:4,a:['pot odds','price'],d:'How often a call must win to pay for itself. Pay 10 to win 30 and you must win 10 out of the 40 in the final pot: 25%. If your equity is higher than the price, the call makes money.'},
+  {id:'break-even',t:'Break-even',c:4,a:['break-even','break even'],d:'The point where a choice neither makes nor loses money on average. A call breaks even when your chance of winning equals the price; a bluff breaks even when he folds just often enough to pay for the times he calls.'},
   {id:'EV',t:'EV (expected value)',c:4,a:['expected value'],A:['EV'],d:'What a decision earns on average if you made it thousands of times. "+2 bb" means it gains 2 bb per time on average, even though any single hand can still lose.'},
   {id:'outs',t:'Outs',c:4,a:['outs'],d:'The unseen cards that would give you the winning hand. A flush draw has 9 outs: the 9 remaining cards of your suit.'},
   {id:'rule of 2 and 4',t:'Rule of 2 and 4',c:4,a:['rule of 2 and 4','rule of 4','rule of 2'],d:'A quick way to turn outs into a percentage. Two cards to come: outs × 4. One card to come: outs × 2. So 9 outs ≈ 36% on the flop and 18% on the turn.'},
@@ -986,7 +987,7 @@ const GLOSS=[
   {id:'GTO',t:'GTO (game theory optimal)',c:5,a:['game theory optimal','game theory'],A:['GTO'],d:'A strategy that cannot be beaten over the long run, whatever the opponent does. It mixes value bets and bluffs in proportions that leave him no profitable answer. Nobody plays it perfectly; it is the target you move towards.'},
   {id:'solver',t:'Solver',c:5,a:['solver','solvers'],d:'A computer program that works out GTO strategies for simplified poker spots. The charts and patterns here imitate what solvers show.'},
   {id:'exploit',t:'Exploiting',c:5,a:['exploit','exploiting','exploitative'],d:'Changing your play to punish an opponent’s specific mistake, like folding more against someone who never bluffs. It earns more than GTO against weak players, but leaves you open to being punished in return.'},
-  {id:'mix',t:'Mixing',c:5,a:['mix','mixes','mixing'],d:'Playing the same hand two ways at set frequencies, like raise 60% and fold 40%, so opponents cannot read you. In this trainer either action counts as correct.'}
+  {id:'mix',t:'Mixing',c:5,a:['mixes','mixing'],d:'Playing the same hand two ways at set frequencies, like raise 60% and fold 40%, so opponents cannot read you. In this trainer either action counts as correct.'}
 ];
 const G_BY={};const _gci=[],_gcs=[];
 for(const g of GLOSS){G_BY[g.id]=g;for(const w of g.a||[])_gci.push([w.toLowerCase(),g.id]);for(const w of g.A||[])_gcs.push([w,g.id])}
@@ -1079,7 +1080,7 @@ window.addEventListener('popstate',()=>{hidePop();if(cur)leavePlay()});
 
 /* ---------- plain-English word help ---------- */
 let glossOn=true;try{glossOn=localStorage.getItem('feltlab.terms')!=='off'}catch(e){}
-const SKIP='.pc,kbd,button,.term,.inl,svg,.grid,input,textarea,select,.math,.gpop,dt,dd';
+const SKIP='.pc,kbd,button,.term,.inl,svg,.grid,input,textarea,select,.math,.gpop,dt,dd,.noterm';
 function annotate(root){
   if(!glossOn||!root)return;const used=new Set(),nodes=[];
   const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(n){const p=n.parentElement;if(!p||p.closest(SKIP))return NodeFilter.FILTER_REJECT;return n.nodeValue.trim()?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT}});
@@ -1231,7 +1232,7 @@ function answer(v){
   renderAppbar();renderSteps();renderFeedback(true);renderBar();buzz(verdictOf(fb.score));
 }
 const verdictOf=s=>s>=0.85?'good':s>=0.45?'ok':'miss';
-const VLABEL={good:'Sharp',ok:'Close',miss:'Leak'};
+const VLABEL={good:'Correct',ok:'Close',miss:'Leak'};
 function renderFeedback(scroll){
   const fb=cur.fb,v=verdictOf(fb.score),L=LESSONS[cur.id];
   const rows=fb.rows.map(r=>`<tr><td>${r[0]}</td><td class="n">${r[1]}</td><td class="n right">${r[2]}</td></tr>`).join('');
