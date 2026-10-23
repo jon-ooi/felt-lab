@@ -270,75 +270,163 @@ table.cmp td.right{color:var(--good);font-weight:600}
 .lp-top .in{max-width:880px;margin:0 auto;min-height:56px;display:flex;align-items:center;gap:8px;padding-left:max(10px, env(safe-area-inset-left,0px));padding-right:max(10px, env(safe-area-inset-right,0px))}
 .lp-body>*{flex-shrink:0}
 .lp-body{flex:1;overflow-y:auto;overflow-x:hidden;width:100%;max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:14px;padding-block:14px 20px;padding-left:max(14px, env(safe-area-inset-left,0px));padding-right:max(14px, env(safe-area-inset-right,0px))}
-.stage{--accent:#F2B33D;--accent-ink:#1A1200;--call:#86B5A6;--cell:rgba(255,255,255,.09);position:relative;background:radial-gradient(ellipse at 50% 40%, var(--felt) 0%, var(--felt-2) 80%);border-radius:18px;color:var(--felt-ink);min-height:min(52vh,420px);display:flex;align-items:center;justify-content:center;padding:24px 18px;overflow:hidden;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-.stage.paused *{animation-play-state:paused!important}
+.stage{--accent:#F2B33D;--accent-ink:#1A1200;--call:#86B5A6;--cell:rgba(255,255,255,.09);--win:#71CF99;--lose:#F08A84;position:relative;isolation:isolate;background:radial-gradient(ellipse at 50% 38%, #2F5683 0%, var(--felt) 45%, var(--felt-2) 85%);border-radius:20px;color:var(--felt-ink);min-height:min(54vh,440px);display:flex;align-items:center;justify-content:center;padding:26px 18px 30px;overflow:hidden;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 -40px 80px rgba(0,0,0,.25)}
+.stage::before{content:"";position:absolute;inset:-35%;z-index:-1;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.10),transparent 38%),radial-gradient(circle at 75% 70%,rgba(242,179,61,.07),transparent 40%);animation:drift 16s ease-in-out infinite alternate;pointer-events:none}
+@keyframes drift{to{transform:translate(10%,7%) rotate(6deg)}}
+.stage.paused *,.stage.paused::before{animation-play-state:paused!important}
+.stage.static *{animation:none!important}
+.stage.static .pop,.stage.static .deal,.stage.static .cellin,.stage.static .seatin{opacity:1}
+.stage.static .arc{stroke-dashoffset:var(--o)}
+.stage.static .stamp{opacity:1;transform:rotate(-8deg)}
+.glow{opacity:1}
+.stbar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.08)}
+.stbar i{display:block;height:100%;background:var(--accent);transform-origin:left;animation:grow linear both}
 .lp.mode-a .stage{display:none}
 .lp-audio{display:none;flex-direction:column;align-items:center;gap:8px;padding:28px 12px;text-align:center}
 .lp.mode-a .lp-audio{display:flex}
-.lp-audio .big{width:84px;height:84px;border-radius:50%;background:var(--sel);color:var(--accent);display:grid;place-items:center}
-.lp-audio .big svg{width:40px;height:40px}
+.lp-audio .big{width:96px;height:96px;border-radius:50%;background:var(--sel);color:var(--accent);display:grid;place-items:center;position:relative}
+.lp-audio .big svg{width:44px;height:44px}
+.lp-audio .big::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid var(--accent);opacity:0}
+.lp.speaking .lp-audio .big::after{animation:ring 1.6s ease-out infinite}
+@keyframes ring{from{transform:scale(.9);opacity:.7}to{transform:scale(1.25);opacity:0}}
 .lp-audio b{font-family:var(--f-display);font-size:28px;line-height:1.1}
-.cap{font-size:18px;line-height:1.5;min-height:3em;max-width:62ch;margin:0 auto;text-align:center}
+.cap{font-size:19px;line-height:1.5;min-height:3em;max-width:62ch;margin:0 auto;text-align:center}
+.cap span{color:var(--muted);transition:color .12s}
+.cap span.on{color:var(--ink)}
+.cap span.now{color:var(--accent);font-weight:600}
 .lp.nocap .cap{visibility:hidden}
 .lp.mode-v .cap{visibility:visible}
 .lp-prog{display:flex;gap:5px;max-width:420px;width:100%;margin:0 auto}
 .lp-prog i{flex:1;height:5px;border-radius:3px;background:var(--surface-2)}
 .lp-prog i.on{background:var(--accent)}
+.lp-prog i.q{background:var(--hl)}
 .lp-ctrl{display:flex;align-items:center;justify-content:center;gap:16px}
-.playbtn{width:66px;height:66px;border-radius:50%;background:var(--accent);color:var(--accent-ink);border:0;display:grid;place-items:center;cursor:pointer}
+.playbtn{width:66px;height:66px;border-radius:50%;background:var(--accent);color:var(--accent-ink);border:0;display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .playbtn svg{width:30px;height:30px}
-.ratebtn{min-width:52px;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--f-mono);font-size:13px;cursor:pointer}
+.ratebtn{min-width:52px;height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--f-mono);font-size:13px;cursor:pointer;white-space:nowrap}
+.ratebtn[aria-pressed="false"]{color:var(--muted)}
 .lp-opts{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;min-width:0}
-#lpvoice{width:100%;max-width:360px;display:flex;justify-content:center}
+.lp-optrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+#lpvoice{width:100%;max-width:420px;display:flex;flex-direction:column;gap:8px}
+.vrow{display:flex;gap:8px;width:100%}
+.lp-voice{flex:1;font:inherit;font-size:14px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:100%;min-width:0;text-overflow:ellipsis}
+.vhelp{font-size:14px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:8px 12px;text-align:left}
+.vhelp summary{cursor:pointer;color:var(--ink);font-weight:600}
+.vhelp p{margin:6px 0 0}
+.lp.mode-v .soundonly{display:none}
 .lp-note{font-size:13px;color:var(--muted);text-align:center;max-width:60ch;margin:0 auto}
-.lp-voice{font:inherit;font-size:14px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:100%;min-width:0;text-overflow:ellipsis}
 .seg{display:inline-flex;flex-wrap:wrap;justify-content:center;background:var(--surface-2);border-radius:12px;padding:3px;gap:2px}
 .seg button{border:0;background:none;padding:7px 11px;border-radius:9px;font-family:var(--f-display);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
 .seg button svg{width:18px;height:18px}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.12)}
-.sc{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:640px}
+/* scenes */
+.sc{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:640px;animation:scin .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes scin{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
 .sc .eyebrow{color:var(--felt-dim)}
-.sc-title h2{font-size:clamp(34px,8vw,56px);line-height:1.02;color:var(--felt-ink)}
-.sc-math{font-family:var(--f-mono);font-size:clamp(16px,3.8vw,24px);gap:12px;align-items:stretch;text-align:left;max-width:560px}
-.sc-math div{background:rgba(255,255,255,.07);border-radius:10px;padding:8px 14px}
-.sc-big .n{font-family:var(--f-display);font-weight:700;font-size:clamp(38px,9vw,72px);line-height:1.05;color:var(--accent);text-wrap:balance}
+.pop{opacity:0;animation:pop .5s cubic-bezier(.2,.9,.3,1.25) both}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.92)}to{opacity:1;transform:none}}
+.deal{opacity:0;animation:deal .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes deal{0%{opacity:0;transform:translate(60px,-150px) rotate(-35deg) scale(.6)}60%{opacity:1}100%{opacity:1;transform:none}}
+.pc.glow{animation:glowk .8s ease-in-out infinite alternate}
+@keyframes glowk{from{box-shadow:0 0 0 0 rgba(242,179,61,0),0 3px 8px rgba(0,0,0,.25)}to{box-shadow:0 0 0 4px rgba(242,179,61,.95),0 0 22px rgba(242,179,61,.6)}}
+.sc-title{gap:10px}
+.sc-title h2{font-size:clamp(36px,8.5vw,60px);line-height:1.02;color:var(--felt-ink);text-wrap:balance}
+.fan{position:relative;width:150px;height:96px;margin-bottom:6px}
+.fan i{position:absolute;left:50%;top:6px;width:58px;height:82px;margin-left:-29px;border-radius:8px;background:repeating-linear-gradient(45deg,#7A2633 0 6px,#8E2F3D 6px 12px);border:3px solid #F4F1EA;box-shadow:0 6px 14px rgba(0,0,0,.35);transform-origin:50% 100%;animation:fanin .7s cubic-bezier(.2,.8,.2,1) both}
+.fan i:nth-child(1){--r:-18deg;animation-delay:.05s}.fan i:nth-child(2){--r:0deg;animation-delay:.15s}.fan i:nth-child(3){--r:18deg;animation-delay:.25s}
+@keyframes fanin{from{transform:rotate(0) translateY(30px);opacity:0}to{transform:rotate(var(--r));opacity:1}}
+.sc-deal{gap:12px}
+.dl-seat{display:flex;flex-direction:column;align-items:center;gap:4px}
+.potline{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:17px;color:var(--felt-dim)}
+.potline b{color:var(--felt-ink);font-size:22px}
+.bubble{background:rgba(255,255,255,.14);border-radius:999px;padding:7px 18px;font-family:var(--f-mono);font-size:17px;font-weight:600;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.chips{display:flex;flex-direction:column-reverse;align-items:center}
+.chips.mini{transform:scale(.8)}
+.chipc{display:block;width:38px;height:11px;border-radius:50%;background:radial-gradient(ellipse at 50% 35%,#FFD36E,#E0A12A 60%,#A86F10);box-shadow:0 1px 0 #7A500A,inset 0 0 0 2px rgba(255,255,255,.35);margin-top:-5px}
+.sc-pot .stacks{display:flex;align-items:flex-end;justify-content:center;gap:12px;flex-wrap:wrap}
+.stk{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:76px}
+.stk b{font-size:24px}
+.stk span{font-size:13px;color:var(--felt-dim)}
+.plus{font-family:var(--f-display);font-size:30px;color:var(--felt-dim);align-self:center}
+.tot{font-family:var(--f-display);font-size:clamp(28px,6vw,40px);font-weight:700}
+.tot b{color:var(--accent)}
+.tot span{display:block;font-family:var(--f-body);font-size:15px;font-weight:400;color:var(--felt-dim)}
+.sc-frac{flex-direction:row;justify-content:center;gap:18px;flex-wrap:wrap}
+.fr{display:inline-flex;flex-direction:column;align-items:center;gap:6px}
+.fr b{font-size:clamp(40px,10vw,60px);line-height:1}
+.fr span{font-size:13px;color:var(--felt-dim);text-transform:uppercase;letter-spacing:.1em;font-family:var(--f-display)}
+.fbar{display:block;width:150px;height:4px;border-radius:2px;background:var(--felt-ink);transform-origin:center;animation:grow .5s ease-out both}
+.eq{font-family:var(--f-display);font-size:clamp(44px,11vw,72px);font-weight:700;line-height:1}
+.eq b{color:var(--accent)}
+.sc-tokens .toks{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.tok{width:52px;height:72px;border-radius:9px;background:repeating-linear-gradient(45deg,#7A2633 0 6px,#8E2F3D 6px 12px);border:3px solid #F4F1EA;box-shadow:0 5px 12px rgba(0,0,0,.3);display:grid;place-items:center;font-size:30px;font-weight:700;color:#fff}
+.tok.win{background:var(--win);color:#0D2A1B}
+.tok.win.glow{animation:glowk .8s ease-in-out infinite alternate}
+.sc-tokens .l{font-size:clamp(18px,4.2vw,24px);font-weight:600}
+.sc-ring{gap:10px}
+.ringbox{position:relative;width:min(230px,58vw);aspect-ratio:1}
+.ringsvg{width:100%;height:100%;display:block}
+.ringsvg .trk{fill:none;stroke:rgba(255,255,255,.1);stroke-width:16}
+.ringsvg .arc{fill:none;stroke-width:16;stroke-linecap:round;transform:rotate(-90deg);transform-origin:110px 110px;stroke-dashoffset:var(--c);animation:arc 1.2s cubic-bezier(.2,.8,.2,1) both}
+.ringsvg .ra{stroke:#71CF99}.ringsvg .rb{stroke:#F2B33D}
+@keyframes arc{from{stroke-dashoffset:var(--c)}to{stroke-dashoffset:var(--o)}}
+.stamp{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:clamp(26px,6.5vw,38px);letter-spacing:.08em;opacity:0;animation:stamp .45s cubic-bezier(.2,.9,.3,1.4) both}
+.stamp.ok{color:var(--win)}.stamp.no{color:var(--lose)}
+@keyframes stamp{from{opacity:0;transform:scale(2.2) rotate(-12deg)}to{opacity:1;transform:rotate(-8deg)}}
+.rleg{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;font-size:16px}
+.rleg div{display:flex;align-items:center;gap:8px}
+.rleg .sw{width:12px;height:12px;border-radius:3px}.rleg .sw.a{background:#71CF99}.rleg .sw.b{background:#F2B33D}
+.rleg b{color:var(--felt-ink);font-size:18px}
+.sc-math{font-family:var(--f-mono);font-size:clamp(16px,3.8vw,23px);gap:10px;align-items:stretch;text-align:left;max-width:560px}
+.sc-math .ml{background:rgba(255,255,255,.07);border-radius:10px;padding:9px 14px;transition:background .3s, box-shadow .3s}
+.lit{background:rgba(242,179,61,.16)!important;box-shadow:inset 3px 0 0 var(--accent)}
+.sc-big .n{font-family:var(--f-display);font-weight:700;font-size:clamp(38px,9vw,70px);line-height:1.05;color:var(--accent);text-wrap:balance}
 .sc-big .l{color:var(--felt-ink);font-size:clamp(16px,3.6vw,20px)}
-.sc-list{list-style:none;padding:0;margin:0;align-items:stretch;gap:10px;font-size:clamp(16px,3.8vw,22px);text-align:left;max-width:560px}
-.sc-list li{display:flex;gap:12px;align-items:baseline}
+.sc-list{list-style:none;padding:0;margin:0;align-items:stretch;gap:8px;font-size:clamp(16px,3.8vw,22px);text-align:left;max-width:560px}
+.sc-list li{display:flex;gap:12px;align-items:baseline;border-radius:8px;padding:4px 10px;transition:background .3s}
 .sc-list li::before{content:"";flex:none;width:9px;height:9px;border-radius:50%;background:var(--accent);transform:translateY(-2px)}
 .sc-tab table{border-collapse:collapse;width:100%;max-width:440px;margin:0 auto;font-size:clamp(16px,3.8vw,21px)}
 .sc-tab th{font-family:var(--f-display);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--felt-dim);text-align:left;padding:4px 10px;font-weight:600}
 .sc-tab td{padding:8px 10px;border-top:1px solid rgba(255,255,255,.12);text-align:left}
 .sc-tab td:last-child,.sc-tab th:last-child{text-align:right;font-family:var(--f-mono);color:var(--accent)}
-.sc-cards .grps{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 26px}
-.sc-cards .grp{display:flex;flex-direction:column;align-items:center;gap:6px}
-.sc-cards .board{flex-wrap:wrap;justify-content:center}
-.sc-cards .note,.sc-spot .act{font-size:clamp(16px,3.8vw,20px);font-weight:600}
-.sc-spot{gap:16px}
-.sc-spot .pot{font-family:var(--f-mono);font-size:18px;color:var(--felt-dim)}
-.sc-spot .pot b{color:var(--felt-ink);font-size:24px}
-.sc-spot .act{background:rgba(255,255,255,.12);border-radius:999px;padding:6px 16px;font-family:var(--f-mono);font-size:17px}
+.sc-tab tr{transition:background .3s}
 .sc-bars{gap:12px;align-items:stretch;max-width:560px}
 .sc-bars .br{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 3.4em;gap:10px;align-items:center;text-align:left;font-size:clamp(14px,3.3vw,17px)}
 .sc-bars .bt{position:relative;height:14px;border-radius:7px;background:rgba(255,255,255,.12)}
-.sc-bars .bf{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:var(--accent);transform-origin:left;animation:grow .8s ease-out both}
-.sc-bars .bf.no{background:#E57373}.sc-bars .bf.ok{background:#71CF99}
-.sc-bars .mk{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--felt-ink);z-index:1}
+.sc-bars .bf{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:var(--accent);transform-origin:left;animation:grow .9s cubic-bezier(.2,.8,.2,1) both}
+.sc-bars .bf.no{background:var(--lose)}.sc-bars .bf.ok{background:var(--win)}
+.sc-bars .mk{position:absolute;top:-6px;bottom:-6px;width:3px;border-radius:2px;background:var(--felt-ink);z-index:1}
 .sc-bars .bv{text-align:right;color:var(--accent)}
 .sc-bars .mkl{font-size:13px;color:var(--felt-dim)}
 @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .sc-charts{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:16px}
-.sc-charts .ch{flex:1 1 150px;max-width:260px;display:flex;flex-direction:column;gap:6px}
+.sc-charts .ch{flex:1 1 150px;max-width:270px;display:flex;flex-direction:column;gap:6px}
 .sc-charts .grid{font-size:0;max-width:none}
+.cellin{opacity:0;animation:pop .35s ease-out both}
 .sc-charts .chl{font-size:14px;color:var(--felt-ink);font-weight:600}
 .sc-seats{max-width:520px}
 .stage .felt.ring{background:none;border:0;box-shadow:none;min-height:250px;width:100%}
+.seatin{opacity:0;animation:seatin .45s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes seatin{from{opacity:0;transform:translate(-50%,-50%) scale(.3)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.sc-quiz{gap:16px}
+.sc-quiz .eyebrow{color:var(--accent);font-size:15px}
+.sc-quiz .q{font-family:var(--f-body);font-weight:600;font-size:clamp(19px,4.4vw,26px);line-height:1.35;max-width:30ch;text-wrap:balance}
+.qopts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%}
+.qopt{flex:0 1 auto;min-width:110px;padding:13px 20px;border-radius:14px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:var(--felt-ink);font-family:var(--f-display);font-weight:700;font-size:21px;letter-spacing:.04em;cursor:pointer;transition:transform .15s, background .2s, border-color .2s}
+.qopt:hover:not(:disabled){background:rgba(255,255,255,.16)}
+.qopt:active:not(:disabled){transform:scale(.96)}
+.qopt kbd{border-color:currentColor}
+.qopt.right{background:#2E7D4F;border-color:var(--win);animation:pop .4s both}
+.qopt.wrong{background:#7A2E2E;border-color:var(--lose);animation:shake .4s both}
+.qopt:disabled:not(.right):not(.wrong){opacity:.45}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.qhint{font-size:14px;color:var(--felt-dim);min-height:1.4em}
+.qhint.good{color:var(--win);font-weight:700;font-size:18px}.qhint.bad{color:var(--lose);font-weight:700;font-size:18px}
 .sc-end .btns{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .sc-end .btn{background:rgba(255,255,255,.1);color:var(--felt-ink);border-color:rgba(255,255,255,.2)}
 .sc-end .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.rv{opacity:0;animation:rv .45s ease-out forwards}
-@keyframes rv{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion: reduce){.rv{animation:none;opacity:1}.sc-bars .bf{animation:none}}
+.sc-end .score{font-family:var(--f-display);font-size:22px}
+@media (prefers-reduced-motion: reduce){.sc,.pop,.deal,.cellin,.seatin,.stamp,.fan i,.sc-bars .bf,.fbar,.ringsvg .arc,.stage::before{animation:none!important;opacity:1}.ringsvg .arc{stroke-dashoffset:var(--o)}.pc.glow,.tok.win.glow{animation:none}}
 .lrows{display:flex;flex-direction:column;gap:8px}
 .lrow{display:flex;align-items:center;gap:12px;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;width:100%}
 .lrow:hover{border-color:var(--accent)}
@@ -1109,110 +1197,127 @@ const INTRO={
   polar:{how:'On the river your hands are either very strong or worthless. Bet the strong ones, and bluff with some of the worthless ones, in exactly the ratio that leaves him no good answer.',words:['polarised','bluff-catcher','GTO','value']},
   catch:{how:'You hold a hand that only beats bluffs. Count how many of his bets are bluffs (mostly draws that missed) and compare with the price.',words:['bluff-catcher','missed draw','combo','exploit']}
 };
-/* ---------- narrated lessons: each scene = one visual + the sentence(s) read aloud (s) ----------
-   visuals: title, spot (pot + action + cards), math (lines revealed in turn), big (one number), table, points,
-   cards (labelled card groups), bars (labelled % bars, optional price marker), charts (range grids), seats */
+/* ---------- narrated lessons: each scene = one animated visual + the words read aloud (s) ----------
+   visuals: title, deal (cards dealt onto the felt, pot, action), pot (chip stacks adding up), frac (a price built as a
+   fraction), tokens (1 in N), ring (your chance vs the price, stamped CALL/FOLD), math, big, table, points, bars,
+   charts (range grids), seats, quiz (a "Your call" question: q, options o, answer a, explanation after) */
 const LESSON_VIDEO={
   hands:[
-    {v:'title',h:'Which hand wins?',sub:'Start here',s:'Which hand wins? Let’s learn to read a showdown.'},
-    {v:'points',items:['Straight flush','Four of a kind','Full house','Flush','Straight','Three of a kind','Two pair','One pair','High card'],s:'Every player makes their best five-card hand from seven cards: their own two, plus the five shared cards on the board. From best to worst: straight flush, four of a kind, full house, flush, straight, three of a kind, two pair, one pair, and high card.'},
-    {v:'cards',groups:[['You','As Qd'],['Board','Ah 9c 7d 4s 2h'],['Him','Ad Jc']],note:'Both have a pair of aces: your queen kicker wins',s:'When both players have the same kind of hand, compare the cards left over, called kickers. Here you both have a pair of aces, but your queen beats his jack, so you win.'},
-    {v:'cards',groups:[['You','2c 3d'],['Board','Ks Kd 8c 8h As'],['Him','4h 5s']],note:'The board is the best hand for both: split pot',s:'And if the best five cards are exactly the same, for example when the board itself is the best hand, the pot is split.'},
+    {v:'title',h:'Which hand wins?',sub:'Start here',s:'Two players, one pot. Who takes it? Let’s learn to read a showdown in under a minute.'},
+    {v:'points',items:['Straight flush','Four of a kind','Full house','Flush','Straight','Three of a kind','Two pair','One pair','High card'],s:'Every player makes their best five-card hand from seven cards: their own two, plus the five on the board. From the top: straight flush, four of a kind, full house, flush, straight, three of a kind, two pair, one pair, and high card.'},
+    {v:'deal',vill:'Ad Jc',board:'Ah 9c 7d 4s 2h',hero:'As Qd',s:'Same kind of hand? Compare the cards left over, called kickers. You both have a pair of aces, but your queen beats his jack. Your pot.'},
+    {v:'quiz',q:'Board K♠ K♦ 8♣ 8♥ A♠. You hold 2♣ 3♦, he holds 4♥ 5♠. Who wins?',o:['You','Him','Split'],a:2,s:'Your call. The board shows two kings, two eights and an ace. You hold two-three. He holds four-five. Who wins?',after:'It’s a split. Neither hand beats the board, so you both play the same five cards: kings and eights, with an ace.'},
     {v:'big',n:'Best 5 of 7',l:'then compare the kickers',s:'So: find the best five cards out of seven, and when it’s close, compare the kickers.'}],
   risk:[
-    {v:'title',h:'Risk and reward',sub:'Start here',s:'Every call is a trade. Let’s count both sides of it.'},
-    {v:'spot',pot:10,act:'Villain bets 5 bb',s:'The pot has ten big blinds in it, and your opponent bets five. To stay in the hand, you have to call five.'},
-    {v:'math',lines:['Call and lose: you lose 5','Call and win: you gain 15','(the pot’s 10 + his 5; your own 5 comes back)'],s:'If you call and lose, you lose your five. If you call and win, you gain fifteen: the ten already in the pot, plus his five. Your own five just comes back to you.'},
-    {v:'math',lines:['Risk 5 to win 15','At stake: 5 + 15 = 20','Win 5 out of 20 = 25%'],s:'So you risk five to win fifteen. Out of the twenty at stake, you need your five, which means you must win a quarter of the time, twenty-five percent, just to break even.'},
-    {v:'big',n:'25%',l:'the price of this call',s:'That number is the price of the call. Almost every decision in poker comes back to comparing your chance of winning with this price.'}],
+    {v:'title',h:'Risk and reward',sub:'Start here',s:'Every call is a trade. Here’s how to see both sides of it.'},
+    {v:'deal',pot:10,act:'Villain bets 5 bb',board:'Kd 8s 3c',hero:'Qh Jh',s:'There are ten big blinds in the pot, and your opponent bets five. To stay in, you have to call five.'},
+    {v:'pot',parts:[['In the pot',10],['His bet',5]],l:'what you can win',s:'If you call and win, you collect the ten in the pot, plus his five. Fifteen. Your own five just comes back to you.'},
+    {v:'frac',top:5,bottom:20,pct:25,topL:'what you risk',botL:'everything at stake',s:'So you risk five, out of twenty at stake. That’s twenty-five percent: you need to win a quarter of the time just to break even.'},
+    {v:'tokens',n:4,win:1,l:'Win 1 time in 4 and you break even',s:'Picture four hands just like this one. Win one, lose three, and you’re exactly even. Win more than that, and calling makes money.'},
+    {v:'quiz',q:'Pot 20 bb. He bets 10 bb. What share of the time must you win?',o:['25%','33%','50%'],a:0,s:'Your call. The pot is twenty, and he bets ten. What share of the time must you win?',after:'Twenty-five percent. You risk ten to win thirty: ten out of forty in total.'}],
   seats:[
     {v:'title',h:'Seats and position',sub:'Start here',s:'Where you sit changes how you should play. Here’s why.'},
-    {v:'seats',s:'Six players sit around the table. The dealer button, marked D, moves one seat clockwise every hand. The next two seats post the blinds: the small blind and the big blind. Then come under the gun, the hijack, and the cutoff.'},
-    {v:'points',items:['Before the flop: UTG → HJ → CO → BTN → SB → BB','After the flop: SB → BB → UTG → HJ → CO → BTN'],s:'Before the flop, under the gun acts first and the big blind acts last. After the flop, the small blind acts first, and the button always acts last.'},
-    {v:'big',n:'Acting last wins',l:'so play more hands near the button',s:'Acting last is a big advantage, because you see what everyone else does before you decide. That’s why good players play more hands the closer they sit to the button.'}],
+    {v:'seats',s:'Six seats. The dealer button, marked D, moves one seat clockwise every hand. The next two seats post the blinds: small blind, big blind. Then come under the gun, the hijack, and the cutoff.'},
+    {v:'points',items:['Before the flop: UTG → HJ → CO → BTN → SB → BB','After the flop: SB → BB → UTG → HJ → CO → BTN'],s:'Before the flop, under the gun acts first and the big blind acts last. After the flop, the small blind goes first, and the button always acts last.'},
+    {v:'quiz',q:'After the flop, which seat always acts last?',o:['Big blind','Button','Under the gun'],a:1,s:'Your call. After the flop, which seat always acts last?',after:'The button. It sees what everyone else does before it decides, which is why it plays the most hands.'},
+    {v:'big',n:'Act last, win more',l:'play more hands near the button',s:'Acting last is a real edge. The closer you sit to the button, the more hands you can play.'}],
   potodds:[
-    {v:'title',h:'The price of a call',sub:'Level 1 · Odds',s:'How often do you need to win to make a call worth it?'},
-    {v:'spot',pot:12,act:'Villain bets 6 bb',s:'There are twelve big blinds in the pot, and your opponent bets six. What does calling cost you?'},
-    {v:'math',lines:['You call 6','Final pot: 12 + 6 + 6 = 24','Price: 6 ÷ 24 = 25%'],s:'You put in six. If you call, the final pot is twelve, plus his six, plus your six: twenty-four. Divide your call by the final pot. Six over twenty-four is twenty-five percent, so you need to win at least a quarter of the time.'},
-    {v:'table',head:['Bet size','Price'],rows:[['⅓ pot','20%'],['½ pot','25%'],['⅔ pot','29%'],['Pot','33%'],['2× pot','40%']],s:'Learn the common sizes by heart. A third of the pot costs twenty percent. Half the pot, twenty-five. Two thirds, about twenty-nine. A pot-sized bet, thirty-three. And twice the pot, forty.'},
-    {v:'big',n:'bet ÷ (pot + 2 × bet)',l:'the price of any call',s:'The formula is the bet, divided by the pot plus two bets. Notice how slowly the price rises: doubling the bet from pot to twice the pot only moves it from thirty-three to forty percent.'}],
+    {v:'title',h:'The price of a call',sub:'Level 1 · Odds',s:'Every bet puts a price on calling. You can work it out in ten seconds.'},
+    {v:'deal',pot:12,act:'Villain bets 6 bb',board:'Qs 7h 3d',hero:'Kc Td',s:'Twelve in the pot, and your opponent bets six. What does calling cost you?'},
+    {v:'pot',parts:[['Pot',12],['His bet',6],['Your call',6]],l:'the final pot',s:'If you call, the final pot is twelve, plus his six, plus your six. Twenty-four.'},
+    {v:'frac',top:6,bottom:24,pct:25,topL:'your call',botL:'the final pot',s:'Now divide what you put in by the final pot. Six over twenty-four. Twenty-five percent.'},
+    {v:'table',head:['He bets','Your price'],rows:[['⅓ pot','20%'],['½ pot','25%'],['⅔ pot','29%'],['Pot','33%'],['2× pot','40%']],s:'Learn these by heart. A third of the pot: twenty percent. Half: twenty-five. Two thirds: twenty-nine. A pot-sized bet: thirty-three. Twice the pot: forty.'},
+    {v:'quiz',q:'He bets exactly the size of the pot. What’s your price?',o:['25%','33%','50%'],a:1,s:'Your call. He bets exactly the size of the pot. What’s your price?',after:'Thirty-three percent. Call one pot to win two: one part in three.'}],
   outs:[
-    {v:'title',h:'Count your outs',sub:'Level 1 · Odds',s:'When your hand isn’t finished yet, how often will it get there?'},
-    {v:'cards',groups:[['You','Ah 5h'],['Flop','Kh 9h 2c']],note:'Four hearts: 9 more hearts in the deck = 9 outs',s:'Outs are the cards that would complete your hand. Here you have four hearts. There are thirteen hearts in a deck, so nine are still out there. That’s nine outs.'},
-    {v:'table',head:['Draw','Outs'],rows:[['Flush draw','9'],['Open-ended straight draw','8'],['Gutshot','4'],['Flush draw + gutshot','12'],['Flush draw + open-ender','15']],s:'The common draws: a flush draw has nine outs. An open-ended straight draw, four cards in a row, has eight. A gutshot, missing one card in the middle, has four. Put a flush draw together with a straight draw, and you get twelve or fifteen.'},
-    {v:'math',lines:['Two cards to come: outs × 4','One card to come: outs × 2','9 outs on the flop ≈ 36%','9 outs on the turn ≈ 18%'],s:'To turn outs into a chance, use the rule of two and four. With two cards still to come, multiply by four. With one card to come, multiply by two. So a flush draw on the flop is roughly thirty-six percent, and on the turn roughly eighteen.'},
-    {v:'big',n:'Over 8 outs: subtract the extra',l:'15 outs ≈ 60 − 7 = 53%',s:'For big draws the rule of four overshoots, so above eight outs, subtract the extra. Fifteen outs is about fifty-three percent, not sixty.'}],
+    {v:'title',h:'Count your outs',sub:'Level 1 · Odds',s:'Your hand isn’t finished yet. How often will it get there?'},
+    {v:'deal',board:'Kh 9h 2c',hero:'Ah 5h',glow:'h',s:'You have four hearts. There are thirteen hearts in the deck, so nine are still out there. Any of them gives you a flush. Those nine cards are your outs.'},
+    {v:'table',head:['Draw','Outs'],rows:[['Flush draw','9'],['Open-ended straight draw','8'],['Gutshot','4'],['Flush draw + gutshot','12'],['Flush draw + open-ender','15']],s:'The ones you’ll see most: a flush draw, nine outs. An open-ended straight draw, eight. A gutshot, four. Combine a flush draw with a straight draw, and you have twelve or fifteen.'},
+    {v:'math',lines:['Two cards to come: outs × 4','One card to come: outs × 2','Flush draw on the flop ≈ 36%','Flush draw on the turn ≈ 18%'],s:'Now the trick. With two cards still to come, multiply your outs by four. With one card to come, by two. A flush draw on the flop is about thirty-six percent. On the turn, about eighteen.'},
+    {v:'quiz',q:'Open-ended straight draw on the flop, all in. Roughly what’s your chance?',o:['16%','32%','48%'],a:1,s:'Your call. An open-ended straight draw has eight outs. On the flop, all in, roughly what’s your chance?',after:'About thirty-two percent: eight outs, times four. The exact figure is thirty-one and a half.'},
+    {v:'big',n:'Big draw? Trim it',l:'over 8 outs, subtract the extra: 15 outs ≈ 53%',s:'One tweak for monster draws: above eight outs, subtract the extra. Fifteen outs is about fifty-three percent, not sixty.'}],
   drawcall:[
-    {v:'title',h:'Chase or fold',sub:'Level 1 · Odds',s:'Your draw against a bet: is the price right?'},
-    {v:'spot',pot:20,act:'Villain bets 10 bb',hero:'Ah 6h',board:'Kh 9h 2c 4s',s:'On the turn you have a flush draw: nine outs. Your opponent bets ten into twenty, and assume there’s no more betting after this.'},
-    {v:'math',lines:['Your chance: 9 ÷ 46 ≈ 20%','Price: 10 ÷ (20 + 10 + 10) = 25%','20% < 25% → fold'],s:'With one card to come, you hit about twenty percent of the time. The price of calling ten into twenty is twenty-five percent. Twenty is less than twenty-five, so on its own, this is a fold.'},
-    {v:'math',lines:['All-in on the flop: see 2 cards','9 outs ≈ 35%','Pot-sized shove: price 33%','35% > 33% → call'],s:'Now flip it. On the flop, if he moves all-in for the size of the pot, you see both cards, so the same draw has about thirty-five percent. The price is thirty-three. That’s a call.'},
-    {v:'big',n:'Chance vs price',l:'call when your chance is bigger',s:'That’s the whole decision: compare your chance of hitting with the price, and call when the chance is bigger.'}],
+    {v:'title',h:'Chase or fold',sub:'Level 1 · Odds',s:'You’re on a draw and he bets. Is the price right?'},
+    {v:'deal',pot:20,act:'Villain bets 10 bb',board:'Kh 9h 2c 4s',hero:'Ah 6h',glow:'h',s:'The turn. You have a flush draw, nine outs, and he bets ten into twenty. No more betting after this.'},
+    {v:'ring',a:20,b:25,aL:'You hit',bL:'You need',verdict:'FOLD',ok:false,s:'One card to come: you hit about twenty percent of the time. Calling ten into twenty needs twenty-five. Your chance is smaller than the price. Fold.'},
+    {v:'ring',a:35,b:33,aL:'You hit',bL:'You need',verdict:'CALL',ok:true,s:'Now flip it. On the flop, he moves all-in for the pot. You’ll see both cards, so the same draw has about thirty-five percent. The price is thirty-three. Call.'},
+    {v:'quiz',q:'Turn, flush draw (about 20%). He bets a quarter of the pot. Call or fold?',o:['Call','Fold'],a:0,s:'Your call. On the turn with a flush draw, about twenty percent. He bets just a quarter of the pot. Call or fold?',after:'Call. A quarter-pot bet costs only about seventeen percent, and you hit about twenty.'},
+    {v:'big',n:'Chance vs price',l:'call when your chance is bigger',s:'That’s the whole decision. Your chance of hitting, against the price. Bigger chance? Call.'}],
   matchups:[
-    {v:'title',h:'Classic matchups',sub:'Level 2 · Hand vs range',s:'Some all-in matchups come up again and again. Knowing them by heart makes every estimate easier.'},
-    {v:'bars',items:[['Small pair vs two higher cards (77 vs AK)',55],['Higher pair vs lower pair (KK vs 88)',80],['Dominating hand (AK vs AQ)',74]],s:'A small pair against two higher cards is close to a coin flip: about fifty-five percent for the pair. A higher pair against a lower pair wins about eighty percent. And a dominating hand, like ace-king against ace-queen, wins about three times in four.'},
-    {v:'bars',items:[['Pair vs one higher, one lower card (99 vs A5)',69],['Two high vs two low cards (AK vs 72)',67],['Big pair vs suited connector (AA vs 76s)',77]],s:'A pair against one higher and one lower card wins about seventy percent. Two high cards against two low cards win about two times in three, a little less when the low cards are suited and connected. And aces against a suited connector win just over three times in four.'},
-    {v:'big',n:'+2 to 3 points',l:'for being suited · ties count as half',s:'Being suited adds two or three points, and ties count as half a win.'}],
+    {v:'title',h:'Classic matchups',sub:'Level 2 · Hand vs range',s:'Some all-ins come up again and again. Know these, and every other estimate gets easier.'},
+    {v:'bars',items:[['77 vs AK: pair vs two higher',55],['KK vs 88: higher pair',80],['AK vs AQ: dominating',74]],s:'A small pair against two higher cards: almost a coin flip, fifty-five percent for the pair. A higher pair against a lower one: eighty percent. And a dominating hand, like ace-king against ace-queen: about three times in four.'},
+    {v:'bars',items:[['99 vs A5: pair vs one higher',69],['AK vs 72: two high vs two low',67],['AA vs 76 suited',77]],s:'A pair against one higher and one lower card: about seventy. Two high cards against two low ones: about two times in three. And aces against a suited connector: just over three in four.'},
+    {v:'quiz',q:'7♠ 7♥ against A♦ K♣, all in before the flop. Who’s the favourite?',o:['Sevens, just','Ace-king, just','Exactly even'],a:0,s:'Your call. Pocket sevens against ace-king, all in before the flop. Who’s the favourite?',after:'The sevens, just: about fifty-five to forty-five. That’s the classic coin flip.'},
+    {v:'big',n:'+2 to 3 points',l:'for being suited · ties count as half',s:'One more thing: being suited adds two or three points.'}],
   shove:[
-    {v:'title',h:'Call the shove',sub:'Level 2 · Hand vs range',s:'He’s all-in. Do you call?'},
-    {v:'spot',pot:11.5,act:'Button all-in 10 bb',s:'The button moves all-in for ten big blinds. You’re in the big blind, with one already in. You can’t see his cards, but you can think about every hand he would do this with: his range.'},
-    {v:'math',lines:['You call 9 more','Final pot: 10 + 10 + 0.5 = 20.5','Price: 9 ÷ 20.5 ≈ 44%'],s:'To call, you add nine. The final pot would be twenty and a half, counting the small blind. So the price is about forty-four percent.'},
-    {v:'charts',items:[['shove:10','His 10 bb shoving range']],s:'A player shoving ten big blinds from the button does it with about four hands in ten: every pair, every ace, most kings, and plenty of connected cards.'},
-    {v:'bars',mark:44,items:[['K9 suited',50],['22',47],['A2 offsuit',46],['87 suited',40],['Q8 offsuit',40]],s:'Against that whole range, king-nine suited wins about half the time, and even deuces and ace-deuce have around forty-six percent: enough to call. Eight-seven suited and queen-eight, at about forty percent, fall short.'},
-    {v:'big',n:'Equity vs his range',l:'beats the price → call',s:'So don’t ask, what if he has aces? Ask: against everything he would shove, do I win more often than the price?'}],
+    {v:'title',h:'Call the shove',sub:'Level 2 · Hand vs range',s:'He’s all in. Do you call?'},
+    {v:'deal',pot:11.5,act:'Button all-in 10 bb',hero:'2s 2h',s:'The button moves all in for ten big blinds. You’re in the big blind with a pair of deuces. You can’t see his cards, so think about every hand he’d do this with: his range.'},
+    {v:'frac',top:9,bottom:20.5,pct:44,topL:'your call',botL:'the final pot',s:'To call you add nine, for a final pot of twenty and a half. So the price is about forty-four percent.'},
+    {v:'charts',items:[['shove:10','His 10 bb shoving range']],s:'Here’s what a ten big blind button shove looks like: about four hands in ten. Every pair, every ace, most kings, and plenty of connected cards.'},
+    {v:'bars',mark:44,items:[['K9 suited',50],['22',47],['A2 offsuit',46],['87 suited',40],['Q8 offsuit',40]],s:'Against all of that, king-nine suited wins half the time. Even your deuces, and ace-deuce, have about forty-six percent. Enough. Eight-seven suited and queen-eight, at forty, fall short.'},
+    {v:'quiz',q:'Against his 10 bb shove, you hold 2♠ 2♥. Call or fold?',o:['Call','Fold'],a:0,s:'So, your deuces. Call or fold?',after:'Call. Deuces win about forty-seven percent against his whole range, and the price is forty-four.'}],
   turnjam:[
-    {v:'title',h:'Split his range',sub:'Level 2 · Hand vs range',s:'You have one pair, and he moves all-in on the turn.'},
-    {v:'bars',items:[['vs his value hands',10],['vs his draws',78],['vs his bluffs',88]],s:'Split his range into three groups. Against his strong hands, his value, you rarely win. Against draws, you win around three times in four, because they usually miss. And against pure bluffs, you win almost every time. These are rough figures.'},
-    {v:'points',items:['Few draws, no bluffs → fold','Lots of draws and some air → call'],s:'So the answer depends on the mix. A tight player with few draws and no bluffs: fold your pair. A player who jams lots of draws and some air: call.'},
+    {v:'title',h:'Split his range',sub:'Level 2 · Hand vs range',s:'You have one pair, and he moves all in on the turn. Now what?'},
+    {v:'bars',items:[['vs his value hands',10],['vs his draws',78],['vs his bluffs',88]],s:'Split his range into three groups. Against his strong hands, you rarely win. Against draws, around three times in four, because they usually miss. Against bluffs, almost always. These are rough figures.'},
+    {v:'points',items:['Few draws, no bluffs → fold','Lots of draws and some air → call'],s:'So it comes down to the mix. A tight player with few draws and no bluffs? Fold your pair. A player who jams lots of draws and some air? Call.'},
+    {v:'quiz',q:'He only ever jams strong hands: no draws, no bluffs. Your one pair?',o:['Call','Fold'],a:1,s:'Your call. This player only ever jams strong hands. No draws, no bluffs. Your one pair?',after:'Fold. Against value only, one pair almost never wins.'},
     {v:'big',n:'Count the groups',l:'not the scariest hand',s:'Count the groups, not just the scariest hand he could have.'}],
   rfi:[
-    {v:'title',h:'Open or fold',sub:'Level 3 · Preflop',s:'Everyone folds to you. Which hands should you play?'},
-    {v:'charts',items:[['rfi:UTG','First seat (UTG)'],['rfi:BTN','Button (BTN)']],s:'When everyone folds to you, you can make the first raise, called an open, or fold. From the first seat, under the gun, you open only about one hand in five. From the button, you open almost half your hands.'},
-    {v:'table',head:['Seat','Hands opened'],rows:[['UTG','19%'],['Hijack','22%'],['Cutoff','30%'],['Button','48%'],['Small blind','43%']],s:'The closer you sit to the button, the fewer players are left who might wake up with a big hand, and the more often you act last after the flop. So the range widens seat by seat.'},
-    {v:'points',items:['Pairs and suited hands play well','Weak offsuit aces and kings drop out first'],s:'Pairs and suited hands play well from anywhere. Weak offsuit aces and kings are the first hands to drop out from the early seats.'}],
+    {v:'title',h:'Open or fold',sub:'Level 3 · Preflop',s:'Everyone folds to you. Which hands do you play?'},
+    {v:'charts',items:[['rfi:UTG','First seat (UTG)'],['rfi:BTN','Button (BTN)']],s:'When it folds to you, you can make the first raise, called an open, or fold. From the first seat, you open about one hand in five. From the button, almost half.'},
+    {v:'table',head:['Seat','Hands opened'],rows:[['UTG','19%'],['Hijack','22%'],['Cutoff','30%'],['Button','48%'],['Small blind','43%']],s:'Each seat closer to the button, the range widens. Fewer players are left to wake up with a big hand, and you’ll act last after the flop more often.'},
+    {v:'quiz',q:'Folded to you in the first seat (UTG) with K♣ 9♦. Open or fold?',o:['Open','Fold'],a:1,s:'Your call. Folded to you in the first seat, with king-nine offsuit. Open or fold?',after:'Fold. King-nine offsuit is too weak from the first seat. From the button, it’s an easy open.'},
+    {v:'points',items:['Pairs and suited hands play well','Weak offsuit aces and kings drop out first'],s:'Pairs and suited hands play well from anywhere. Weak offsuit aces and kings are the first to drop out from the early seats.'}],
   facing:[
-    {v:'title',h:'Facing a raise',sub:'Level 3 · Preflop',s:'Someone has raised before you. Re-raise, call, or fold?'},
-    {v:'math',lines:['Big blind vs a 2.5 bb open','Call 1.5 to win 5.5','Price ≈ 27%'],s:'Someone opens to two and a half, and it’s folded to you in the big blind. You already have one in, so you need only one and a half more, to win a pot of five and a half. That’s a price of about twenty-seven percent: very cheap.'},
-    {v:'charts',items:[['face:BB vs BTN','BB vs button: defend 55%'],['face:BB vs UTG','BB vs UTG: defend 23%']],s:'So the big blind defends very wide: about fifty-five percent of hands against a button open. Against an open from the first seat, whose range is much stronger, only about a quarter.'},
-    {v:'points',items:['3-bet = re-raise','Value: your best hands (QQ+, AK)','Bluffs: suited hands like A5s'],s:'A three-bet is a re-raise. You do it with your best hands, for value, and with some suited hands like ace-five suited as bluffs: they block his aces, and still play well when called.'},
-    {v:'points',items:['Small blind vs button: 3-bet or fold'],s:'From the small blind against a button open, mostly re-raise or fold. Calling there leaves you out of position, with the big blind still to act.'}],
+    {v:'title',h:'Facing a raise',sub:'Level 3 · Preflop',s:'Someone raised before you. Re-raise, call, or fold?'},
+    {v:'frac',top:1.5,bottom:5.5,pct:27,topL:'your call',botL:'the final pot',s:'An open to two and a half, folded to you in the big blind. You already have one in, so you need just one and a half more, for a pot of five and a half. About twenty-seven percent. Cheap.'},
+    {v:'charts',items:[['face:BB vs BTN','BB vs button: defend 55%'],['face:BB vs UTG','BB vs UTG: defend 23%']],s:'So the big blind defends very wide: about fifty-five percent of hands against a button open. Against the first seat, whose range is much stronger, only about a quarter.'},
+    {v:'points',items:['3-bet = re-raise','Value: your best hands (QQ+, AK)','Bluffs: suited hands like A5s'],s:'A three-bet is a re-raise. Do it with your best hands for value, and with suited hands like ace-five as bluffs. They block his aces, and still play well when called.'},
+    {v:'quiz',q:'Big blind. The button opens and you hold 7♣ 6♣. Defend or fold?',o:['Defend','Fold'],a:0,s:'Your call. Big blind, the button opens, and you hold seven-six suited. Defend or fold?',after:'Defend. At a twenty-seven percent price, suited connectors are an easy call against a wide button range.'}],
   mdf:[
-    {v:'title',h:'Don’t overfold',sub:'Level 4 · Pressure maths',s:'How much of your range must you keep playing against a bet?'},
-    {v:'spot',pot:10,act:'Villain bets 10 bb',s:'On the river, he bets ten into ten. Suppose he has nothing at all. His bluff risks ten to win ten.'},
-    {v:'math',lines:['His bluff breaks even if you fold 50%','So keep playing at least 50%','MDF = pot ÷ (pot + bet)'],s:'That bluff breaks even if you fold half the time. Fold more than that, and he makes money bluffing with any two cards. So you must keep playing at least half your hands. The formula is the pot, divided by the pot plus the bet.'},
-    {v:'table',head:['Bet size','Keep playing'],rows:[['½ pot','67%'],['Pot','50%'],['2× pot','33%']],s:'Against half the pot, keep at least two thirds of your hands. Against a pot-sized bet, half. Against twice the pot, a third.'},
-    {v:'big',n:'A guide, not a law',l:'vs players who rarely bluff, fold more',s:'This is a guide for opponents you don’t know. Against someone who never bluffs, folding more is right.'}],
+    {v:'title',h:'Don’t overfold',sub:'Level 4 · Pressure maths',s:'How much of your range must you keep against a bet?'},
+    {v:'deal',pot:10,act:'Villain bets 10 bb',board:'Js 8d 5c 2h Kc',s:'The river. He bets ten into ten. Say he has nothing at all. His bluff risks ten to win ten.'},
+    {v:'frac',top:10,bottom:20,pct:50,topL:'the pot',botL:'pot + his bet',s:'That bluff breaks even if you fold half the time. So you must keep playing at least half your hands. Pot, divided by pot plus bet. Fifty percent.'},
+    {v:'table',head:['He bets','Keep playing'],rows:[['½ pot','67%'],['Pot','50%'],['2× pot','33%']],s:'Against half the pot, keep two thirds of your hands. Against the pot, half. Against twice the pot, a third.'},
+    {v:'quiz',q:'He bets half the pot. Keep playing at least…',o:['33%','50%','67%'],a:2,s:'Your call. He bets half the pot. What share must you keep playing?',after:'Two thirds. One pot, over one and a half pots.'},
+    {v:'big',n:'A guide, not a law',l:'vs players who rarely bluff, fold more',s:'Use this against players you don’t know. Against someone who never bluffs, fold more.'}],
   bluffbe:[
     {v:'title',h:'Bluff break-even',sub:'Level 4 · Pressure maths',s:'Now you’re the one bluffing. How often must it work?'},
-    {v:'math',lines:['Bet 5 into 10: risk 5 to win 10','Folds needed: 5 ÷ (5 + 10) = 33%'],s:'Bet five into ten: you risk five to win ten. Divide the risk by the risk plus the reward: five over fifteen, a third. He needs to fold a third of the time for this bluff to make money.'},
-    {v:'table',head:['Bluff size','Folds needed'],rows:[['⅓ pot','25%'],['½ pot','33%'],['⅔ pot','40%'],['Pot','50%'],['2× pot','67%']],s:'Small bluffs need fewer folds, big bluffs need more. A third of the pot needs twenty-five percent. A pot-sized bluff needs half. Twice the pot needs two thirds.'},
-    {v:'big',n:'Small bluffs need fewer folds',l:'but players fold less to them',s:'The catch: people fold less often to small bets.'}],
+    {v:'frac',top:5,bottom:15,pct:33,topL:'your bluff',botL:'bluff + pot',s:'Bet five into ten. You risk five, to win ten. Five out of fifteen: a third. He needs to fold a third of the time.'},
+    {v:'table',head:['You bet','He must fold'],rows:[['⅓ pot','25%'],['½ pot','33%'],['⅔ pot','40%'],['Pot','50%'],['2× pot','67%']],s:'Small bluffs need fewer folds. A third of the pot needs twenty-five percent. The pot needs half. Twice the pot needs two thirds.'},
+    {v:'quiz',q:'You bluff the size of the pot. He must fold at least…',o:['33%','50%','67%'],a:1,s:'Your call. You bluff the size of the pot. How often must he fold?',after:'Half the time. You risk one pot to win one pot.'},
+    {v:'big',n:'Small bluffs, fewer folds',l:'but players fold less to them',s:'The catch: people fold less often to small bets.'}],
   implied:[
     {v:'title',h:'Implied odds',sub:'Level 4 · Pressure maths',s:'The price is too high. Can future winnings make up for it?'},
-    {v:'math',lines:['Turn: he bets 10 into 10','Your flush draw ≈ 20%','Price: 33% → too expensive on its own'],s:'On the turn you have a flush draw, about twenty percent, and he bets ten into ten. The price is thirty-three percent. Too expensive, unless you win more on the river when you hit.'},
-    {v:'math',lines:['Extra needed = bet ÷ equity − pot − 2 × bet','= 10 ÷ 0.2 − 10 − 20 = 20','Win 20 more, two more pots, when you hit'],s:'How much more? Take the bet divided by your equity, then subtract the pot and two bets. Here, ten divided by point two is fifty, minus ten, minus twenty, leaves twenty. You’d need to win another twenty on the river: two more pots.'},
-    {v:'points',items:['Best: draws to the best hand, deep stacks, opponents who pay off','Worst: gutshots against big bets'],s:'Implied odds are real when you’re drawing to the best hand, stacks are deep, and your opponent pays off. They rarely save a gutshot against a big bet.'}],
+    {v:'ring',a:20,b:33,aL:'You hit',bL:'You need',verdict:'TOO DEAR',ok:false,s:'The turn. Your flush draw hits about twenty percent of the time, and he bets the pot. The price is thirty-three. Too dear, unless you win more on the river when you hit.'},
+    {v:'math',lines:['Extra needed = bet ÷ chance − pot − 2 × bet','= 10 ÷ 0.2 − 10 − 20','= 20 more when you hit: two more pots'],s:'How much more? Bet, divided by your chance, minus the pot, minus two bets. Ten over point two is fifty. Minus ten, minus twenty: twenty. You’d need to win two more pots on the river.'},
+    {v:'quiz',q:'A gutshot (about 9%) faces a pot-sized bet. Call on implied odds?',o:['Yes','No'],a:1,s:'Your call. A gutshot hits about nine percent of the time, and he bets the pot. Call on implied odds?',after:'No. You’d need to win more than eight extra pots when you hit. Nobody pays you that much.'},
+    {v:'points',items:['Best: draws to the best hand, deep stacks, opponents who pay off','Worst: gutshots against big bets'],s:'Implied odds are real when you draw to the best hand, stacks are deep, and he pays off.'}],
   cbet:[
     {v:'title',h:'Read the flop',sub:'Level 5 · Flop strategy',s:'You raised, the big blind called. Whose flop is it?'},
-    {v:'points',items:['Range advantage → how often to bet','Nut advantage → how big to bet'],s:'Look at the flop from both sides. Whose whole range does it help more? That’s range advantage, and it tells you how often to bet. Who holds more of the very best hands? That’s nut advantage, and it tells you how big.'},
-    {v:'cards',groups:[['Flop','As 7d 2c']],note:'Ace-high and dry: bet small, often',s:'On an ace-high, dry flop like ace-seven-two, the raiser has many more aces and big pairs. Bet small, with most of your hands.'},
-    {v:'cards',groups:[['Flop','8h 7h 5c']],note:'Low and connected: check more, bet big when you bet',s:'On a low, connected flop like eight-seven-five, the big blind’s calling range hits much harder: straights, two pairs, small sets. Check more often, and when you do bet, bet big.'},
-    {v:'cards',groups:[['Flop','7s 7d 2h'],['Flop','Jh 8h 3h']],note:'Paired: bet small · Monotone: bet less often',s:'Paired flops miss most hands, which suits the raiser: bet small. On flops with three cards of one suit, bet less often.'}],
+    {v:'points',items:['Range advantage → how often to bet','Nut advantage → how big to bet'],s:'Look at the flop from both sides. Whose whole range does it help more? That’s range advantage, and it says how often to bet. Who has more of the very best hands? That’s nut advantage, and it says how big.'},
+    {v:'deal',board:'As 7d 2c',s:'Ace, seven, deuce. You raised, so you hold many more aces and big pairs. This flop is yours. Bet small, with most of your hands.'},
+    {v:'deal',board:'8h 7h 5c',s:'Eight, seven, five. This one smashes the big blind’s calling range: straights, two pairs, small sets. Check more, and when you do bet, bet big.'},
+    {v:'quiz',q:'You raised from the button. Flop K♠ 7♦ 2♣. Your plan?',o:['Bet small, often','Check most hands'],a:0,s:'Your call. You raised from the button, and the flop is king, seven, deuce. Your plan?',after:'Bet small, often. King-high, dry flops belong to the raiser.'},
+    {v:'deal',board:'7s 7d 2h',s:'Paired flops miss almost everyone, which suits the raiser: bet small. And when three cards share a suit, slow down.'}],
   defend:[
     {v:'title',h:'Defend the big blind',sub:'Level 5 · Flop strategy',s:'He bets small on the flop. What do you keep?'},
-    {v:'math',lines:['⅓-pot bet: price 20%','Out of position: count ~80% of your equity','So want ≈ 25% raw equity'],s:'When the button bets a third of the pot, calling costs only twenty percent. But you act first on every later street, so you won’t collect all your equity. A working rule: count about eighty percent of it. That means you want roughly twenty-five percent raw equity to continue.'},
-    {v:'points',items:['Continue: pairs, draws, overcards with backup draws','Fold: the weakest no-pair hands','Raise: two pair or better, some strong draws'],s:'Keep your pairs, your draws, and high cards with backup draws. Fold the weakest hands with nothing. And raise your strongest hands, two pair or better, along with some strong draws.'}],
+    {v:'frac',top:1.8,bottom:9.1,pct:20,topL:'your call',botL:'the final pot',s:'A third-pot bet. Calling costs just twenty percent.'},
+    {v:'math',lines:['Out of position, you collect ~80% of your equity','20% ÷ 0.8 = 25%','So want about 25% raw equity'],s:'But you act first on every later street, so you won’t collect all your equity. Count about eighty percent of it. That means you want roughly twenty-five percent to continue.'},
+    {v:'quiz',q:'Facing a ⅓-pot bet out of position. Raw equity you want:',o:['20%','25%','40%'],a:1,s:'Your call. Facing a third-pot bet, out of position. How much raw equity do you want?',after:'About twenty-five percent. The twenty percent price, divided by the eighty percent you’ll actually collect.'},
+    {v:'points',items:['Continue: pairs, draws, high cards with backup draws','Fold: the weakest hands with nothing','Raise: two pair or better, some strong draws'],s:'Keep pairs, draws, and high cards with backup draws. Fold the hands with nothing. Raise two pair or better, and some strong draws.'}],
   polar:[
-    {v:'title',h:'Balance your river',sub:'Level 6 · River game',s:'Strong hands and air: how many bluffs should you bet?'},
-    {v:'points',items:['Your river range: the nuts or nothing','Bet every strong hand','Bluff with some of the nothing'],s:'On the river your hands are either very strong or worthless. You bet the strong ones. The question is how many of the worthless ones to bet as bluffs.'},
-    {v:'math',lines:['Bet 10 into 10: he risks 10 to win 20','He breaks even if ⅓ of your bets are bluffs','→ 1 bluff for every 2 strong hands'],s:'If you bet ten into ten, he risks ten to win twenty. Calling breaks even for him if a third of your bets are bluffs. So bet one bluff for every two strong hands. Then calling and folding earn him exactly the same, and he can’t punish you.'},
-    {v:'table',head:['Bet size','Bluffs per strong hand'],rows:[['½ pot','1 for 3'],['Pot','1 for 2'],['2× pot','2 for 3']],s:'Bigger bets earn more bluffs: one for every three strong hands at half pot, one for two at pot, and two for three at twice the pot.'},
-    {v:'points',items:['Too many bluffs → he calls everything','Too few → he folds everything but the best hands'],s:'Bluff too much, and a good player simply calls. Bluff too little, and he folds everything except his best hands.'}],
+    {v:'title',h:'Balance your river',sub:'Level 6 · River game',s:'Strong hands and air. How many bluffs should you bet?'},
+    {v:'points',items:['Your river range: the nuts or nothing','Bet every strong hand','Bluff with some of the nothing'],s:'On the river, your hands are either very strong or worthless. You bet the strong ones. The question is how many of the worthless ones to bluff with.'},
+    {v:'frac',top:10,bottom:30,pct:33,topL:'his call',botL:'the final pot',s:'Bet ten into ten. He calls ten to win twenty, so he breaks even if a third of your bets are bluffs.'},
+    {v:'tokens',n:3,win:1,l:'1 bluff for every 2 strong hands',s:'So bet one bluff for every two strong hands. Now calling and folding earn him exactly the same. He can’t beat you.'},
+    {v:'quiz',q:'River, pot-sized bet, 10 strong hands. How many bluffs?',o:['2','5','10'],a:1,s:'Your call. A pot-sized river bet with ten strong hands. How many bluffs?',after:'Five. One bluff for every two strong hands.'},
+    {v:'table',head:['You bet','Bluffs per strong hand'],rows:[['½ pot','1 for 3'],['Pot','1 for 2'],['2× pot','2 for 3']],s:'Bigger bets earn more bluffs: one for three at half pot, one for two at pot, two for three at twice the pot.'}],
   catch:[
-    {v:'title',h:'Bluff-catch',sub:'Level 6 · River game',s:'You can only beat a bluff. Call or fold?'},
-    {v:'math',lines:['His strong hands: 10 combos','Missed draws: 12, bluffs 1 in 3 → 4','Bluffs: 4 ÷ 14 ≈ 29% of his bets'],s:'Count his bets. He has about ten strong combinations, and twelve draws that missed. If he bluffs one in three of those, that’s four bluffs. Four out of fourteen bets is about twenty-nine percent.'},
-    {v:'math',lines:['Pot-sized bet: you need 33% → fold','Half-pot bet: you need 25% → call'],s:'Facing a pot-sized bet, you need thirty-three percent. Twenty-nine is less, so fold. If the same player bets half the pot, the price is twenty-five percent, and it’s a call.'},
-    {v:'points',items:['No missed draws on the river → few bluffs','Many low-stakes players under-bluff rivers'],s:'When no draws missed, his bluffs mostly vanish, so fold more. And many low-stakes players bluff rivers far less than they should.'}]
+    {v:'title',h:'Bluff-catch',sub:'Level 6 · River game',s:'You can only beat a bluff. Call, or fold?'},
+    {v:'math',lines:['His strong hands: 10 combos','Missed draws: 12, he bluffs 1 in 3 → 4','Bluffs: 4 out of 14 bets ≈ 29%'],s:'Count his bets. About ten strong combinations, and twelve draws that missed. He bluffs one in three of those: four bluffs. Four out of fourteen bets, about twenty-nine percent.'},
+    {v:'ring',a:29,b:33,aL:'His bluffs',bL:'You need',verdict:'FOLD',ok:false,s:'Facing a pot-sized bet, you need thirty-three percent. Twenty-nine is less. Fold.'},
+    {v:'quiz',q:'Same player, same 29% bluffs, but he bets half the pot. Call or fold?',o:['Call','Fold'],a:0,s:'Your call. Same player, same bluffs, but this time he bets half the pot. Call or fold?',after:'Call. A half-pot bet needs only twenty-five percent, and he bluffs twenty-nine.'},
+    {v:'points',items:['No missed draws on the river → few bluffs','Many low-stakes players under-bluff rivers'],s:'No draws missed? His bluffs mostly vanish, so fold more. And most low-stakes players bluff rivers far less than they should.'}]
 };
 const lessonMs=(text,rate)=>Math.round((text.trim().split(/\s+/).length*60000/165)/(rate||1)+700);
 const lessonDur=id=>(LESSON_VIDEO[id]||[]).reduce((a,s)=>a+lessonMs(s.s),0);
@@ -1528,53 +1633,119 @@ function renderGuide(){
     app.querySelectorAll('#glist .gcat').forEach(c=>{c.hidden=!vis[c.dataset.c]});$('#gnone').hidden=any;
   });
 }
-/* ---------- lesson player: narrated by the device's own voice, silent with captions, or sound only ---------- */
+/* ---------- lesson player: animated scenes, the device's own voice, sound effects, quiz checkpoints ---------- */
 const LORDER=()=>LEVELS.flatMap(L=>Object.values(DRILLS).filter(d=>d.level===L.n&&LESSON_VIDEO[d.id]).map(d=>d.id));
 const hasTTS='speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined';
-const LPREF={mode:'av',rate:1,cc:true,voice:''};
+const LPREF={mode:'av',rate:1,cc:true,voice:'',sfx:true};
 try{Object.assign(LPREF,JSON.parse(localStorage.getItem('feltlab.lessons')||'{}'))}catch(e){}
 const saveLP=()=>{try{localStorage.setItem('feltlab.lessons',JSON.stringify(LPREF))}catch(e){}};
+/* novelty and very old voices sound like robots: hide them; rank natural/premium/enhanced voices first */
+const NOVELTY=/^(albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|fred|good news|hysterical|jester|junior|kathy|organ|pipe organ|ralph|superstar|trinoids|whisper|wobble|zarvox|princess|vicki|victoria|agnes|bruce)\b/i;
+const vScore=v=>(/natural|neural|premium/i.test(v.name)?7:/enhanced/i.test(v.name)?6:0)+(/google/i.test(v.name)?3:0)+(/en[-_]GB/i.test(v.lang)?1.5:/en[-_](US|AU|IE|CA|NZ)/i.test(v.lang)?.8:0)+(/compact|espeak/i.test(v.name)?-4:0)+(v.default?.3:0);
 let voices=[];
-function loadVoices(){if(!hasTTS)return;try{voices=speechSynthesis.getVoices().filter(v=>/^en([-_]|$)/i.test(v.lang))}catch(e){voices=[]}}
+function loadVoices(){if(!hasTTS)return;try{voices=speechSynthesis.getVoices().filter(v=>/^en([-_]|$)/i.test(v.lang)&&!NOVELTY.test(v.name)).sort((a,b)=>vScore(b)-vScore(a))}catch(e){voices=[]}}
 if(hasTTS){loadVoices();try{speechSynthesis.addEventListener('voiceschanged',()=>{loadVoices();if(LP.open)lpVoiceUI()})}catch(e){}}
-function pickVoice(){
-  if(!voices.length)return null;const s=voices.find(v=>v.name===LPREF.voice);if(s)return s;
-  const sc=v=>(/natural|neural|enhanced|premium|siri/i.test(v.name)?4:0)+(/en[-_]GB/i.test(v.lang)?2:0)+(v.localService?1:0)+(v.default?.5:0);
-  return voices.slice().sort((a,b)=>sc(b)-sc(a))[0];
-}
+const pickVoice=()=>voices.find(v=>v.name===LPREF.voice)||voices[0]||null;
 const MODES=[['av','Watch + listen','av'],['v','Watch only','mute'],['a','Listen only','ear']];
 const modeSegHTML=()=>`<div class="seg" role="group" aria-label="How lessons play">${MODES.map(([m,l,ic])=>`<button type="button" data-mode="${m}" aria-pressed="${LPREF.mode===m}">${ICON[ic]}<span>${l}</span></button>`).join('')}</div>`;
 function wireModeSeg(root,after){root.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{LPREF.mode=b.dataset.mode;saveLP();root.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.mode===LPREF.mode)));if(after)after()}))}
+const escA=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
+/* small synthesised sound effects (Web Audio), only in Watch + listen */
+let actx=null;
+function audioCtx(){try{if(!actx){const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;actx=new A()}if(actx.state==='suspended')actx.resume();return actx}catch(e){return null}}
+function sfx(k){
+  if(LPREF.mode!=='av'||!LPREF.sfx)return;const C=audioCtx();if(!C)return;
+  try{
+    const t=C.currentTime,out=C.createGain();out.gain.value=0.9;out.connect(C.destination);
+    const tone=(f1,f2,dur,type,vol,a=0)=>{const o=C.createOscillator(),g=C.createGain();o.type=type;o.frequency.setValueAtTime(f1,t+a);o.frequency.exponentialRampToValueAtTime(f2,t+a+dur);g.gain.setValueAtTime(0.0001,t+a);g.gain.exponentialRampToValueAtTime(vol,t+a+0.008);g.gain.exponentialRampToValueAtTime(0.0001,t+a+dur);o.connect(g);g.connect(out);o.start(t+a);o.stop(t+a+dur+0.03)};
+    const noise=(dur,freq,vol,a=0,type='bandpass')=>{const n=Math.max(1,Math.floor(C.sampleRate*dur)),b=C.createBuffer(1,n,C.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);const s=C.createBufferSource();s.buffer=b;const f=C.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=0.9;const g=C.createGain();g.gain.value=vol;s.connect(f);f.connect(g);g.connect(out);s.start(t+a)};
+    if(k==='card')noise(0.06,3200,0.5);
+    else if(k==='chip'){tone(3100,2700,0.045,'triangle',0.08);tone(3900,3300,0.035,'triangle',0.05,0.04)}
+    else if(k==='good'){tone(660,660,0.11,'sine',0.13);tone(990,990,0.22,'sine',0.13,0.1)}
+    else if(k==='bad'){tone(260,170,0.28,'triangle',0.15)}
+    else if(k==='stamp'){noise(0.1,500,0.6,0,'lowpass');tone(150,90,0.16,'sine',0.2)}
+    else if(k==='whoosh')noise(0.3,1200,0.18);
+  }catch(e){}
+}
+
+/* scenes: elements carry data-t (ms after the scene starts) for their entrance, sound (data-sfx) and count-up (data-count) */
+const at=(ms,k)=>`style="animation-delay:${Math.round(ms)}ms" data-t="${Math.round(ms)}"${k?` data-sfx="${k}"`:''}`;
+const chipStack=(n,t0)=>Array.from({length:n},(_,i)=>`<i class="chipc pop" style="animation-delay:${Math.round(t0+i*55)}ms"></i>`).join('');
 function chartFn(k){const [t,a]=k.split(':');if(t==='rfi')return key=>({r:RFI[a].get(key)||0});if(t==='shove')return key=>({r:SHOVE[a].get(key)||0});const F=facing(a);return key=>({r:F.r.get(key)||0,c:F.c.get(key)||0})}
 function sceneHTML(sc,est){
-  const d=(i,n)=>`style="animation-delay:${Math.round(Math.min(est*0.72*i/Math.max(n,1),12000))}ms"`;
-  const row=cs=>`<div class="board">${parseCards(cs).map(c=>cardHTML(c)).join('')}</div>`;
+  const step=(i,n)=>250+Math.round(Math.min(est*0.7*i/Math.max(n,1),12000));
+  let k=0;const T=()=>300+(k++)*240;
+  const dealt=(cs,lg,glow)=>parseCards(cs).map(c=>{const t=T(),r=R[rk(c)];return `<span class="pc ${lg?'lg':''} deal st${su(c)}" ${at(t,'card')}${glow&&SU[su(c)]===glow?' data-glow="1"':''} role="img" aria-label="${RN[rk(c)]} of ${SN[su(c)]}"><span class="r">${r==='T'?'10':r}</span><span class="s">${SYM[su(c)]}</span></span>`}).join('');
   switch(sc.v){
-    case 'title':return `<div class="sc sc-title"><div class="eyebrow">${sc.sub||''}</div><h2 class="rv">${sc.h}</h2></div>`;
-    case 'spot':return `<div class="sc sc-spot"><div class="pot">Pot <b>${bb(sc.pot)}</b></div>${sc.board?row(sc.board):''}<span class="act rv" ${d(1,3)}>${sc.act}</span>${sc.hero?`<div class="hole rv" ${d(2,3)}>${parseCards(sc.hero).map(c=>cardHTML(c,'lg')).join('')}</div>`:''}</div>`;
-    case 'math':return `<div class="sc sc-math">${sc.lines.map((l,i)=>`<div class="rv" ${d(i,sc.lines.length)}>${l}</div>`).join('')}</div>`;
-    case 'big':return `<div class="sc sc-big"><div class="n rv">${sc.n}</div><div class="l rv" ${d(1,2)}>${sc.l||''}</div></div>`;
-    case 'table':return `<div class="sc sc-tab"><table><thead><tr><th>${sc.head[0]}</th><th>${sc.head[1]}</th></tr></thead><tbody>${sc.rows.map((r,i)=>`<tr class="rv" ${d(i,sc.rows.length)}><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>`;
-    case 'points':return `<ul class="sc sc-list">${sc.items.map((t,i)=>`<li class="rv" ${d(i,sc.items.length)}>${t}</li>`).join('')}</ul>`;
-    case 'cards':return `<div class="sc sc-cards"><div class="grps">${sc.groups.map(([l,c],i)=>`<div class="grp rv" ${d(i,sc.groups.length+1)}><span class="eyebrow">${l}</span>${row(c)}</div>`).join('')}</div>${sc.note?`<div class="note rv" ${d(sc.groups.length,sc.groups.length+1)}>${sc.note}</div>`:''}</div>`;
-    case 'bars':return `<div class="sc sc-bars">${sc.items.map(([l,v],i)=>`<div class="br rv" ${d(i,sc.items.length)}><div class="bl">${l}</div><div class="bt">${sc.mark!=null?`<i class="mk" style="left:${sc.mark}%"></i>`:''}<i class="bf ${sc.mark!=null?(v>=sc.mark?'ok':'no'):''}" style="width:${v}%"></i></div><div class="bv mono">${v}%</div></div>`).join('')}${sc.mark!=null?`<div class="mkl">White line = the price, ${sc.mark}%</div>`:''}</div>`;
-    case 'charts':return `<div class="sc sc-charts">${sc.items.map(([k,l],i)=>`<div class="ch rv" ${d(i,sc.items.length)}>${gridHTML(chartFn(k),null,'')}<div class="chl">${l}</div></div>`).join('')}</div>`;
+    case 'title':return `<div class="sc sc-title"><div class="fan" aria-hidden="true"><i></i><i></i><i></i></div><div class="eyebrow pop" ${at(250)}>${sc.sub||''}</div><h2 class="pop" ${at(400,'whoosh')}>${sc.h}</h2></div>`;
+    case 'deal':{
+      const hero=sc.hero?dealt(sc.hero,true,sc.glow):'',vill=sc.vill?dealt(sc.vill,false):'',board=sc.board?dealt(sc.board,false,sc.glow):'',tA=T()+150;
+      return `<div class="sc sc-deal">${vill?`<div class="dl-seat"><span class="eyebrow">Him</span><div class="hole">${vill}</div></div>`:''}
+        ${sc.pot!=null?`<div class="potline"><span class="chips mini">${chipStack(Math.min(7,Math.max(3,Math.round(sc.pot/2))),150)}</span><span>Pot <b data-count="${sc.pot}" data-t="150">0</b> bb</span></div>`:''}
+        ${board?`<div class="board">${board}</div>`:''}${sc.act?`<span class="bubble pop" ${at(tA,'chip')}>${sc.act}</span>`:''}
+        ${hero?`<div class="dl-seat"><div class="hole">${hero}</div><span class="eyebrow">You</span></div>`:''}</div>`;}
+    case 'pot':{
+      const P=sc.parts,tot=P.reduce((a,p)=>a+p[1],0),gap=Math.round(Math.max(650,est*0.5/P.length));let h='';
+      P.forEach((p,i)=>{const t=300+i*gap;h+=(i?`<span class="plus pop" style="animation-delay:${t-120}ms">+</span>`:'')+`<div class="stk pop" ${at(t,'chip')}><div class="chips">${chipStack(Math.min(12,Math.max(2,Math.round(p[1]/1.5))),t)}</div><b class="mono" data-count="${p[1]}" data-t="${t}">0</b><span>${p[0]}</span></div>`});
+      const tt=300+P.length*gap;
+      return `<div class="sc sc-pot"><div class="stacks">${h}</div><div class="tot pop" ${at(tt,'stamp')}>= <b class="mono" data-count="${tot}" data-t="${tt}">0</b> bb${sc.l?`<span>${sc.l}</span>`:''}</div></div>`;}
+    case 'frac':{
+      const t1=300,t2=300+Math.round(est*0.3),t3=300+Math.round(est*0.58);
+      return `<div class="sc sc-frac"><div class="fr"><div class="pop" ${at(t1,'chip')}><b class="mono" data-count="${sc.top}" data-t="${t1}">0</b></div><span class="pop" ${at(t1)}>${sc.topL}</span><i class="fbar" style="animation-delay:${t1+150}ms"></i><div class="pop" ${at(t2,'chip')}><b class="mono" data-count="${sc.bottom}" data-t="${t2}">0</b></div><span class="pop" ${at(t2)}>${sc.botL}</span></div><div class="eq pop" ${at(t3,'stamp')}>= <b class="mono" data-count="${sc.pct}" data-t="${t3}" data-suf="%">0%</b></div></div>`;}
+    case 'tokens':{
+      let h='';for(let i=0;i<sc.n;i++){const t=300+i*200,w=i<sc.win;h+=`<span class="tok pop ${w?'win':''}" ${at(t,'card')}${w?` data-glow="1"`:''}>${w?'✓':''}</span>`}
+      return `<div class="sc sc-tokens"><div class="toks">${h}</div><div class="l pop" ${at(300+sc.n*200+250)}>${sc.l}</div></div>`;}
+    case 'ring':{
+      const C1=2*Math.PI*92,C2=2*Math.PI*66,ta=350,tb=350+Math.round(est*0.32),tv=350+Math.round(est*0.62);
+      const arc=(cls,r,C,v,t)=>`<circle class="arc ${cls}" cx="110" cy="110" r="${r}" style="stroke-dasharray:${C.toFixed(1)};--c:${C.toFixed(1)};--o:${(C*(1-v/100)).toFixed(1)};animation-delay:${t}ms"/>`;
+      return `<div class="sc sc-ring"><div class="ringbox"><svg viewBox="0 0 220 220" class="ringsvg" aria-hidden="true"><circle class="trk" cx="110" cy="110" r="92"/><circle class="trk" cx="110" cy="110" r="66"/>${arc('ra',92,C1,sc.a,ta)}${arc('rb',66,C2,sc.b,tb)}</svg><div class="stamp ${sc.ok?'ok':'no'}" ${at(tv,'stamp')}>${sc.verdict}</div></div>
+        <div class="rleg"><div class="pop" ${at(ta)}><i class="sw a"></i>${sc.aL} <b class="mono" data-count="${sc.a}" data-t="${ta}" data-suf="%">0%</b></div><div class="pop" ${at(tb)}><i class="sw b"></i>${sc.bL} <b class="mono" data-count="${sc.b}" data-t="${tb}" data-suf="%">0%</b></div></div></div>`;}
+    case 'math':return `<div class="sc sc-math">${sc.lines.map((l,i)=>`<div class="ml pop" ${at(step(i,sc.lines.length),'chip')} data-lit="1">${l}</div>`).join('')}</div>`;
+    case 'big':return `<div class="sc sc-big"><div class="n pop" ${at(250,'stamp')}>${sc.n}</div><div class="l pop" ${at(step(1,2))}>${sc.l||''}</div></div>`;
+    case 'table':return `<div class="sc sc-tab"><table><thead><tr><th>${sc.head[0]}</th><th>${sc.head[1]}</th></tr></thead><tbody>${sc.rows.map((r,i)=>`<tr class="pop" ${at(step(i,sc.rows.length),'chip')} data-lit="1"><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>`;
+    case 'points':return `<ul class="sc sc-list">${sc.items.map((t,i)=>`<li class="pop" ${at(step(i,sc.items.length))} data-lit="1">${t}</li>`).join('')}</ul>`;
+    case 'bars':return `<div class="sc sc-bars">${sc.items.map(([l,v],i)=>{const t=step(i,sc.items.length);return `<div class="br pop" ${at(t,'chip')}><div class="bl">${l}</div><div class="bt">${sc.mark!=null?`<i class="mk"></i>`:''}<i class="bf ${sc.mark!=null?(v>=sc.mark?'ok':'no'):''}" style="width:${v}%;animation-delay:${t+100}ms"></i></div><div class="bv mono" data-count="${v}" data-t="${t+100}" data-suf="%">0%</div></div>`}).join('').replace(/<i class="mk"><\/i>/g,`<i class="mk" style="left:${sc.mark}%"></i>`)}${sc.mark!=null?`<div class="mkl pop" ${at(250)}>White line = the price, ${sc.mark}%</div>`:''}</div>`;
+    case 'charts':return `<div class="sc sc-charts">${sc.items.map(([key,l],i)=>`<div class="ch pop" ${at(250+i*400,'whoosh')}>${gridHTML(chartFn(key),null,'')}<div class="chl">${l}</div></div>`).join('')}</div>`;
     case 'seats':return `<div class="sc sc-seats">${ringHTML({ring:{hi:null,reveal:true}})}</div>`;
+    case 'quiz':return `<div class="sc sc-quiz"><div class="eyebrow pop" ${at(150,'whoosh')}>Your call</div><h3 class="q pop" ${at(300)}>${sc.q}</h3><div class="qopts">${sc.o.map((t,i)=>`<button type="button" class="qopt pop" style="animation-delay:${450+i*120}ms" data-i="${i}"><kbd>${i+1}</kbd> ${t}</button>`).join('')}</div><div class="qhint pop" ${at(800)}>Tap your answer</div></div>`;
   }
   return '';
 }
-const LP={open:false,list:[],li:0,si:0,playing:false,auto:false,ended:false,tok:0,timer:0,wd:0,lock:null};
+function countUp(el,tok,instant){
+  const end=parseFloat(el.dataset.count),suf=el.dataset.suf||'',dec=(String(el.dataset.count).split('.')[1]||'').length;
+  if(instant){el.textContent=end.toFixed(dec)+suf;return}
+  const t0=performance.now(),D=700,f=now=>{if(tok!==LP.tok){el.textContent=end.toFixed(dec)+suf;return}const p=Math.min(1,(now-t0)/D);el.textContent=(end*(1-Math.pow(1-p,3))).toFixed(dec)+suf;if(p<1)requestAnimationFrame(f)};
+  requestAnimationFrame(f);
+}
+function fxAt(ms,fn){LP.fx.push(setTimeout(fn,Math.max(0,ms)))}
+function afterScene(st,tok,live){
+  const counts=st.querySelectorAll('[data-count]');
+  if(!live){counts.forEach(el=>countUp(el,tok,true));return}
+  st.querySelectorAll('[data-sfx]').forEach(el=>fxAt(+el.dataset.t,()=>sfx(el.dataset.sfx)));
+  counts.forEach(el=>fxAt(+el.dataset.t||0,()=>countUp(el,tok)));
+  st.querySelectorAll('[data-glow]').forEach(el=>fxAt((+el.dataset.t||0)+650,()=>el.classList.add('glow')));
+  const lits=[...st.querySelectorAll('[data-lit]')];lits.forEach(el=>fxAt(+el.dataset.t||0,()=>{lits.forEach(x=>x.classList.remove('lit'));el.classList.add('lit')}));
+  st.querySelectorAll('.grid').forEach((g,gi)=>[...g.children].forEach((c,i)=>{c.style.animationDelay=(450+gi*400+(Math.floor(i/13)+i%13)*24)+'ms';c.classList.add('cellin')}));
+  st.querySelectorAll('.rseat').forEach((el,i)=>{const t=400+i*650;el.style.animationDelay=t+'ms';el.classList.add('seatin');fxAt(t,()=>sfx('chip'))});
+  const dl=st.querySelector('.dealer');if(dl){dl.style.animationDelay='200ms';dl.classList.add('seatin')}
+}
+
+/* player state */
+const LP={open:false,list:[],li:0,si:0,playing:false,auto:false,ended:false,tok:0,timer:0,wd:0,capT:0,fx:[],lock:null,qa:null,score:0,asked:0};
 const lpEl=document.createElement('div');lpEl.className='lp';lpEl.hidden=true;lpEl.setAttribute('role','dialog');lpEl.setAttribute('aria-modal','true');lpEl.setAttribute('aria-label','Lesson');document.body.appendChild(lpEl);
 const lq=s=>lpEl.querySelector(s);
 const lpId=()=>LP.list[LP.li];
+const curScene=()=>LESSON_VIDEO[lpId()][LP.si];
 async function wakeOn(){try{if(!LP.lock&&navigator.wakeLock)LP.lock=await navigator.wakeLock.request('screen')}catch(e){}}
 function wakeOff(){try{if(LP.lock)LP.lock.release()}catch(e){}LP.lock=null}
+function newTok(){LP.tok++;clearTimeout(LP.timer);clearTimeout(LP.wd);clearInterval(LP.capT);LP.fx.forEach(clearTimeout);LP.fx=[];if(hasTTS)try{speechSynthesis.cancel()}catch(e){}lpEl.classList.remove('speaking');return LP.tok}
+function lpStop(){newTok();wakeOff()}
 function lpOpen(list,start,auto){
-  LP.list=list;LP.li=start||0;LP.si=0;LP.auto=!!auto;LP.ended=false;LP.ttsFail=false;LP.open=true;hidePop();
+  LP.list=list;LP.li=start||0;LP.si=0;LP.auto=!!auto;LP.ended=false;LP.ttsFail=false;LP.score=0;LP.asked=0;LP.open=true;hidePop();audioCtx();
   try{history.pushState({felt:'lesson'},'')}catch(e){}
   lpEl.hidden=false;document.body.style.overflow='hidden';lpBuild();LP.playing=true;lpRun();
 }
-function lpStop(){LP.tok++;clearTimeout(LP.timer);clearTimeout(LP.wd);if(hasTTS)try{speechSynthesis.cancel()}catch(e){}wakeOff()}
 function lpClose(fromPop){
   if(!LP.open)return;let pushed=false;try{pushed=!!(history.state&&history.state.felt==='lesson')}catch(e){}
   if(!fromPop&&pushed){history.back();return}
@@ -1590,83 +1761,128 @@ function lpBuild(){
       <div class="lp-audio"><div class="big">${ICON.ear}</div><b id="lpat"></b><span class="muted" id="lpas"></span></div>
       <p class="cap" id="lpcap" aria-live="polite"></p>
       <div class="lp-prog" id="lpprog"></div>
-      <div class="lp-ctrl"><button class="iconbtn" id="lpprev" aria-label="Previous scene">${ICON.prev}</button><button class="playbtn" id="lpplay"></button><button class="iconbtn" id="lpnext" aria-label="Next scene">${ICON.next}</button><button class="ratebtn" id="lprate" aria-label="Playback speed"></button></div>
-      <div class="lp-opts">${modeSegHTML()}<span id="lpvoice"></span></div>
+      <div class="lp-ctrl"><button class="iconbtn" id="lpprev" aria-label="Previous scene">${ICON.prev}</button><button class="playbtn" id="lpplay"></button><button class="iconbtn" id="lpnext" aria-label="Next scene">${ICON.next}</button></div>
+      <div class="lp-opts">${modeSegHTML()}<div class="lp-optrow"><button class="ratebtn" id="lprate" aria-label="Playback speed"></button><button class="ratebtn soundonly" id="lpsfx"></button></div><div id="lpvoice" class="soundonly"></div></div>
       <p class="lp-note" id="lpnote"></p></div>`;
   lq('#lpx').addEventListener('click',()=>lpClose());
-  lq('#lpcc').addEventListener('click',()=>{LPREF.cc=!LPREF.cc;saveLP();lpShow()});
+  lq('#lpcc').addEventListener('click',()=>{LPREF.cc=!LPREF.cc;saveLP();lpChrome()});
   lq('#lpplay').addEventListener('click',lpToggle);
-  lq('#lpprev').addEventListener('click',()=>{if(LP.ended){LP.ended=false;LP.si=LESSON_VIDEO[lpId()].length-1}else LP.si=Math.max(0,LP.si-1);lpRun()});
-  lq('#lpnext').addEventListener('click',()=>{if(!LP.ended)lpAdvance()});
-  lq('#lprate').addEventListener('click',()=>{const R2=[1,1.25,1.5,0.85];LPREF.rate=R2[(R2.indexOf(LPREF.rate)+1)%R2.length];saveLP();lpRun()});
+  lq('#lpprev').addEventListener('click',()=>{if(LP.ended){LP.ended=false;LP.si=LESSON_VIDEO[lpId()].length-1}else LP.si=Math.max(0,LP.si-1);LP.playing=true;lpRun()});
+  lq('#lpnext').addEventListener('click',()=>{if(!LP.ended){LP.playing=true;lpAdvance()}});
+  lq('#lprate').addEventListener('click',()=>{const R2=[1,1.15,1.3,0.9];LPREF.rate=R2[(R2.indexOf(LPREF.rate)+1)%R2.length]||1;saveLP();lpRun()});
+  lq('#lpsfx').addEventListener('click',()=>{LPREF.sfx=!LPREF.sfx;saveLP();lpChrome();if(LPREF.sfx)sfx('chip')});
   wireModeSeg(lpEl,()=>lpRun());
   lpVoiceUI();
 }
 function lpVoiceUI(){
   const box=lq('#lpvoice');if(!box)return;
-  if(!hasTTS||voices.length<2){box.innerHTML='';return}
-  const cur0=pickVoice();
-  box.innerHTML=`<select class="lp-voice" id="lpvsel" aria-label="Voice">${voices.map(v=>`<option value="${v.name.replace(/"/g,'&quot;')}" ${cur0&&v.name===cur0.name?'selected':''}>Voice: ${v.name}</option>`).join('')}</select>`;
-  lq('#lpvsel').addEventListener('change',e=>{LPREF.voice=e.target.value;saveLP();lpRun()});
+  if(!hasTTS){box.innerHTML='';return}
+  const cv=pickVoice(),good=voices.filter(v=>vScore(v)>=5),rest=voices.filter(v=>vScore(v)<5);
+  const opt=v=>`<option value="${escA(v.name)}" ${cv&&v.name===cv.name?'selected':''}>${escA(v.name.replace(/\s*\([^)]*\)/g,'').replace(/\s+-\s+.*$/,'').trim())} · ${escA(v.lang)}</option>`;
+  box.innerHTML=`${voices.length?`<div class="vrow"><select class="lp-voice" id="lpvsel" aria-label="Narrator voice">${good.length?`<optgroup label="Most natural">${good.map(opt).join('')}</optgroup>`:''}${rest.length?`<optgroup label="${good.length?'Other voices':'Voices on this device'}">${rest.map(opt).join('')}</optgroup>`:''}</select><button class="ratebtn" id="lpvtest">Test</button></div>`:''}
+    <details class="vhelp" ${good.length?'':'open'}><summary>${good.length?'Want a different voice?':'Get a more natural voice (free)'}</summary>
+      <p><b>iPhone / iPad:</b> Settings › Accessibility › Spoken Content › Voices › English. Download a voice marked <b>Premium</b> or <b>Enhanced</b>, then reopen Felt Lab and pick it here.</p>
+      <p><b>Android:</b> Settings › search “Text-to-speech” › Google › Install voice data › English (UK), and choose a voice.</p>
+      <p><b>Computer:</b> in Microsoft Edge, voices marked “Natural” sound best.</p></details>`;
+  const sel=lq('#lpvsel');if(sel)sel.addEventListener('change',e=>{LPREF.voice=e.target.value;saveLP();lpRun()});
+  const tb=lq('#lpvtest');if(tb)tb.addEventListener('click',()=>{const was=LP.playing;if(was){LP.playing=false;lpStop();lpChrome()}const u=new SpeechSynthesisUtterance('This is how your lessons will sound. Shall we play some poker?'),v=pickVoice();if(v){u.voice=v;u.lang=v.lang}u.rate=LPREF.rate;try{speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}});
 }
-function lpShow(){
-  const id=lpId(),scenes=LESSON_VIDEO[id],sc=scenes[Math.min(LP.si,scenes.length-1)],est=lessonMs(sc.s,LPREF.rate);
+function lpChrome(){
+  const id=lpId(),scenes=LESSON_VIDEO[id];
   lpEl.className=`lp mode-${LPREF.mode}${LPREF.cc?'':' nocap'}`;
   lq('#lpeye').textContent=LP.list.length>1?`Lesson ${LP.li+1} of ${LP.list.length}`:`${levelLabel(DRILLS[id].level)} · ${fmtDur(lessonDur(id))}`;
   lq('#lpname').textContent=LESSONS[id].t;lq('#lpat').textContent=LESSONS[id].t;
   lq('#lpas').textContent=LP.ended?'Lesson complete':`Part ${LP.si+1} of ${scenes.length}`;
   lq('#lpcc').setAttribute('aria-pressed',String(LPREF.cc));
-  const st=lq('#lpstage');
+  lq('#lpprog').innerHTML=scenes.map((s,i)=>`<i class="${LP.ended||i<=LP.si?'on':s.v==='quiz'?'q':''}"></i>`).join('');
+  const pb=lq('#lpplay');pb.innerHTML=LP.playing&&!LP.ended?ICON.pause:ICON.play;pb.setAttribute('aria-label',LP.ended?'Replay':LP.playing?'Pause':'Play');
+  lq('#lprate').textContent=`Speed ${LPREF.rate}×`;
+  const sb=lq('#lpsfx');sb.textContent=`Effects: ${LPREF.sfx?'on':'off'}`;sb.setAttribute('aria-pressed',String(LPREF.sfx));sb.hidden=LPREF.mode!=='av';
+  lq('#lpnote').textContent=LPREF.mode!=='v'&&(!hasTTS||LP.ttsFail)?'The voice isn’t available here, so the lesson plays silently with captions.':LPREF.mode==='a'?'Keep the screen on while listening: phones stop the voice when the screen locks.':LPREF.mode==='av'?'Hear nothing? Check the silent switch and the volume.':'';
+}
+function lpStage(){
+  const st=lq('#lpstage'),id=lpId(),scenes=LESSON_VIDEO[id];
+  st.classList.toggle('paused',false);st.classList.toggle('static',!LP.playing);
   if(LP.ended){
     const hasNext=LP.li<LP.list.length-1,nid=hasNext?LP.list[LP.li+1]:null;
-    st.innerHTML=`<div class="sc sc-end"><div class="eyebrow">Lesson complete</div><div class="sc-title"><h2>${LESSONS[id].t}</h2></div><div class="btns"><button class="btn" id="lpreplay">Replay</button>${hasNext?`<button class="btn" id="lpgonext">Next: ${LESSONS[nid].t}</button>`:''}<button class="btn primary" id="lpdrill">Practise: ${DRILLS[id].name}</button></div></div>`;
-    lq('#lpcap').textContent=hasNext&&LP.auto&&LP.playing?`Next lesson: ${LESSONS[nid].t}`:'';
-    lq('#lpreplay').addEventListener('click',()=>{LP.ended=false;LP.si=0;LP.playing=true;lpRun()});
-    if(hasNext)lq('#lpgonext').addEventListener('click',()=>{LP.li++;LP.si=0;LP.ended=false;LP.playing=true;lpRun()});
+    st.innerHTML=`<div class="sc sc-end"><div class="eyebrow">Lesson complete</div><div class="sc-title"><h2>${LESSONS[id].t}</h2></div>${LP.asked?`<div class="score">Your calls: ${LP.score} of ${LP.asked} right</div>`:''}<div class="btns"><button class="btn" id="lpreplay">Replay</button>${hasNext?`<button class="btn" id="lpgonext">Next: ${LESSONS[nid].t}</button>`:''}<button class="btn primary" id="lpdrill">Practise: ${DRILLS[id].name}</button></div></div>`;
+    lpCaption(hasNext&&LP.auto&&LP.playing?`Next lesson: ${LESSONS[nid].t}`:'');capHi(999);
+    lq('#lpreplay').addEventListener('click',()=>{LP.ended=false;LP.si=0;LP.score=0;LP.asked=0;LP.playing=true;lpRun()});
+    if(hasNext)lq('#lpgonext').addEventListener('click',()=>{LP.li++;LP.si=0;LP.ended=false;LP.score=0;LP.asked=0;LP.playing=true;lpRun()});
     lq('#lpdrill').addEventListener('click',()=>{if(!(cur&&cur.id===id))LP.after=()=>startSession(id);lpClose()});
-  }else{st.innerHTML=sceneHTML(sc,est);lq('#lpcap').textContent=sc.s}
-  st.classList.toggle('paused',!LP.playing);
-  lq('#lpprog').innerHTML=scenes.map((_,i)=>`<i class="${LP.ended||i<=LP.si?'on':''}"></i>`).join('');
-  const pb=lq('#lpplay');pb.innerHTML=LP.playing&&!LP.ended?ICON.pause:ICON.play;pb.setAttribute('aria-label',LP.ended?'Replay':LP.playing?'Pause':'Play');
-  lq('#lprate').textContent=LPREF.rate+'×';
-  lq('#lpnote').textContent=LPREF.mode!=='v'&&(!hasTTS||LP.ttsFail)?'The voice isn’t available here, so the lesson plays silently with captions.':LPREF.mode==='a'?'Keep the screen on while listening: phones stop the voice when the screen locks.':LPREF.mode==='av'?'The voice is your device’s own. If you hear nothing, check the silent switch and volume.':'';
+    return;
+  }
+  const sc=scenes[LP.si],est=lessonMs(sc.s,LPREF.rate);
+  st.innerHTML=sceneHTML(sc,est)+(LP.playing?`<div class="stbar"><i style="animation-duration:${est}ms"></i></div>`:'');
+  st.querySelectorAll('.qopt').forEach(b=>b.addEventListener('click',()=>quizAnswer(+b.dataset.i)));
+  afterScene(st,LP.tok,LP.playing);
 }
-function lpRun(){
-  lpStop();const tok=LP.tok;LP.ended=false;
-  const scenes=LESSON_VIDEO[lpId()];LP.si=clamp(LP.si,0,scenes.length-1);const sc=scenes[LP.si];
-  lpShow();if(!LP.playing)return;wakeOn();
-  const sound=LPREF.mode!=='v'&&hasTTS&&!LP.ttsFail,est=lessonMs(sc.s,LPREF.rate),t0=Date.now();let fired=false;
-  const done=()=>{if(fired||tok!==LP.tok)return;fired=true;clearTimeout(LP.wd);LP.timer=setTimeout(()=>{if(tok===LP.tok)lpAdvance()},sound?450:300)};
-  if(!sound){LP.timer=setTimeout(done,est+(LPREF.mode==='v'||LP.ttsFail?900:0));return}
-  const parts=sc.s.split(/(?<=[.!?])\s+/),v=pickVoice();let i=0;
-  /* if the voice fails, finish this scene on reading time and play the rest silently with captions */
-  const fail=()=>{LP.ttsFail=true;lpShow();clearTimeout(LP.timer);LP.timer=setTimeout(done,Math.max(0,est+900-(Date.now()-t0)))};
+function lpCaption(text){const c=lq('#lpcap');const w=text?text.split(/\s+/):[];c.innerHTML=w.map(x=>`<span>${x}</span>`).join(' ');LP.capN=w.length;LP.capK=-2}
+function capHi(k){if(k===LP.capK)return;LP.capK=k;const sp=lq('#lpcap').children;for(let i=0;i<sp.length;i++)sp[i].className=i<k?'on':i===k?'now':''}
+/* speak (or time) a piece of narration, highlighting each word in the caption as it goes */
+function narrate(text,tok,done){
+  const est=lessonMs(text,LPREF.rate),sound=LPREF.mode!=='v'&&hasTTS&&!LP.ttsFail,t0=Date.now();let fired=false,bnd=false;
+  lpCaption(text);capHi(-1);
+  const fin=()=>{if(fired||tok!==LP.tok)return;fired=true;clearInterval(LP.capT);clearTimeout(LP.wd);lpEl.classList.remove('speaking');capHi(LP.capN);done()};
+  LP.capT=setInterval(()=>{if(tok!==LP.tok){clearInterval(LP.capT);return}if(!bnd)capHi(Math.min(LP.capN-1,Math.floor(LP.capN*(Date.now()-t0)/Math.max(1,est-600))))},110);
+  if(!sound){LP.timer=setTimeout(fin,est+(LPREF.mode==='v'||LP.ttsFail?900:0));return}
+  lpEl.classList.add('speaking');
+  const parts=text.split(/(?<=[.!?])\s+/),v=pickVoice();let i=0,wOff=0;
+  const fail=()=>{LP.ttsFail=true;lpChrome();clearTimeout(LP.timer);LP.timer=setTimeout(fin,Math.max(0,est+900-(Date.now()-t0)))};
   const say=()=>{
-    if(tok!==LP.tok)return;if(i>=parts.length){done();return}
-    const u=new SpeechSynthesisUtterance(parts[i++]);if(v){u.voice=v;u.lang=v.lang}else u.lang='en-GB';u.rate=LPREF.rate;
+    if(tok!==LP.tok)return;if(i>=parts.length){fin();return}
+    const part=parts[i++],off=wOff;wOff+=part.split(/\s+/).filter(Boolean).length;
+    const u=new SpeechSynthesisUtterance(part);if(v){u.voice=v;u.lang=v.lang}else u.lang='en-GB';u.rate=LPREF.rate;
+    u.onboundary=e=>{if(tok!==LP.tok||(e.name&&e.name!=='word'))return;bnd=true;capHi(off+part.slice(0,e.charIndex).split(/\s+/).filter(Boolean).length)};
     u.onend=say;u.onerror=e=>{if(tok!==LP.tok)return;if(e&&(e.error==='interrupted'||e.error==='canceled'))return;fail()};
     try{speechSynthesis.speak(u)}catch(e){fail()}
   };
-  say();LP.wd=setTimeout(done,est*1.8+3000);
+  say();LP.wd=setTimeout(fin,est*1.8+3000);
+}
+function lpRun(){
+  const tok=newTok();LP.ended=false;LP.qa=null;
+  const scenes=LESSON_VIDEO[lpId()];LP.si=clamp(LP.si,0,scenes.length-1);const sc=scenes[LP.si];
+  lpStage();lpChrome();
+  if(!LP.playing){lpCaption(sc.s);capHi(-1);return}
+  wakeOn();
+  narrate(sc.s,tok,()=>{
+    if(sc.v!=='quiz'){lpNext(tok);return}
+    /* a quiz waits for a tap; in Listen only it pauses briefly, then gives the answer */
+    if(LPREF.mode==='a')LP.timer=setTimeout(()=>{if(tok===LP.tok)quizReveal(null)},3500);
+    else{const h=lq('#lpstage .qhint');if(h)h.textContent='Tap your answer to continue'}
+  });
+}
+function lpNext(tok){LP.timer=setTimeout(()=>{if(tok===LP.tok)lpAdvance()},450)}
+function quizAnswer(i){const sc=curScene();if(sc.v!=='quiz'||LP.qa!=null||LP.ended)return;quizReveal(i)}
+function quizReveal(i){
+  const sc=curScene();if(LP.qa!=null)return;LP.qa=i==null?-1:i;LP.playing=true;const tok=newTok();wakeOn();
+  const st=lq('#lpstage');st.classList.remove('static','paused');
+  st.querySelectorAll('.qopt').forEach(b=>{const k=+b.dataset.i;b.disabled=true;if(k===sc.a)b.classList.add('right');else if(k===i)b.classList.add('wrong')});
+  const right=i===sc.a,h=st.querySelector('.qhint');
+  if(i!=null){LP.asked++;if(right)LP.score++;sfx(right?'good':'bad');buzz(right?'good':'miss')}
+  if(h){h.className='qhint '+(i==null?'':right?'good':'bad');h.textContent=i==null?'':right?'Correct':'Not quite'}
+  lpChrome();narrate((i==null?'':right?'Correct! ':'Not quite. ')+sc.after,tok,()=>lpNext(tok));
 }
 function lpAdvance(){
   const id=lpId(),scenes=LESSON_VIDEO[id];
   if(LP.si<scenes.length-1){LP.si++;lpRun();return}
   state.watched=state.watched||{};if(!state.watched[id]){state.watched[id]=1;queueSave()}
-  lpStop();LP.ended=true;const go=LP.auto&&LP.playing&&LP.li<LP.list.length-1;LP.playing=go;lpShow();
-  if(go){const tok=LP.tok;LP.timer=setTimeout(()=>{if(tok===LP.tok&&LP.open){LP.li++;LP.si=0;LP.playing=true;lpRun()}},2600)}
+  lpStop();LP.ended=true;const go=LP.auto&&LP.playing&&LP.li<LP.list.length-1;LP.playing=go;lpStage();lpChrome();
+  if(LP.asked)sfx('good');
+  if(go){const tok=LP.tok;LP.timer=setTimeout(()=>{if(tok===LP.tok&&LP.open){LP.li++;LP.si=0;LP.score=0;LP.asked=0;LP.playing=true;lpRun()}},2800)}
 }
 function lpToggle(){
-  if(LP.ended){LP.ended=false;LP.si=0;LP.playing=true;lpRun();return}
-  if(LP.playing){LP.playing=false;lpStop();lpShow()}else{LP.playing=true;lpRun()}
+  if(LP.ended){LP.ended=false;LP.si=0;LP.score=0;LP.asked=0;LP.playing=true;lpRun();return}
+  if(LP.playing){LP.playing=false;lpStop();lq('#lpstage').classList.add('paused');lpChrome()}else{LP.playing=true;lpRun()}
 }
 function lpKey(e){
   if(e.key==='Escape'){e.preventDefault();lpClose()}
-  else if(e.key===' '&&!(e.target&&/BUTTON|SELECT/.test(e.target.tagName))){e.preventDefault();lpToggle()}
-  else if(e.key==='ArrowRight'){if(!LP.ended)lpAdvance()}
-  else if(e.key==='ArrowLeft'){LP.si=Math.max(0,LP.si-1);lpRun()}
+  else if(e.key===' '&&!(e.target&&/BUTTON|SELECT|SUMMARY/.test(e.target.tagName))){e.preventDefault();lpToggle()}
+  else if(e.key==='ArrowRight'){if(!LP.ended){LP.playing=true;lpAdvance()}}
+  else if(e.key==='ArrowLeft'){LP.si=Math.max(0,LP.si-1);LP.playing=true;lpRun()}
+  else if(/^[1-4]$/.test(e.key))quizAnswer(+e.key-1);
 }
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&LP.open&&LP.playing&&LPREF.mode!=='v'){LP.playing=false;lpStop();lpShow()}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&LP.open&&LP.playing&&LPREF.mode!=='v'){LP.playing=false;lpStop();lpChrome()}});
 
 function renderLessons(){
   const ids=LORDER(),tot=ids.reduce((a,id)=>a+lessonDur(id),0),w=state.watched||{},nw=ids.filter(id=>w[id]).length;
