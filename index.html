@@ -75,7 +75,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .chip{font-size:12px;background:var(--surface-2);color:var(--muted);border-radius:999px;padding:4px 10px;white-space:nowrap}
 svg.ic{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--bar);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);-webkit-user-select:none;user-select:none}
-.tabbar .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tabbar .in{max-width:600px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
 .tabbar button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;color:var(--muted);font-family:var(--f-display);font-weight:600;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
 .tabbar .pill{width:56px;height:30px;border-radius:15px;display:grid;place-items:center;transition:background .15s}
 .tabbar .pill svg{width:23px;height:23px}
@@ -264,6 +264,94 @@ table.cmp td.right{color:var(--good);font-weight:600}
 .toggle input{accent-color:var(--accent);width:18px;height:18px}
 .guidep{display:flex;flex-direction:column;gap:10px}
 .guidep p{max-width:70ch}
+/* lesson player: full-screen sheet; the stage is a felt-coloured scene, a single look in both themes */
+.lp{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.lp-top{background:var(--bar);border-bottom:1px solid var(--line)}
+.lp-top .in{max-width:880px;margin:0 auto;min-height:56px;display:flex;align-items:center;gap:8px;padding-left:max(10px, env(safe-area-inset-left,0px));padding-right:max(10px, env(safe-area-inset-right,0px))}
+.lp-body>*{flex-shrink:0}
+.lp-body{flex:1;overflow-y:auto;overflow-x:hidden;width:100%;max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:14px;padding-block:14px 20px;padding-left:max(14px, env(safe-area-inset-left,0px));padding-right:max(14px, env(safe-area-inset-right,0px))}
+.stage{--accent:#F2B33D;--accent-ink:#1A1200;--call:#86B5A6;--cell:rgba(255,255,255,.09);position:relative;background:radial-gradient(ellipse at 50% 40%, var(--felt) 0%, var(--felt-2) 80%);border-radius:18px;color:var(--felt-ink);min-height:min(52vh,420px);display:flex;align-items:center;justify-content:center;padding:24px 18px;overflow:hidden;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.stage.paused *{animation-play-state:paused!important}
+.lp.mode-a .stage{display:none}
+.lp-audio{display:none;flex-direction:column;align-items:center;gap:8px;padding:28px 12px;text-align:center}
+.lp.mode-a .lp-audio{display:flex}
+.lp-audio .big{width:84px;height:84px;border-radius:50%;background:var(--sel);color:var(--accent);display:grid;place-items:center}
+.lp-audio .big svg{width:40px;height:40px}
+.lp-audio b{font-family:var(--f-display);font-size:28px;line-height:1.1}
+.cap{font-size:18px;line-height:1.5;min-height:3em;max-width:62ch;margin:0 auto;text-align:center}
+.lp.nocap .cap{visibility:hidden}
+.lp.mode-v .cap{visibility:visible}
+.lp-prog{display:flex;gap:5px;max-width:420px;width:100%;margin:0 auto}
+.lp-prog i{flex:1;height:5px;border-radius:3px;background:var(--surface-2)}
+.lp-prog i.on{background:var(--accent)}
+.lp-ctrl{display:flex;align-items:center;justify-content:center;gap:16px}
+.playbtn{width:66px;height:66px;border-radius:50%;background:var(--accent);color:var(--accent-ink);border:0;display:grid;place-items:center;cursor:pointer}
+.playbtn svg{width:30px;height:30px}
+.ratebtn{min-width:52px;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--f-mono);font-size:13px;cursor:pointer}
+.lp-opts{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;min-width:0}
+#lpvoice{width:100%;max-width:360px;display:flex;justify-content:center}
+.lp-note{font-size:13px;color:var(--muted);text-align:center;max-width:60ch;margin:0 auto}
+.lp-voice{font:inherit;font-size:14px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:100%;min-width:0;text-overflow:ellipsis}
+.seg{display:inline-flex;flex-wrap:wrap;justify-content:center;background:var(--surface-2);border-radius:12px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:7px 11px;border-radius:9px;font-family:var(--f-display);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
+.seg button svg{width:18px;height:18px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.sc{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:640px}
+.sc .eyebrow{color:var(--felt-dim)}
+.sc-title h2{font-size:clamp(34px,8vw,56px);line-height:1.02;color:var(--felt-ink)}
+.sc-math{font-family:var(--f-mono);font-size:clamp(16px,3.8vw,24px);gap:12px;align-items:stretch;text-align:left;max-width:560px}
+.sc-math div{background:rgba(255,255,255,.07);border-radius:10px;padding:8px 14px}
+.sc-big .n{font-family:var(--f-display);font-weight:700;font-size:clamp(38px,9vw,72px);line-height:1.05;color:var(--accent);text-wrap:balance}
+.sc-big .l{color:var(--felt-ink);font-size:clamp(16px,3.6vw,20px)}
+.sc-list{list-style:none;padding:0;margin:0;align-items:stretch;gap:10px;font-size:clamp(16px,3.8vw,22px);text-align:left;max-width:560px}
+.sc-list li{display:flex;gap:12px;align-items:baseline}
+.sc-list li::before{content:"";flex:none;width:9px;height:9px;border-radius:50%;background:var(--accent);transform:translateY(-2px)}
+.sc-tab table{border-collapse:collapse;width:100%;max-width:440px;margin:0 auto;font-size:clamp(16px,3.8vw,21px)}
+.sc-tab th{font-family:var(--f-display);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--felt-dim);text-align:left;padding:4px 10px;font-weight:600}
+.sc-tab td{padding:8px 10px;border-top:1px solid rgba(255,255,255,.12);text-align:left}
+.sc-tab td:last-child,.sc-tab th:last-child{text-align:right;font-family:var(--f-mono);color:var(--accent)}
+.sc-cards .grps{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 26px}
+.sc-cards .grp{display:flex;flex-direction:column;align-items:center;gap:6px}
+.sc-cards .board{flex-wrap:wrap;justify-content:center}
+.sc-cards .note,.sc-spot .act{font-size:clamp(16px,3.8vw,20px);font-weight:600}
+.sc-spot{gap:16px}
+.sc-spot .pot{font-family:var(--f-mono);font-size:18px;color:var(--felt-dim)}
+.sc-spot .pot b{color:var(--felt-ink);font-size:24px}
+.sc-spot .act{background:rgba(255,255,255,.12);border-radius:999px;padding:6px 16px;font-family:var(--f-mono);font-size:17px}
+.sc-bars{gap:12px;align-items:stretch;max-width:560px}
+.sc-bars .br{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 3.4em;gap:10px;align-items:center;text-align:left;font-size:clamp(14px,3.3vw,17px)}
+.sc-bars .bt{position:relative;height:14px;border-radius:7px;background:rgba(255,255,255,.12)}
+.sc-bars .bf{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:var(--accent);transform-origin:left;animation:grow .8s ease-out both}
+.sc-bars .bf.no{background:#E57373}.sc-bars .bf.ok{background:#71CF99}
+.sc-bars .mk{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--felt-ink);z-index:1}
+.sc-bars .bv{text-align:right;color:var(--accent)}
+.sc-bars .mkl{font-size:13px;color:var(--felt-dim)}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.sc-charts{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:16px}
+.sc-charts .ch{flex:1 1 150px;max-width:260px;display:flex;flex-direction:column;gap:6px}
+.sc-charts .grid{font-size:0;max-width:none}
+.sc-charts .chl{font-size:14px;color:var(--felt-ink);font-weight:600}
+.sc-seats{max-width:520px}
+.stage .felt.ring{background:none;border:0;box-shadow:none;min-height:250px;width:100%}
+.sc-end .btns{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.sc-end .btn{background:rgba(255,255,255,.1);color:var(--felt-ink);border-color:rgba(255,255,255,.2)}
+.sc-end .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.rv{opacity:0;animation:rv .45s ease-out forwards}
+@keyframes rv{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.rv{animation:none;opacity:1}.sc-bars .bf{animation:none}}
+.lrows{display:flex;flex-direction:column;gap:8px}
+.lrow{display:flex;align-items:center;gap:12px;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;width:100%}
+.lrow:hover{border-color:var(--accent)}
+.lrow .lplay{width:38px;height:38px;flex:none;border-radius:50%;background:var(--sel);color:var(--accent);display:grid;place-items:center}
+.lrow .lplay svg{width:18px;height:18px}
+.lrow .lt{flex:1;min-width:0;display:flex;flex-direction:column}
+.lrow .lt b{font-family:var(--f-display);font-size:18px;color:var(--accent)}
+.lrow .lt span{font-size:13px;color:var(--muted)}
+.lrow .lw{font-size:12px;color:var(--good);font-weight:600;white-space:nowrap}
+.lhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.linkbtn.sm{padding:4px 10px;font-size:13px;display:inline-flex;align-items:center;gap:5px}
+.linkbtn.sm svg,.btn svg.ic{width:16px;height:16px;vertical-align:-2px}
+.introbtns{display:flex;flex-wrap:wrap;gap:8px}
 </style>
 </head>
 <body>
@@ -273,6 +361,7 @@ table.cmp td.right{color:var(--good);font-weight:600}
 <nav class="tabbar" aria-label="Sections"><div class="in">
   <button data-tab="train" aria-current="page"><span class="pill"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="11" height="15.5" rx="2"/><path d="M14.5 7.2l4.3 1.2a2 2 0 0 1 1.4 2.4l-2.5 9.2a2 2 0 0 1-2.4 1.4l-3.2-.9"/></svg></span>Train</button>
   <button data-tab="mix"><span class="pill"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></span>Mixed</button>
+  <button data-tab="lessons"><span class="pill"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M10 9l5 3-5 3z"/></svg></span>Lessons</button>
   <button data-tab="progress"><span class="pill"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-8"/><path d="M12 20V5"/><path d="M19 20v-5"/><path d="M3 20h18"/></svg></span>Progress</button>
   <button data-tab="guide"><span class="pill"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Guide</button>
 </div></nav>
@@ -1020,11 +1109,120 @@ const INTRO={
   polar:{how:'On the river your hands are either very strong or worthless. Bet the strong ones, and bluff with some of the worthless ones, in exactly the ratio that leaves him no good answer.',words:['polarised','bluff-catcher','GTO','value']},
   catch:{how:'You hold a hand that only beats bluffs. Count how many of his bets are bluffs (mostly draws that missed) and compare with the price.',words:['bluff-catcher','missed draw','combo','exploit']}
 };
+/* ---------- narrated lessons: each scene = one visual + the sentence(s) read aloud (s) ----------
+   visuals: title, spot (pot + action + cards), math (lines revealed in turn), big (one number), table, points,
+   cards (labelled card groups), bars (labelled % bars, optional price marker), charts (range grids), seats */
+const LESSON_VIDEO={
+  hands:[
+    {v:'title',h:'Which hand wins?',sub:'Start here',s:'Which hand wins? Let’s learn to read a showdown.'},
+    {v:'points',items:['Straight flush','Four of a kind','Full house','Flush','Straight','Three of a kind','Two pair','One pair','High card'],s:'Every player makes their best five-card hand from seven cards: their own two, plus the five shared cards on the board. From best to worst: straight flush, four of a kind, full house, flush, straight, three of a kind, two pair, one pair, and high card.'},
+    {v:'cards',groups:[['You','As Qd'],['Board','Ah 9c 7d 4s 2h'],['Him','Ad Jc']],note:'Both have a pair of aces: your queen kicker wins',s:'When both players have the same kind of hand, compare the cards left over, called kickers. Here you both have a pair of aces, but your queen beats his jack, so you win.'},
+    {v:'cards',groups:[['You','2c 3d'],['Board','Ks Kd 8c 8h As'],['Him','4h 5s']],note:'The board is the best hand for both: split pot',s:'And if the best five cards are exactly the same, for example when the board itself is the best hand, the pot is split.'},
+    {v:'big',n:'Best 5 of 7',l:'then compare the kickers',s:'So: find the best five cards out of seven, and when it’s close, compare the kickers.'}],
+  risk:[
+    {v:'title',h:'Risk and reward',sub:'Start here',s:'Every call is a trade. Let’s count both sides of it.'},
+    {v:'spot',pot:10,act:'Villain bets 5 bb',s:'The pot has ten big blinds in it, and your opponent bets five. To stay in the hand, you have to call five.'},
+    {v:'math',lines:['Call and lose: you lose 5','Call and win: you gain 15','(the pot’s 10 + his 5; your own 5 comes back)'],s:'If you call and lose, you lose your five. If you call and win, you gain fifteen: the ten already in the pot, plus his five. Your own five just comes back to you.'},
+    {v:'math',lines:['Risk 5 to win 15','At stake: 5 + 15 = 20','Win 5 out of 20 = 25%'],s:'So you risk five to win fifteen. Out of the twenty at stake, you need your five, which means you must win a quarter of the time, twenty-five percent, just to break even.'},
+    {v:'big',n:'25%',l:'the price of this call',s:'That number is the price of the call. Almost every decision in poker comes back to comparing your chance of winning with this price.'}],
+  seats:[
+    {v:'title',h:'Seats and position',sub:'Start here',s:'Where you sit changes how you should play. Here’s why.'},
+    {v:'seats',s:'Six players sit around the table. The dealer button, marked D, moves one seat clockwise every hand. The next two seats post the blinds: the small blind and the big blind. Then come under the gun, the hijack, and the cutoff.'},
+    {v:'points',items:['Before the flop: UTG → HJ → CO → BTN → SB → BB','After the flop: SB → BB → UTG → HJ → CO → BTN'],s:'Before the flop, under the gun acts first and the big blind acts last. After the flop, the small blind acts first, and the button always acts last.'},
+    {v:'big',n:'Acting last wins',l:'so play more hands near the button',s:'Acting last is a big advantage, because you see what everyone else does before you decide. That’s why good players play more hands the closer they sit to the button.'}],
+  potodds:[
+    {v:'title',h:'The price of a call',sub:'Level 1 · Odds',s:'How often do you need to win to make a call worth it?'},
+    {v:'spot',pot:12,act:'Villain bets 6 bb',s:'There are twelve big blinds in the pot, and your opponent bets six. What does calling cost you?'},
+    {v:'math',lines:['You call 6','Final pot: 12 + 6 + 6 = 24','Price: 6 ÷ 24 = 25%'],s:'You put in six. If you call, the final pot is twelve, plus his six, plus your six: twenty-four. Divide your call by the final pot. Six over twenty-four is twenty-five percent, so you need to win at least a quarter of the time.'},
+    {v:'table',head:['Bet size','Price'],rows:[['⅓ pot','20%'],['½ pot','25%'],['⅔ pot','29%'],['Pot','33%'],['2× pot','40%']],s:'Learn the common sizes by heart. A third of the pot costs twenty percent. Half the pot, twenty-five. Two thirds, about twenty-nine. A pot-sized bet, thirty-three. And twice the pot, forty.'},
+    {v:'big',n:'bet ÷ (pot + 2 × bet)',l:'the price of any call',s:'The formula is the bet, divided by the pot plus two bets. Notice how slowly the price rises: doubling the bet from pot to twice the pot only moves it from thirty-three to forty percent.'}],
+  outs:[
+    {v:'title',h:'Count your outs',sub:'Level 1 · Odds',s:'When your hand isn’t finished yet, how often will it get there?'},
+    {v:'cards',groups:[['You','Ah 5h'],['Flop','Kh 9h 2c']],note:'Four hearts: 9 more hearts in the deck = 9 outs',s:'Outs are the cards that would complete your hand. Here you have four hearts. There are thirteen hearts in a deck, so nine are still out there. That’s nine outs.'},
+    {v:'table',head:['Draw','Outs'],rows:[['Flush draw','9'],['Open-ended straight draw','8'],['Gutshot','4'],['Flush draw + gutshot','12'],['Flush draw + open-ender','15']],s:'The common draws: a flush draw has nine outs. An open-ended straight draw, four cards in a row, has eight. A gutshot, missing one card in the middle, has four. Put a flush draw together with a straight draw, and you get twelve or fifteen.'},
+    {v:'math',lines:['Two cards to come: outs × 4','One card to come: outs × 2','9 outs on the flop ≈ 36%','9 outs on the turn ≈ 18%'],s:'To turn outs into a chance, use the rule of two and four. With two cards still to come, multiply by four. With one card to come, multiply by two. So a flush draw on the flop is roughly thirty-six percent, and on the turn roughly eighteen.'},
+    {v:'big',n:'Over 8 outs: subtract the extra',l:'15 outs ≈ 60 − 7 = 53%',s:'For big draws the rule of four overshoots, so above eight outs, subtract the extra. Fifteen outs is about fifty-three percent, not sixty.'}],
+  drawcall:[
+    {v:'title',h:'Chase or fold',sub:'Level 1 · Odds',s:'Your draw against a bet: is the price right?'},
+    {v:'spot',pot:20,act:'Villain bets 10 bb',hero:'Ah 6h',board:'Kh 9h 2c 4s',s:'On the turn you have a flush draw: nine outs. Your opponent bets ten into twenty, and assume there’s no more betting after this.'},
+    {v:'math',lines:['Your chance: 9 ÷ 46 ≈ 20%','Price: 10 ÷ (20 + 10 + 10) = 25%','20% < 25% → fold'],s:'With one card to come, you hit about twenty percent of the time. The price of calling ten into twenty is twenty-five percent. Twenty is less than twenty-five, so on its own, this is a fold.'},
+    {v:'math',lines:['All-in on the flop: see 2 cards','9 outs ≈ 35%','Pot-sized shove: price 33%','35% > 33% → call'],s:'Now flip it. On the flop, if he moves all-in for the size of the pot, you see both cards, so the same draw has about thirty-five percent. The price is thirty-three. That’s a call.'},
+    {v:'big',n:'Chance vs price',l:'call when your chance is bigger',s:'That’s the whole decision: compare your chance of hitting with the price, and call when the chance is bigger.'}],
+  matchups:[
+    {v:'title',h:'Classic matchups',sub:'Level 2 · Hand vs range',s:'Some all-in matchups come up again and again. Knowing them by heart makes every estimate easier.'},
+    {v:'bars',items:[['Small pair vs two higher cards (77 vs AK)',55],['Higher pair vs lower pair (KK vs 88)',80],['Dominating hand (AK vs AQ)',74]],s:'A small pair against two higher cards is close to a coin flip: about fifty-five percent for the pair. A higher pair against a lower pair wins about eighty percent. And a dominating hand, like ace-king against ace-queen, wins about three times in four.'},
+    {v:'bars',items:[['Pair vs one higher, one lower card (99 vs A5)',69],['Two high vs two low cards (AK vs 72)',67],['Big pair vs suited connector (AA vs 76s)',77]],s:'A pair against one higher and one lower card wins about seventy percent. Two high cards against two low cards win about two times in three, a little less when the low cards are suited and connected. And aces against a suited connector win just over three times in four.'},
+    {v:'big',n:'+2 to 3 points',l:'for being suited · ties count as half',s:'Being suited adds two or three points, and ties count as half a win.'}],
+  shove:[
+    {v:'title',h:'Call the shove',sub:'Level 2 · Hand vs range',s:'He’s all-in. Do you call?'},
+    {v:'spot',pot:11.5,act:'Button all-in 10 bb',s:'The button moves all-in for ten big blinds. You’re in the big blind, with one already in. You can’t see his cards, but you can think about every hand he would do this with: his range.'},
+    {v:'math',lines:['You call 9 more','Final pot: 10 + 10 + 0.5 = 20.5','Price: 9 ÷ 20.5 ≈ 44%'],s:'To call, you add nine. The final pot would be twenty and a half, counting the small blind. So the price is about forty-four percent.'},
+    {v:'charts',items:[['shove:10','His 10 bb shoving range']],s:'A player shoving ten big blinds from the button does it with about four hands in ten: every pair, every ace, most kings, and plenty of connected cards.'},
+    {v:'bars',mark:44,items:[['K9 suited',50],['22',47],['A2 offsuit',46],['87 suited',40],['Q8 offsuit',40]],s:'Against that whole range, king-nine suited wins about half the time, and even deuces and ace-deuce have around forty-six percent: enough to call. Eight-seven suited and queen-eight, at about forty percent, fall short.'},
+    {v:'big',n:'Equity vs his range',l:'beats the price → call',s:'So don’t ask, what if he has aces? Ask: against everything he would shove, do I win more often than the price?'}],
+  turnjam:[
+    {v:'title',h:'Split his range',sub:'Level 2 · Hand vs range',s:'You have one pair, and he moves all-in on the turn.'},
+    {v:'bars',items:[['vs his value hands',10],['vs his draws',78],['vs his bluffs',88]],s:'Split his range into three groups. Against his strong hands, his value, you rarely win. Against draws, you win around three times in four, because they usually miss. And against pure bluffs, you win almost every time. These are rough figures.'},
+    {v:'points',items:['Few draws, no bluffs → fold','Lots of draws and some air → call'],s:'So the answer depends on the mix. A tight player with few draws and no bluffs: fold your pair. A player who jams lots of draws and some air: call.'},
+    {v:'big',n:'Count the groups',l:'not the scariest hand',s:'Count the groups, not just the scariest hand he could have.'}],
+  rfi:[
+    {v:'title',h:'Open or fold',sub:'Level 3 · Preflop',s:'Everyone folds to you. Which hands should you play?'},
+    {v:'charts',items:[['rfi:UTG','First seat (UTG)'],['rfi:BTN','Button (BTN)']],s:'When everyone folds to you, you can make the first raise, called an open, or fold. From the first seat, under the gun, you open only about one hand in five. From the button, you open almost half your hands.'},
+    {v:'table',head:['Seat','Hands opened'],rows:[['UTG','19%'],['Hijack','22%'],['Cutoff','30%'],['Button','48%'],['Small blind','43%']],s:'The closer you sit to the button, the fewer players are left who might wake up with a big hand, and the more often you act last after the flop. So the range widens seat by seat.'},
+    {v:'points',items:['Pairs and suited hands play well','Weak offsuit aces and kings drop out first'],s:'Pairs and suited hands play well from anywhere. Weak offsuit aces and kings are the first hands to drop out from the early seats.'}],
+  facing:[
+    {v:'title',h:'Facing a raise',sub:'Level 3 · Preflop',s:'Someone has raised before you. Re-raise, call, or fold?'},
+    {v:'math',lines:['Big blind vs a 2.5 bb open','Call 1.5 to win 5.5','Price ≈ 27%'],s:'Someone opens to two and a half, and it’s folded to you in the big blind. You already have one in, so you need only one and a half more, to win a pot of five and a half. That’s a price of about twenty-seven percent: very cheap.'},
+    {v:'charts',items:[['face:BB vs BTN','BB vs button: defend 55%'],['face:BB vs UTG','BB vs UTG: defend 23%']],s:'So the big blind defends very wide: about fifty-five percent of hands against a button open. Against an open from the first seat, whose range is much stronger, only about a quarter.'},
+    {v:'points',items:['3-bet = re-raise','Value: your best hands (QQ+, AK)','Bluffs: suited hands like A5s'],s:'A three-bet is a re-raise. You do it with your best hands, for value, and with some suited hands like ace-five suited as bluffs: they block his aces, and still play well when called.'},
+    {v:'points',items:['Small blind vs button: 3-bet or fold'],s:'From the small blind against a button open, mostly re-raise or fold. Calling there leaves you out of position, with the big blind still to act.'}],
+  mdf:[
+    {v:'title',h:'Don’t overfold',sub:'Level 4 · Pressure maths',s:'How much of your range must you keep playing against a bet?'},
+    {v:'spot',pot:10,act:'Villain bets 10 bb',s:'On the river, he bets ten into ten. Suppose he has nothing at all. His bluff risks ten to win ten.'},
+    {v:'math',lines:['His bluff breaks even if you fold 50%','So keep playing at least 50%','MDF = pot ÷ (pot + bet)'],s:'That bluff breaks even if you fold half the time. Fold more than that, and he makes money bluffing with any two cards. So you must keep playing at least half your hands. The formula is the pot, divided by the pot plus the bet.'},
+    {v:'table',head:['Bet size','Keep playing'],rows:[['½ pot','67%'],['Pot','50%'],['2× pot','33%']],s:'Against half the pot, keep at least two thirds of your hands. Against a pot-sized bet, half. Against twice the pot, a third.'},
+    {v:'big',n:'A guide, not a law',l:'vs players who rarely bluff, fold more',s:'This is a guide for opponents you don’t know. Against someone who never bluffs, folding more is right.'}],
+  bluffbe:[
+    {v:'title',h:'Bluff break-even',sub:'Level 4 · Pressure maths',s:'Now you’re the one bluffing. How often must it work?'},
+    {v:'math',lines:['Bet 5 into 10: risk 5 to win 10','Folds needed: 5 ÷ (5 + 10) = 33%'],s:'Bet five into ten: you risk five to win ten. Divide the risk by the risk plus the reward: five over fifteen, a third. He needs to fold a third of the time for this bluff to make money.'},
+    {v:'table',head:['Bluff size','Folds needed'],rows:[['⅓ pot','25%'],['½ pot','33%'],['⅔ pot','40%'],['Pot','50%'],['2× pot','67%']],s:'Small bluffs need fewer folds, big bluffs need more. A third of the pot needs twenty-five percent. A pot-sized bluff needs half. Twice the pot needs two thirds.'},
+    {v:'big',n:'Small bluffs need fewer folds',l:'but players fold less to them',s:'The catch: people fold less often to small bets.'}],
+  implied:[
+    {v:'title',h:'Implied odds',sub:'Level 4 · Pressure maths',s:'The price is too high. Can future winnings make up for it?'},
+    {v:'math',lines:['Turn: he bets 10 into 10','Your flush draw ≈ 20%','Price: 33% → too expensive on its own'],s:'On the turn you have a flush draw, about twenty percent, and he bets ten into ten. The price is thirty-three percent. Too expensive, unless you win more on the river when you hit.'},
+    {v:'math',lines:['Extra needed = bet ÷ equity − pot − 2 × bet','= 10 ÷ 0.2 − 10 − 20 = 20','Win 20 more, two more pots, when you hit'],s:'How much more? Take the bet divided by your equity, then subtract the pot and two bets. Here, ten divided by point two is fifty, minus ten, minus twenty, leaves twenty. You’d need to win another twenty on the river: two more pots.'},
+    {v:'points',items:['Best: draws to the best hand, deep stacks, opponents who pay off','Worst: gutshots against big bets'],s:'Implied odds are real when you’re drawing to the best hand, stacks are deep, and your opponent pays off. They rarely save a gutshot against a big bet.'}],
+  cbet:[
+    {v:'title',h:'Read the flop',sub:'Level 5 · Flop strategy',s:'You raised, the big blind called. Whose flop is it?'},
+    {v:'points',items:['Range advantage → how often to bet','Nut advantage → how big to bet'],s:'Look at the flop from both sides. Whose whole range does it help more? That’s range advantage, and it tells you how often to bet. Who holds more of the very best hands? That’s nut advantage, and it tells you how big.'},
+    {v:'cards',groups:[['Flop','As 7d 2c']],note:'Ace-high and dry: bet small, often',s:'On an ace-high, dry flop like ace-seven-two, the raiser has many more aces and big pairs. Bet small, with most of your hands.'},
+    {v:'cards',groups:[['Flop','8h 7h 5c']],note:'Low and connected: check more, bet big when you bet',s:'On a low, connected flop like eight-seven-five, the big blind’s calling range hits much harder: straights, two pairs, small sets. Check more often, and when you do bet, bet big.'},
+    {v:'cards',groups:[['Flop','7s 7d 2h'],['Flop','Jh 8h 3h']],note:'Paired: bet small · Monotone: bet less often',s:'Paired flops miss most hands, which suits the raiser: bet small. On flops with three cards of one suit, bet less often.'}],
+  defend:[
+    {v:'title',h:'Defend the big blind',sub:'Level 5 · Flop strategy',s:'He bets small on the flop. What do you keep?'},
+    {v:'math',lines:['⅓-pot bet: price 20%','Out of position: count ~80% of your equity','So want ≈ 25% raw equity'],s:'When the button bets a third of the pot, calling costs only twenty percent. But you act first on every later street, so you won’t collect all your equity. A working rule: count about eighty percent of it. That means you want roughly twenty-five percent raw equity to continue.'},
+    {v:'points',items:['Continue: pairs, draws, overcards with backup draws','Fold: the weakest no-pair hands','Raise: two pair or better, some strong draws'],s:'Keep your pairs, your draws, and high cards with backup draws. Fold the weakest hands with nothing. And raise your strongest hands, two pair or better, along with some strong draws.'}],
+  polar:[
+    {v:'title',h:'Balance your river',sub:'Level 6 · River game',s:'Strong hands and air: how many bluffs should you bet?'},
+    {v:'points',items:['Your river range: the nuts or nothing','Bet every strong hand','Bluff with some of the nothing'],s:'On the river your hands are either very strong or worthless. You bet the strong ones. The question is how many of the worthless ones to bet as bluffs.'},
+    {v:'math',lines:['Bet 10 into 10: he risks 10 to win 20','He breaks even if ⅓ of your bets are bluffs','→ 1 bluff for every 2 strong hands'],s:'If you bet ten into ten, he risks ten to win twenty. Calling breaks even for him if a third of your bets are bluffs. So bet one bluff for every two strong hands. Then calling and folding earn him exactly the same, and he can’t punish you.'},
+    {v:'table',head:['Bet size','Bluffs per strong hand'],rows:[['½ pot','1 for 3'],['Pot','1 for 2'],['2× pot','2 for 3']],s:'Bigger bets earn more bluffs: one for every three strong hands at half pot, one for two at pot, and two for three at twice the pot.'},
+    {v:'points',items:['Too many bluffs → he calls everything','Too few → he folds everything but the best hands'],s:'Bluff too much, and a good player simply calls. Bluff too little, and he folds everything except his best hands.'}],
+  catch:[
+    {v:'title',h:'Bluff-catch',sub:'Level 6 · River game',s:'You can only beat a bluff. Call or fold?'},
+    {v:'math',lines:['His strong hands: 10 combos','Missed draws: 12, bluffs 1 in 3 → 4','Bluffs: 4 ÷ 14 ≈ 29% of his bets'],s:'Count his bets. He has about ten strong combinations, and twelve draws that missed. If he bluffs one in three of those, that’s four bluffs. Four out of fourteen bets is about twenty-nine percent.'},
+    {v:'math',lines:['Pot-sized bet: you need 33% → fold','Half-pot bet: you need 25% → call'],s:'Facing a pot-sized bet, you need thirty-three percent. Twenty-nine is less, so fold. If the same player bets half the pot, the price is twenty-five percent, and it’s a call.'},
+    {v:'points',items:['No missed draws on the river → few bluffs','Many low-stakes players under-bluff rivers'],s:'When no draws missed, his bluffs mostly vanish, so fold more. And many low-stakes players bluff rivers far less than they should.'}]
+};
+const lessonMs=(text,rate)=>Math.round((text.trim().split(/\s+/).length*60000/165)/(rate||1)+700);
+const lessonDur=id=>(LESSON_VIDEO[id]||[]).reduce((a,s)=>a+lessonMs(s.s),0);
+const fmtDur=ms=>{const s=Math.round(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const parseCards=str=>str.split(' ').map(t=>R.indexOf(t[0])*4+SU.indexOf(t[1]));
 /*CORE-END*/
 
 /* ---------- state and persistence ---------- */
 const LSKEY='feltlab.v1';
-function freshState(){return {v:1,drills:{},leaks:{},log:[],seen:{}}}
+function freshState(){return {v:1,drills:{},leaks:{},log:[],seen:{},watched:{}}}
 function loadLocal(){try{const s=localStorage.getItem(LSKEY);const o=s?JSON.parse(s):null;return o&&o.v===1?o:null}catch(e){return null}}
 function saveLocal(){try{localStorage.setItem(LSKEY,JSON.stringify(state))}catch(e){}}
 let state=loadLocal()||freshState();
@@ -1069,7 +1267,11 @@ const app=document.getElementById('app'),appbar=document.getElementById('appbar'
 let tab='train',cur=null,session=null;
 const $=s=>app.querySelector(s);
 const SVG=(p,c)=>`<svg class="ic${c?' '+c:''}" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
-const ICON={back:SVG('<path d="M15 18l-6-6 6-6"/>'),help:SVG('<circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.9 2.9 0 0 1 5.6 1c0 1.9-2.8 2.7-2.8 2.7"/><path d="M12 17h.01"/>'),chev:SVG('<path d="M9 18l6-6-6-6"/>','chev'),
+const ICON={play:SVG('<path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/>'),pause:SVG('<rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor" stroke="none"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor" stroke="none"/>'),
+  prev:SVG('<path d="M19 20L9 12l10-8z"/><path d="M5 19V5"/>'),next:SVG('<path d="M5 4l10 8-10 8z"/><path d="M19 5v14"/>'),close:SVG('<path d="M18 6L6 18M6 6l12 12"/>'),
+  av:SVG('<path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/>'),mute:SVG('<path d="M11 5L6 9H2v6h4l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/>'),
+  ear:SVG('<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/>'),cc:SVG('<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M10 10.5a2.5 2.5 0 1 0 0 3M17 10.5a2.5 2.5 0 1 0 0 3"/>'),
+  back:SVG('<path d="M15 18l-6-6 6-6"/>'),help:SVG('<circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.9 2.9 0 0 1 5.6 1c0 1.9-2.8 2.7-2.8 2.7"/><path d="M12 17h.01"/>'),chev:SVG('<path d="M9 18l6-6-6-6"/>','chev'),
   mark:'<svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#1F3A5F"/><rect x="15" y="7.5" width="10.5" height="15" rx="1.8" fill="#86B5A6" transform="rotate(12 20 15)"/><rect x="7.5" y="8.5" width="10.5" height="15" rx="1.8" fill="#FBFBF8" transform="rotate(-8 12.7 16)"/><path d="M12.7 11.6c-1.5 1.9-3.3 3-3.3 4.7a1.8 1.8 0 0 0 2.9 1.4l-.5 2h1.8l-.5-2a1.8 1.8 0 0 0 2.9-1.4c0-1.7-1.8-2.8-3.3-4.7z" fill="#1F3A5F" transform="rotate(-8 12.7 16)"/></svg>'};
 function setTabUI(){tabbar.querySelectorAll('button').forEach(b=>{if(b.dataset.tab===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')})}
 tabbar.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.tab;if(t==='mix')startSession(null);else{tab=t;cur=null;session=null;render('enter')}}));
@@ -1081,7 +1283,7 @@ window.addEventListener('resize',setBarH);
 function enterPlay(){try{if(!(history.state&&history.state.felt))history.pushState({felt:'play'},'')}catch(e){}}
 function leavePlay(){cur=null;session=null;if(tab==='mix')tab='train';render('enter')}
 function exitPlay(){let pushed=false;try{pushed=!!(history.state&&history.state.felt)}catch(e){}if(pushed)history.back();else leavePlay()}
-window.addEventListener('popstate',()=>{hidePop();if(cur)leavePlay()});
+window.addEventListener('popstate',()=>{hidePop();if(LP.open){lpClose(true);return}if(cur)leavePlay()});
 
 /* ---------- plain-English word help ---------- */
 let glossOn=true;try{glossOn=localStorage.getItem('feltlab.terms')!=='off'}catch(e){}
@@ -1126,7 +1328,7 @@ const levelLabel=n=>n?'Level '+n:'Start here';
 function animate(kind){app.classList.remove('enter','push');if(!kind)return;void app.offsetWidth;app.classList.add(kind)}
 function render(anim){
   hidePop();renderAppbar();setTabUI();
-  if(cur)renderPlay();else{if(tab==='mix')tab='train';if(tab==='train')renderTrain();else if(tab==='progress')renderProgress();else if(tab==='guide')renderGuide();}
+  if(cur)renderPlay();else{if(tab==='mix')tab='train';if(tab==='train')renderTrain();else if(tab==='lessons')renderLessons();else if(tab==='progress')renderProgress();else if(tab==='guide')renderGuide();}
   renderBar();animate(anim);window.scrollTo(0,0);
 }
 function renderAppbar(){
@@ -1187,9 +1389,10 @@ function renderPlay(){
 function renderIntro(){
   const box=$('#introbox'),I=INTRO[cur.id],hb=document.getElementById('howbtn');if(hb)hb.setAttribute('aria-expanded',String(!!cur.showIntro));
   if(!cur.showIntro||!I){box.innerHTML='';return}
-  box.innerHTML=`<div class="panel introcard fadein"><div class="eyebrow">How this drill works</div><p>${I.how}</p>${I.words.length?`<div class="eyebrow">Words you will meet</div><dl>${I.words.filter(w=>G_BY[w]).map(w=>`<dt>${G_BY[w].t}</dt><dd>${G_BY[w].d}</dd>`).join('')}</dl>`:''}<button class="btn primary" id="gotit">Got it</button></div>`;
+  box.innerHTML=`<div class="panel introcard fadein"><div class="eyebrow">How this drill works</div><p>${I.how}</p>${I.words.length?`<div class="eyebrow">Words you will meet</div><dl>${I.words.filter(w=>G_BY[w]).map(w=>`<dt>${G_BY[w].t}</dt><dd>${G_BY[w].d}</dd>`).join('')}</dl>`:''}<div class="introbtns"><button class="btn primary" id="gotit">Got it</button>${LESSON_VIDEO[cur.id]?`<button class="btn" id="watchlesson">${ICON.play} Watch the lesson · ${fmtDur(lessonDur(cur.id))}</button>`:''}</div></div>`;
   annotate(box.querySelector('p'));
   $('#gotit').addEventListener('click',()=>{cur.showIntro=false;renderIntro()});
+  const wl=$('#watchlesson');if(wl)wl.addEventListener('click',()=>lpOpen([cur.id],0));
 }
 function fmtAns(st,v){return st.kind==='pct'?v+'%':st.kind==='choice'?st.options.find(o=>o[0]===v)[1]:String(v)}
 function renderSteps(){
@@ -1253,12 +1456,14 @@ function renderFeedback(scroll){
     ${fb.note?`<p class="note">${fb.note}</p>`:''}
     <div class="tblwrap"><table class="cmp"><thead><tr><th></th><th>You</th><th>Correct</th></tr></thead><tbody>${rows}</tbody></table></div>
     <pre class="math">${fb.math}</pre>${fb.extra||''}
-    <div class="lesson"><div class="eyebrow">Rule of thumb · ${L.t}</div><p>${L.s}</p></div>
+    <div class="lesson"><div class="lhead"><div class="eyebrow">Rule of thumb · ${L.t}</div>${LESSON_VIDEO[cur.id]?`<button class="linkbtn sm" id="fblesson">${ICON.play} Lesson</button>`:''}</div><p>${L.s}</p></div>
     <div class="dealres" id="dealres"></div></div>`;
   annotate($('#fb .fb'));
+  const fl=$('#fblesson');if(fl)fl.addEventListener('click',()=>lpOpen([cur.id],0));
   if(scroll){const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,top=$('#fb').getBoundingClientRect().top+window.scrollY-appbar.offsetHeight-8;window.scrollTo({top,behavior:reduce?'auto':'smooth'})}
 }
 document.addEventListener('keydown',e=>{
+  if(LP.open){lpKey(e);return}
   if(e.key==='Escape'&&!pop.hidden){hidePop();return}
   if(!cur||e.altKey||e.ctrlKey||e.metaKey)return;const tg=e.target;
   if(e.key==='Enter'){if(tg&&tg.tagName==='BUTTON')return;if(cur.done){e.preventDefault();nextHand()}else if(actionbar.querySelector('#lock')){e.preventDefault();lockStep()}return}
@@ -1322,6 +1527,163 @@ function renderGuide(){
     app.querySelectorAll('#glist dt').forEach(dt=>{const show=!q||dt.dataset.q.includes(q)||dt.nextElementSibling.textContent.toLowerCase().includes(q);dt.hidden=!show;dt.nextElementSibling.hidden=!show;if(show){vis[dt.dataset.c]=1;any=true}});
     app.querySelectorAll('#glist .gcat').forEach(c=>{c.hidden=!vis[c.dataset.c]});$('#gnone').hidden=any;
   });
+}
+/* ---------- lesson player: narrated by the device's own voice, silent with captions, or sound only ---------- */
+const LORDER=()=>LEVELS.flatMap(L=>Object.values(DRILLS).filter(d=>d.level===L.n&&LESSON_VIDEO[d.id]).map(d=>d.id));
+const hasTTS='speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined';
+const LPREF={mode:'av',rate:1,cc:true,voice:''};
+try{Object.assign(LPREF,JSON.parse(localStorage.getItem('feltlab.lessons')||'{}'))}catch(e){}
+const saveLP=()=>{try{localStorage.setItem('feltlab.lessons',JSON.stringify(LPREF))}catch(e){}};
+let voices=[];
+function loadVoices(){if(!hasTTS)return;try{voices=speechSynthesis.getVoices().filter(v=>/^en([-_]|$)/i.test(v.lang))}catch(e){voices=[]}}
+if(hasTTS){loadVoices();try{speechSynthesis.addEventListener('voiceschanged',()=>{loadVoices();if(LP.open)lpVoiceUI()})}catch(e){}}
+function pickVoice(){
+  if(!voices.length)return null;const s=voices.find(v=>v.name===LPREF.voice);if(s)return s;
+  const sc=v=>(/natural|neural|enhanced|premium|siri/i.test(v.name)?4:0)+(/en[-_]GB/i.test(v.lang)?2:0)+(v.localService?1:0)+(v.default?.5:0);
+  return voices.slice().sort((a,b)=>sc(b)-sc(a))[0];
+}
+const MODES=[['av','Watch + listen','av'],['v','Watch only','mute'],['a','Listen only','ear']];
+const modeSegHTML=()=>`<div class="seg" role="group" aria-label="How lessons play">${MODES.map(([m,l,ic])=>`<button type="button" data-mode="${m}" aria-pressed="${LPREF.mode===m}">${ICON[ic]}<span>${l}</span></button>`).join('')}</div>`;
+function wireModeSeg(root,after){root.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{LPREF.mode=b.dataset.mode;saveLP();root.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.mode===LPREF.mode)));if(after)after()}))}
+function chartFn(k){const [t,a]=k.split(':');if(t==='rfi')return key=>({r:RFI[a].get(key)||0});if(t==='shove')return key=>({r:SHOVE[a].get(key)||0});const F=facing(a);return key=>({r:F.r.get(key)||0,c:F.c.get(key)||0})}
+function sceneHTML(sc,est){
+  const d=(i,n)=>`style="animation-delay:${Math.round(Math.min(est*0.72*i/Math.max(n,1),12000))}ms"`;
+  const row=cs=>`<div class="board">${parseCards(cs).map(c=>cardHTML(c)).join('')}</div>`;
+  switch(sc.v){
+    case 'title':return `<div class="sc sc-title"><div class="eyebrow">${sc.sub||''}</div><h2 class="rv">${sc.h}</h2></div>`;
+    case 'spot':return `<div class="sc sc-spot"><div class="pot">Pot <b>${bb(sc.pot)}</b></div>${sc.board?row(sc.board):''}<span class="act rv" ${d(1,3)}>${sc.act}</span>${sc.hero?`<div class="hole rv" ${d(2,3)}>${parseCards(sc.hero).map(c=>cardHTML(c,'lg')).join('')}</div>`:''}</div>`;
+    case 'math':return `<div class="sc sc-math">${sc.lines.map((l,i)=>`<div class="rv" ${d(i,sc.lines.length)}>${l}</div>`).join('')}</div>`;
+    case 'big':return `<div class="sc sc-big"><div class="n rv">${sc.n}</div><div class="l rv" ${d(1,2)}>${sc.l||''}</div></div>`;
+    case 'table':return `<div class="sc sc-tab"><table><thead><tr><th>${sc.head[0]}</th><th>${sc.head[1]}</th></tr></thead><tbody>${sc.rows.map((r,i)=>`<tr class="rv" ${d(i,sc.rows.length)}><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>`;
+    case 'points':return `<ul class="sc sc-list">${sc.items.map((t,i)=>`<li class="rv" ${d(i,sc.items.length)}>${t}</li>`).join('')}</ul>`;
+    case 'cards':return `<div class="sc sc-cards"><div class="grps">${sc.groups.map(([l,c],i)=>`<div class="grp rv" ${d(i,sc.groups.length+1)}><span class="eyebrow">${l}</span>${row(c)}</div>`).join('')}</div>${sc.note?`<div class="note rv" ${d(sc.groups.length,sc.groups.length+1)}>${sc.note}</div>`:''}</div>`;
+    case 'bars':return `<div class="sc sc-bars">${sc.items.map(([l,v],i)=>`<div class="br rv" ${d(i,sc.items.length)}><div class="bl">${l}</div><div class="bt">${sc.mark!=null?`<i class="mk" style="left:${sc.mark}%"></i>`:''}<i class="bf ${sc.mark!=null?(v>=sc.mark?'ok':'no'):''}" style="width:${v}%"></i></div><div class="bv mono">${v}%</div></div>`).join('')}${sc.mark!=null?`<div class="mkl">White line = the price, ${sc.mark}%</div>`:''}</div>`;
+    case 'charts':return `<div class="sc sc-charts">${sc.items.map(([k,l],i)=>`<div class="ch rv" ${d(i,sc.items.length)}>${gridHTML(chartFn(k),null,'')}<div class="chl">${l}</div></div>`).join('')}</div>`;
+    case 'seats':return `<div class="sc sc-seats">${ringHTML({ring:{hi:null,reveal:true}})}</div>`;
+  }
+  return '';
+}
+const LP={open:false,list:[],li:0,si:0,playing:false,auto:false,ended:false,tok:0,timer:0,wd:0,lock:null};
+const lpEl=document.createElement('div');lpEl.className='lp';lpEl.hidden=true;lpEl.setAttribute('role','dialog');lpEl.setAttribute('aria-modal','true');lpEl.setAttribute('aria-label','Lesson');document.body.appendChild(lpEl);
+const lq=s=>lpEl.querySelector(s);
+const lpId=()=>LP.list[LP.li];
+async function wakeOn(){try{if(!LP.lock&&navigator.wakeLock)LP.lock=await navigator.wakeLock.request('screen')}catch(e){}}
+function wakeOff(){try{if(LP.lock)LP.lock.release()}catch(e){}LP.lock=null}
+function lpOpen(list,start,auto){
+  LP.list=list;LP.li=start||0;LP.si=0;LP.auto=!!auto;LP.ended=false;LP.ttsFail=false;LP.open=true;hidePop();
+  try{history.pushState({felt:'lesson'},'')}catch(e){}
+  lpEl.hidden=false;document.body.style.overflow='hidden';lpBuild();LP.playing=true;lpRun();
+}
+function lpStop(){LP.tok++;clearTimeout(LP.timer);clearTimeout(LP.wd);if(hasTTS)try{speechSynthesis.cancel()}catch(e){}wakeOff()}
+function lpClose(fromPop){
+  if(!LP.open)return;let pushed=false;try{pushed=!!(history.state&&history.state.felt==='lesson')}catch(e){}
+  if(!fromPop&&pushed){history.back();return}
+  lpStop();LP.playing=false;LP.open=false;lpEl.hidden=true;lpEl.innerHTML='';document.body.style.overflow='';
+  const after=LP.after;LP.after=null;
+  if(after)after();else if(!cur&&tab==='lessons')renderLessons();
+}
+function lpBuild(){
+  lpEl.innerHTML=`<div class="lp-top"><div class="in"><button class="iconbtn" id="lpx" aria-label="Close lesson">${ICON.close}</button>
+      <div class="ab-title"><span class="ab-eye" id="lpeye"></span><span class="ab-name" id="lpname"></span></div>
+      <button class="iconbtn" id="lpcc" aria-label="Captions">${ICON.cc}</button></div></div>
+    <div class="lp-body"><div class="stage" id="lpstage"></div>
+      <div class="lp-audio"><div class="big">${ICON.ear}</div><b id="lpat"></b><span class="muted" id="lpas"></span></div>
+      <p class="cap" id="lpcap" aria-live="polite"></p>
+      <div class="lp-prog" id="lpprog"></div>
+      <div class="lp-ctrl"><button class="iconbtn" id="lpprev" aria-label="Previous scene">${ICON.prev}</button><button class="playbtn" id="lpplay"></button><button class="iconbtn" id="lpnext" aria-label="Next scene">${ICON.next}</button><button class="ratebtn" id="lprate" aria-label="Playback speed"></button></div>
+      <div class="lp-opts">${modeSegHTML()}<span id="lpvoice"></span></div>
+      <p class="lp-note" id="lpnote"></p></div>`;
+  lq('#lpx').addEventListener('click',()=>lpClose());
+  lq('#lpcc').addEventListener('click',()=>{LPREF.cc=!LPREF.cc;saveLP();lpShow()});
+  lq('#lpplay').addEventListener('click',lpToggle);
+  lq('#lpprev').addEventListener('click',()=>{if(LP.ended){LP.ended=false;LP.si=LESSON_VIDEO[lpId()].length-1}else LP.si=Math.max(0,LP.si-1);lpRun()});
+  lq('#lpnext').addEventListener('click',()=>{if(!LP.ended)lpAdvance()});
+  lq('#lprate').addEventListener('click',()=>{const R2=[1,1.25,1.5,0.85];LPREF.rate=R2[(R2.indexOf(LPREF.rate)+1)%R2.length];saveLP();lpRun()});
+  wireModeSeg(lpEl,()=>lpRun());
+  lpVoiceUI();
+}
+function lpVoiceUI(){
+  const box=lq('#lpvoice');if(!box)return;
+  if(!hasTTS||voices.length<2){box.innerHTML='';return}
+  const cur0=pickVoice();
+  box.innerHTML=`<select class="lp-voice" id="lpvsel" aria-label="Voice">${voices.map(v=>`<option value="${v.name.replace(/"/g,'&quot;')}" ${cur0&&v.name===cur0.name?'selected':''}>Voice: ${v.name}</option>`).join('')}</select>`;
+  lq('#lpvsel').addEventListener('change',e=>{LPREF.voice=e.target.value;saveLP();lpRun()});
+}
+function lpShow(){
+  const id=lpId(),scenes=LESSON_VIDEO[id],sc=scenes[Math.min(LP.si,scenes.length-1)],est=lessonMs(sc.s,LPREF.rate);
+  lpEl.className=`lp mode-${LPREF.mode}${LPREF.cc?'':' nocap'}`;
+  lq('#lpeye').textContent=LP.list.length>1?`Lesson ${LP.li+1} of ${LP.list.length}`:`${levelLabel(DRILLS[id].level)} · ${fmtDur(lessonDur(id))}`;
+  lq('#lpname').textContent=LESSONS[id].t;lq('#lpat').textContent=LESSONS[id].t;
+  lq('#lpas').textContent=LP.ended?'Lesson complete':`Part ${LP.si+1} of ${scenes.length}`;
+  lq('#lpcc').setAttribute('aria-pressed',String(LPREF.cc));
+  const st=lq('#lpstage');
+  if(LP.ended){
+    const hasNext=LP.li<LP.list.length-1,nid=hasNext?LP.list[LP.li+1]:null;
+    st.innerHTML=`<div class="sc sc-end"><div class="eyebrow">Lesson complete</div><div class="sc-title"><h2>${LESSONS[id].t}</h2></div><div class="btns"><button class="btn" id="lpreplay">Replay</button>${hasNext?`<button class="btn" id="lpgonext">Next: ${LESSONS[nid].t}</button>`:''}<button class="btn primary" id="lpdrill">Practise: ${DRILLS[id].name}</button></div></div>`;
+    lq('#lpcap').textContent=hasNext&&LP.auto&&LP.playing?`Next lesson: ${LESSONS[nid].t}`:'';
+    lq('#lpreplay').addEventListener('click',()=>{LP.ended=false;LP.si=0;LP.playing=true;lpRun()});
+    if(hasNext)lq('#lpgonext').addEventListener('click',()=>{LP.li++;LP.si=0;LP.ended=false;LP.playing=true;lpRun()});
+    lq('#lpdrill').addEventListener('click',()=>{if(!(cur&&cur.id===id))LP.after=()=>startSession(id);lpClose()});
+  }else{st.innerHTML=sceneHTML(sc,est);lq('#lpcap').textContent=sc.s}
+  st.classList.toggle('paused',!LP.playing);
+  lq('#lpprog').innerHTML=scenes.map((_,i)=>`<i class="${LP.ended||i<=LP.si?'on':''}"></i>`).join('');
+  const pb=lq('#lpplay');pb.innerHTML=LP.playing&&!LP.ended?ICON.pause:ICON.play;pb.setAttribute('aria-label',LP.ended?'Replay':LP.playing?'Pause':'Play');
+  lq('#lprate').textContent=LPREF.rate+'×';
+  lq('#lpnote').textContent=LPREF.mode!=='v'&&(!hasTTS||LP.ttsFail)?'The voice isn’t available here, so the lesson plays silently with captions.':LPREF.mode==='a'?'Keep the screen on while listening: phones stop the voice when the screen locks.':LPREF.mode==='av'?'The voice is your device’s own. If you hear nothing, check the silent switch and volume.':'';
+}
+function lpRun(){
+  lpStop();const tok=LP.tok;LP.ended=false;
+  const scenes=LESSON_VIDEO[lpId()];LP.si=clamp(LP.si,0,scenes.length-1);const sc=scenes[LP.si];
+  lpShow();if(!LP.playing)return;wakeOn();
+  const sound=LPREF.mode!=='v'&&hasTTS&&!LP.ttsFail,est=lessonMs(sc.s,LPREF.rate),t0=Date.now();let fired=false;
+  const done=()=>{if(fired||tok!==LP.tok)return;fired=true;clearTimeout(LP.wd);LP.timer=setTimeout(()=>{if(tok===LP.tok)lpAdvance()},sound?450:300)};
+  if(!sound){LP.timer=setTimeout(done,est+(LPREF.mode==='v'||LP.ttsFail?900:0));return}
+  const parts=sc.s.split(/(?<=[.!?])\s+/),v=pickVoice();let i=0;
+  /* if the voice fails, finish this scene on reading time and play the rest silently with captions */
+  const fail=()=>{LP.ttsFail=true;lpShow();clearTimeout(LP.timer);LP.timer=setTimeout(done,Math.max(0,est+900-(Date.now()-t0)))};
+  const say=()=>{
+    if(tok!==LP.tok)return;if(i>=parts.length){done();return}
+    const u=new SpeechSynthesisUtterance(parts[i++]);if(v){u.voice=v;u.lang=v.lang}else u.lang='en-GB';u.rate=LPREF.rate;
+    u.onend=say;u.onerror=e=>{if(tok!==LP.tok)return;if(e&&(e.error==='interrupted'||e.error==='canceled'))return;fail()};
+    try{speechSynthesis.speak(u)}catch(e){fail()}
+  };
+  say();LP.wd=setTimeout(done,est*1.8+3000);
+}
+function lpAdvance(){
+  const id=lpId(),scenes=LESSON_VIDEO[id];
+  if(LP.si<scenes.length-1){LP.si++;lpRun();return}
+  state.watched=state.watched||{};if(!state.watched[id]){state.watched[id]=1;queueSave()}
+  lpStop();LP.ended=true;const go=LP.auto&&LP.playing&&LP.li<LP.list.length-1;LP.playing=go;lpShow();
+  if(go){const tok=LP.tok;LP.timer=setTimeout(()=>{if(tok===LP.tok&&LP.open){LP.li++;LP.si=0;LP.playing=true;lpRun()}},2600)}
+}
+function lpToggle(){
+  if(LP.ended){LP.ended=false;LP.si=0;LP.playing=true;lpRun();return}
+  if(LP.playing){LP.playing=false;lpStop();lpShow()}else{LP.playing=true;lpRun()}
+}
+function lpKey(e){
+  if(e.key==='Escape'){e.preventDefault();lpClose()}
+  else if(e.key===' '&&!(e.target&&/BUTTON|SELECT/.test(e.target.tagName))){e.preventDefault();lpToggle()}
+  else if(e.key==='ArrowRight'){if(!LP.ended)lpAdvance()}
+  else if(e.key==='ArrowLeft'){LP.si=Math.max(0,LP.si-1);lpRun()}
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&LP.open&&LP.playing&&LPREF.mode!=='v'){LP.playing=false;lpStop();lpShow()}});
+
+function renderLessons(){
+  const ids=LORDER(),tot=ids.reduce((a,id)=>a+lessonDur(id),0),w=state.watched||{},nw=ids.filter(id=>w[id]).length;
+  let h=`<div class="screenhead"><h2>Lessons</h2><span class="fmt">${ids.length} narrated lessons · about ${Math.round(tot/60000)} minutes in all · ${nw} watched</span></div>
+    <section class="panel"><p>One short lesson for each drill, read aloud by your device’s voice. Choose how to take them in:</p>${modeSegHTML()}
+      <div class="introbtns"><button class="btn primary" id="playall">${ICON.play} Play all</button>${nw&&nw<ids.length?`<button class="btn" id="playnext">Continue from the first unwatched</button>`:''}</div>
+      ${!hasTTS?'<p class="muted">This browser has no built-in voice, so lessons play silently with captions.</p>':''}</section>`;
+  for(const L of LEVELS){
+    const ls=ids.filter(id=>DRILLS[id].level===L.n);if(!ls.length)continue;
+    h+=`<section class="level"><div class="lvhead"><span class="eyebrow">${levelLabel(L.n)}</span><h3>${L.name}</h3></div><div class="lrows">`;
+    for(const id of ls)h+=`<button class="lrow" data-id="${id}"><span class="lplay">${ICON.play}</span><span class="lt"><b>${LESSONS[id].t}</b><span>${DRILLS[id].name} drill · ${fmtDur(lessonDur(id))}</span></span>${w[id]?'<span class="lw">✓ Watched</span>':''}</button>`;
+    h+='</div></section>';
+  }
+  app.innerHTML=h;wireModeSeg(app);
+  $('#playall').addEventListener('click',()=>lpOpen(ids,0,true));
+  const pn=$('#playnext');if(pn)pn.addEventListener('click',()=>lpOpen(ids,Math.max(0,ids.findIndex(id=>!w[id])),true));
+  app.querySelectorAll('.lrow').forEach(b=>b.addEventListener('click',()=>lpOpen(ids,ids.indexOf(b.dataset.id),false)));
 }
 render();initRemote();
 </script>
